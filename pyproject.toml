@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "refinery"
+version = "0.1.0"
+description = ""
+authors = ["sam <sam@eventual.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+dagster = "^1.5.13"
+pandas = "^2.1.4"
+requests = "^2.31.0"
+dagster-webserver = "^1.5.13"
+llama-index = "^0.9.25.post1"
+pulumi = "^3.99.0"
+
+[tool.poetry.group.dev.dependencies]
+matplotlib = "^3.8.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.dagster]
+module_name = "refinery"
