@@ -1,3 +1,7 @@
 {
-  "cSpell.words": ["dagster"]
+  "cSpell.words": ["dagster"],
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  }
 }

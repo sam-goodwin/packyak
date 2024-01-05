@@ -2,3 +2,5 @@
 tmp*
 .pycache
 __pycache__
+cdk.out
+node_modules
