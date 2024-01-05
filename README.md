@@ -1,13 +1,15 @@
 # Refinery
 
-Refinery is a python library and platform for refining data sets from semi or un-structured data. It automatically provisions all required infrastructure and guarantees a least-privilege and privacy compliant data architecture.
+Refinery is a python library and platform for building data pipelines that clean datasets and train ML models with human supervision and feedback.
+
+It automatically provisions all required infrastructure and guarantees a least-privilege and privacy compliant data architecture.
 
 # Features
 
-1. Training transformation functions (using AI) that are supervised by humans and continually improved with feedback and corrections.
-2. Orchestrating transformation with dependency graphs (DAGs)
-3. Computing data sets when new data arrives or re-computing when its dependencies change
-4. Re-computing data sets when a transformation function is changed or improves from learning
+1. Train transformation functions (using AI) that are supervised by humans and continually improved with feedback and corrections.
+2. Orchestrate transformation with dependency graphs (DAGs)
+3. Compute data sets when new data arrives or when its dependencies change
+4. Re-compute data sets when a transformation function is changed or improves from learning
 5. Auto-provision all required cloud infrastructure
 6. Auto-configured to be compliant with privacy regulations such as HIPAA and GDPR
 7. Least-privilege IAM policies with auto-generated reports for regulators
@@ -28,6 +30,10 @@ videos = Bucket("videos")
 @function()
 async def upload_video():
     await videos.put("key", "value")
+
+@asset()
+async def transcribed_videos():
+  ...
 ```
 
 # Research
