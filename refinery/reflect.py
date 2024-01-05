@@ -24,7 +24,6 @@ def find_bindings(func: LambdaFunction) -> set[Binding]:
     for call in calls:
         if call in bindings:
             continue
-
         if isinstance(call.func, Integration):
             if call.obj is None:
                 raise Exception("Integration must be called on an object")
@@ -39,17 +38,30 @@ class Call:
         self.obj = obj
 
 
-def find_calls(func) -> list[Call]:
+def find_calls(func, seen: set = set(), *, obj=None) -> list[Call]:
+    if func in seen:
+        return []
+
+    seen.add(func)
+
+    if isinstance(func, Integration) and obj is not None:
+        return [
+            Call(
+                func=func,
+                obj=obj,
+            )
+        ]
+
     lexical_scope = get_lexical_scope(func)
+
+    def lookup(expr):
+        return eval(expr, lexical_scope)
 
     # Get the source of the function
     src = dedent(inspect.getsource(func))
 
     # Parse the source into an AST
     module = ast.parse(src)
-
-    def lookup(expr):
-        return eval(expr, lexical_scope)
 
     # Custom visitor class to find function calls
     class CallVisitor(ast.NodeVisitor):
@@ -59,13 +71,15 @@ def find_calls(func) -> list[Call]:
         def visit_Call(self, node):
             try:
                 if isinstance(node.func, ast.Name):
-                    self.calls.append(Call(lookup(node.func.id)))
+                    self.calls.extend(find_calls(lookup(node.func.id), seen))
                 elif isinstance(node.func, ast.Attribute):
-                    call = Call(
-                        func=lookup(f"{node.func.value.id}.{node.func.attr}"),
-                        obj=lookup(f"{node.func.value.id}"),
+                    calls = find_calls(
+                        lookup(f"{node.func.value.id}.{node.func.attr}"),
+                        seen,
+                        obj=lookup(node.func.value.id),
                     )
-                    self.calls.append(call)
+                    self.calls.extend(calls)
+
                 # elif isinstance(node.func, ast.Subscript):
                 #     call = Call(
                 #         lookup(f"{node.func.value.id}[{node.func.slice.value.s!r}]"),

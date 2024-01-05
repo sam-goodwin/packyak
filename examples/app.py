@@ -1,19 +1,20 @@
-from refinery.bucket import Bucket
-from refinery.function import function
+from refinery import Bucket, function
 
-videos = Bucket(id="videos")
+videos = Bucket("videos")
 
 
 @function()
-async def upload_video(key: str, file: str):
+async def upload_video():
+    await upload("key", "data")
+
+
+async def upload(key: str, file: str):
     await videos.put(key, file)
 
 
 if __name__ == "__main__":
     # from refinery.synth.local import synth
-
     # bindings = synth()
-
     # print(bindings)
 
     from refinery.synth.aws_cdk import RefineryStack

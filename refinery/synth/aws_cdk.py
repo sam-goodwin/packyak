@@ -57,7 +57,6 @@ class RefineryStack(Stack):
                 for key, value in kwargs.items():
                     to_resource.add_environment(f"{resource_id}_{key}", value)
 
-            print(from_resource, to_resource)
             if isinstance(from_resource, aws_s3.Bucket):
                 add_env(
                     bucket_name=from_resource.bucket_name,
@@ -68,7 +67,5 @@ class RefineryStack(Stack):
                 if "write" in binding.scopes:
                     from_resource.grant_write(to_resource)
 
-        print("Bindings:", bindings)
         for binding in bindings:
-            print(binding)
             bind(binding)
