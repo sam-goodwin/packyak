@@ -1,4 +1,4 @@
-# Refinery
+# Refinery ![image](https://github.com/sam-goodwin/refinery/assets/38672686/d1c3f71b-5602-4a63-b615-59ac0564253c)
 
 Refinery is a python library and platform for building data pipelines that clean datasets and train ML models with human supervision and feedback.
 
