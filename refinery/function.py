@@ -1,34 +1,45 @@
 from typing import (
-    Any,
     Callable,
+    Generic,
     Optional,
     TypeVar,
     Protocol,
     ParamSpec,
     runtime_checkable,
+    cast,
 )
+from functools import wraps
+
+from refinery.globals import FUNCTIONS
 
 Params = ParamSpec("Params")
-Return = TypeVar("Return")
-
-
-def is_lambda_function(obj: Any) -> bool:
-    return isinstance(obj, LambdaFunction) and getattr(obj, "type", None) == "Lambda"
+Return = TypeVar("Return", covariant=True)
 
 
 @runtime_checkable
-class LambdaFunction(Protocol[Params, Return]):
+class LambdaFunction(Protocol, Generic[Params, Return]):
     file_name: str
+    function_id: str
+
+    def __call__(self, *args: Params.args, **kwargs: Params.kwargs) -> Return:
+        ...
 
 
-def function(*, name: Optional[str] = None):
-    def function(func: Callable[Params, Return]) -> LambdaFunction[Params, Return]:
-        func.file_name = func.__code__.co_filename
-        func.id = name or func.__name__
-        functions[func.id] = func
-        return func
+def function(*, function_id: Optional[str] = None):
+    def decorator(func: Callable[Params, Return]) -> LambdaFunction[Params, Return]:
+        @wraps(func)
+        def wrapper(*args: Params.args, **kwargs: Params.kwargs) -> Return:
+            return func(*args, **kwargs)
 
-    return function
+        func_id = function_id or func.__name__
+        setattr(wrapper, "file_name", func.__code__.co_filename)
+        setattr(wrapper, "function_id", func_id)
 
+        if func_id in FUNCTIONS:
+            raise Exception(f"Lambda Function {func_id} already exists")
 
-functions: dict[str, LambdaFunction] = {}
+        lambda_func = cast(LambdaFunction[Params, Return], wrapper)
+        FUNCTIONS[func_id] = lambda_func
+        return lambda_func
+
+    return decorator

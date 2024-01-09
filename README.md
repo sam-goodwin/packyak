@@ -44,3 +44,9 @@ Inspired by (and integrating with):
 - [ ] https://www.llamaindex.ai/
 - [ ] https://unstructured.io/
 - [ ] https://docs.modular.com/mojo/roadmap.html
+
+# Naming Options
+
+- Smelt is available on Pip
+- Refinery is not available on NPM or Pip
+- I maybe have access to alchemy on NPM but it's taken on PIP

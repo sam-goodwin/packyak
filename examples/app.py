@@ -1,6 +1,25 @@
-from refinery import Bucket, function
+# pylint: disable=missing-function-docstring
 
-videos = Bucket("videos")
+from refinery import Bucket, function
+from refinery.queue import Queue, ReceivedMessagesEvent
+from refinery.synth import synth
+
+
+video_queue = Queue[str]("video_queue", fifo=True)
+
+files = Bucket("files")
+
+videos = files / "videos"
+
+
+@video_queue.on("create")
+async def process_video_(event: ReceivedMessagesEvent[str]):
+    pass
+
+
+@videos.on("create")
+async def process_video(event: Bucket.ObjectCreatedEvent):
+    await video_queue.send(event.key)
 
 
 @function()
@@ -13,13 +32,5 @@ async def upload(key: str, file: str):
 
 
 if __name__ == "__main__":
-    # from refinery.synth.local import synth
-    # bindings = synth()
-    # print(bindings)
-
-    from refinery.synth.aws_cdk import RefineryStack
-    from aws_cdk import App
-
-    app = App()
-    stack = RefineryStack(app, "example-refinery-service")
-    app.synth()
+    spec = synth()
+    print(spec.model_dump_json(indent=2))

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any
 
 from .function import LambdaFunction
 from .resource import Resource
@@ -7,13 +7,10 @@ from .resource import Resource
 class Binding:
     def __init__(
         self,
-        from_resource: Resource,
-        to_resource: LambdaFunction,
+        function: LambdaFunction[Any, Any],
+        resource: Resource,
         scopes: list[str],
-        *,
-        selector: Optional[str] = None,
     ) -> None:
-        self.from_resource = from_resource
+        self.resource = resource
         self.scopes = scopes
-        self.to_resource = to_resource
-        self.target = selector
+        self.function = function

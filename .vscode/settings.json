@@ -1,7 +1,13 @@
 {
-  "cSpell.words": ["dagster"],
+  "cSpell.words": ["aiobotocore", "dagster", "dedupe"],
   "[python]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "charliermarsh.ruff"
-  }
+  },
+  "python.languageServer": "Default",
+  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.autoImportCompletions": true,
+  "python.pyright.enabled": true,
+  "python.pyright.autoImportCompletions": true,
+  "python.pyright.typeCheckingMode": "strict"
 }
