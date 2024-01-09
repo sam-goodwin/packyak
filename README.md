@@ -1,6 +1,6 @@
-# Refinery ![image](https://github.com/sam-goodwin/refinery/assets/38672686/d1c3f71b-5602-4a63-b615-59ac0564253c)
+# Yakka ![image](https://github.com/sam-goodwin/yakka/assets/38672686/d1c3f71b-5602-4a63-b615-59ac0564253c)
 
-Refinery is a python library and platform for building data pipelines that clean datasets and train ML models with human supervision and feedback.
+Yakka is a python library and platform for building data pipelines that clean datasets and train ML models with human supervision and feedback.
 
 It automatically provisions all required infrastructure and guarantees a least-privilege and privacy compliant data architecture.
 
@@ -16,14 +16,14 @@ It automatically provisions all required infrastructure and guarantees a least-p
 
 # Example
 
-> 🔧 Note: Refinery is in active development. Not all features are implemented. Check back to see the following example grow.
+> 🔧 Note: Yakka is in active development. Not all features are implemented. Check back to see the following example grow.
 
-Below is the most simple Refinery application: a Bucket with a Function that writes to it.
+Below is the most simple Yakka application: a Bucket with a Function that writes to it.
 
-Your application's infrastructure is declared in code. The Refinery compiler analyzes it to auto-provision cloud resources (in this case AWS S3 Bucket and Lambda Function) with least privilege IAM Policy inference.
+Your application's infrastructure is declared in code. The Yakka compiler analyzes it to auto-provision cloud resources (in this case AWS S3 Bucket and Lambda Function) with least privilege IAM Policy inference.
 
 ```py
-from refinery import Bucket, function
+from yakka import Bucket, function
 
 videos = Bucket("videos")
 
@@ -48,5 +48,5 @@ Inspired by (and integrating with):
 # Naming Options
 
 - Smelt is available on Pip
-- Refinery is not available on NPM or Pip
+- Yakka is not available on NPM or Pip
 - I maybe have access to alchemy on NPM but it's taken on PIP

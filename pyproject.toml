@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "refinery"
+name = "yakka"
 version = "0.1.0"
-description = ""
+description = "Infrastructure for AI applications and machine learning pipelines"
 authors = ["sam <sam@eventual.ai>"]
 readme = "README.md"
 
@@ -30,6 +30,3 @@ aws-lambda-typing = "^2.18.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.dagster]
-module_name = "refinery"

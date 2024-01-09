@@ -1,8 +1,8 @@
 # pylint: disable=missing-function-docstring
 
-from refinery import Bucket, function
-from refinery.queue import Queue, ReceivedMessagesEvent
-from refinery.synth import synth
+from yakka import Bucket
+from yakka.queue import Queue, ReceivedMessagesEvent
+from yakka.synth import synth
 
 
 video_queue = Queue[str]("video_queue", fifo=True)

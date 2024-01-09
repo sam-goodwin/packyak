@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from refinery.integration import integration
+from yakka.integration import integration
 
 if TYPE_CHECKING:
-    from refinery.bucket import Bucket, BucketSubscriptionScope
+    from yakka.bucket import Bucket, BucketSubscriptionScope
 
 
 class Folder:

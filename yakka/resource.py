@@ -1,4 +1,4 @@
-from refinery.spec import ResourceType
+from yakka.spec import ResourceType
 
 
 class Resource:

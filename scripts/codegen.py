@@ -4,7 +4,7 @@ import typing
 import inspect
 
 from pydantic import BaseModel
-from refinery.spec import RefinerySpec
+from yakka.spec import RefinerySpec
 # from pydantic import BaseModel
 
 generated_classes = set[Any]()

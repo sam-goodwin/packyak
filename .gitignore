@@ -1,7 +1,10 @@
-.venv
-tmp*
-.pycache
 __pycache__
-cdk.out
-node_modules
+.env
+.pycache
 .ruff_cache
+.venv
+cdk.out
+dist
+lib
+node_modules
+tmp*
