@@ -39,7 +39,9 @@ def visit_type(type_: type) -> str:
                 else:
                     props.append(f"  {name}: {to_type_expr(prop_type)};")
 
-            types.append(f"type {type_.__name__} = {{\n" + "\n".join(props) + "\n}")
+            types.append(
+                f"export type {type_.__name__} = {{\n" + "\n".join(props) + "\n}"
+            )
     return type_.__name__
 
 

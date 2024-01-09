@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 devDependencies:
+  '@tsconfig/node20':
+    specifier: ^20.1.2
+    version: 20.1.2
   aws-cdk:
     specifier: 2.118.0
     version: 2.118.0
@@ -14,6 +17,9 @@ devDependencies:
   constructs:
     specifier: 10.3.0
     version: 10.3.0
+  typescript:
+    specifier: ^5.3.3
+    version: 5.3.3
 
 packages:
 
@@ -27,6 +33,10 @@ packages:
 
   /@aws-cdk/asset-node-proxy-agent-v6@2.0.1:
     resolution: {integrity: sha512-DDt4SLdLOwWCjGtltH4VCST7hpOI5DzieuhGZsBpZ+AgJdSI2GCjklCXm0GCTwJG/SolkL5dtQXyUKgg9luBDg==}
+    dev: true
+
+  /@tsconfig/node20@20.1.2:
+    resolution: {integrity: sha512-madaWq2k+LYMEhmcp0fs+OGaLFk0OenpHa4gmI4VEmCKX4PJntQ6fnnGADVFrVkBj0wIdAlQnK/MrlYTHsa1gQ==}
     dev: true
 
   /aws-cdk-lib@2.118.0(constructs@10.3.0):
@@ -72,3 +82,9 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /typescript@5.3.3:
+    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true

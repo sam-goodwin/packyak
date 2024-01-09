@@ -1,25 +1,37 @@
 {
   "name": "refinery",
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.js"
+    }
+  },
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "codegen": "poetry run python ./scripts/codegen.py",
     "typecheck": "poetry run pyright",
-    "build": "pnpm typecheck && pnpm codegen",
+    "build": "pnpm typecheck && pnpm codegen && tsc -b",
     "synth": "poetry run python ./examples/app.py"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "constructs": "10.3.0",
+    "@tsconfig/node20": "^20.1.2",
     "aws-cdk": "2.118.0",
-    "aws-cdk-lib": "2.118.0"
+    "aws-cdk-lib": "2.118.0",
+    "constructs": "10.3.0",
+    "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "constructs": "^10.3.0",
-    "aws-cdk-lib": "^2.118.0"
+    "aws-cdk-lib": "^2.118.0",
+    "constructs": "^10.3.0"
   },
   "peerDependenciesMeta": {
     "constructs": {

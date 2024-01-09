@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node20",
+  "exclude": ["node_modules", ".venv"],
+  "include": ["refinery/**/*.ts"],
+  "compilerOptions": {
+    "outDir": "lib",
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ESNext"
+  }
+}
