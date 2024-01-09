@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
+from refinery.integration import integration
+
 if TYPE_CHECKING:
     from refinery.bucket import Bucket, BucketSubscriptionScope
 
@@ -10,6 +12,14 @@ class Folder:
     def __init__(self, parent: "Bucket | Folder", name: str):
         self.parent = parent
         self.name = name
+
+    @property
+    def resource_id(self) -> str:
+        return self.bucket.resource_id
+
+    @property
+    def resource_type(self) -> str:
+        return self.bucket.resource_type
 
     @property
     def path(self) -> str:
@@ -21,6 +31,10 @@ class Folder:
             return f"{self.parent.path}/{self.name}"
 
     @property
+    def prefix(self) -> str:
+        return f"{self.path}/"
+
+    @property
     def bucket(self) -> "Bucket":
         from .bucket import Bucket
 
@@ -29,15 +43,19 @@ class Folder:
         else:
             return self.parent.bucket
 
+    @integration("get", prefix=prefix)
     def get(self, key: str):
         return self.bucket.get(f"{self.name}/{key}")
 
+    @integration("delete", prefix=prefix)
     def delete(self, key: str):
         return self.bucket.delete(f"{self.name}/{key}")
 
+    @integration("write", prefix=prefix)
     def put(self, key: str, body: str):
         return self.bucket.put(f"{self.name}/{key}", body)
 
+    @integration("list", prefix=prefix)
     async def list(self, prefix: str, *, limit: int | None, next_token: str | None):
         return self.bucket.list(
             f"{self.path}/{prefix}", limit=limit, next_token=next_token

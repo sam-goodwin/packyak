@@ -4,12 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "synth": "cdk synth"
+    "codegen": "poetry run python ./scripts/codegen.py",
+    "typecheck": "poetry run pyright",
+    "build": "pnpm typecheck && pnpm codegen",
+    "synth": "poetry run python ./examples/app.py"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "aws-cdk": "^2.118.0"
+    "constructs": "10.3.0",
+    "aws-cdk": "2.118.0",
+    "aws-cdk-lib": "2.118.0"
+  },
+  "peerDependencies": {
+    "constructs": "^10.3.0",
+    "aws-cdk-lib": "^2.118.0"
+  },
+  "peerDependenciesMeta": {
+    "constructs": {
+      "optional": true
+    },
+    "aws-cdk-lib": {
+      "optional": true
+    }
   }
 }

@@ -11,6 +11,15 @@
       "console": "integratedTerminal",
       "justMyCode": true,
       "python": "${workspaceFolder}/.venv/bin/python"
+    },
+    {
+      "name": "Python: CodeGen",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/codegen.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "python": "${workspaceFolder}/.venv/bin/python"
     }
   ]
 }

@@ -11,11 +11,11 @@ from .spec import (
     FunctionSpec,
     QueueSpec,
     QueueSubscriptionSpec,
-    Spec,
+    RefinerySpec,
 )
 
 
-def synth() -> Spec:
+def synth() -> RefinerySpec:
     functions: list[FunctionSpec] = []
     buckets: list[BucketSpec] = []
     queues: list[QueueSpec] = []
@@ -58,9 +58,10 @@ def synth() -> Spec:
                     file_name=resource.file_name,
                     bindings=[
                         BindingSpec(
-                            resource_type=binding.resource.resource_type,  # type: ignore - seems like a bug in the type checker
+                            resource_type=binding.resource.resource_type,
                             resource_id=binding.resource.resource_id,
                             scopes=binding.scopes,
+                            props=binding.metadata,
                         )
                         for binding in find_bindings(resource)
                     ],
@@ -73,7 +74,8 @@ def synth() -> Spec:
     for function in find_all_functions():
         visit(function)
 
-    return Spec(
+    return RefinerySpec(
         buckets=buckets,
+        queues=queues,
         functions=functions,
     )

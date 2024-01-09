@@ -25,20 +25,28 @@ type Func = Callable[..., Any]
 
 # walks a function to detect its dependencies
 def find_bindings(func: LambdaFunction[Any, Any]) -> list[Binding]:
+    print("analyze", func.function_id)
     bindings: list[Binding] = []
 
     for call in find_calls(func):
         if call.obj is None:
             raise Exception("Integration must be called on an object")
-        bindings.append(Binding(func, call.obj, call.func.scopes))
+        bindings.append(Binding(func, call.obj, call.func.scopes, call.metadata))
 
     return bindings
 
 
 class Call:
-    def __init__(self, func: Integration[Any, Any], *, obj: Any = None):
+    def __init__(
+        self,
+        func: Integration[Any, Any],
+        *,
+        obj: Any = None,
+        metadata: dict[str, property] | None = None,
+    ):
         self.func = func
         self.obj = obj
+        self.metadata = metadata
 
 
 def find_calls(
@@ -49,17 +57,27 @@ def find_calls(
 
     seen.add(func)
 
-    if isinstance(func, Integration) and obj is not None:
+    if hasattr(func, "scopes") and obj is not None:
+        # this is an Integration
+        integration = cast(Integration[Any, Any], func)
+        metadata = {}
+        if integration.metadata is not None:
+            for k, v in integration.metadata.items():
+                if isinstance(v, property):
+                    metadata[k] = getattr(obj, v.fget.__name__)
+                else:
+                    metadata[k] = getattr(obj, v)
+
         return [
             Call(
                 func=func,  # type: ignore
                 obj=obj,
+                metadata=metadata,
             )
         ]
-
-    func = cast(
-        Func, func
-    )  # WHY DO I NEED THIS? Type narrowing not working because of (and obj is not None) check
+    elif isinstance(func, partial):
+        print("partial")
+        return find_calls(func.func, seen, obj=obj)
 
     lexical_scope = get_lexical_scope(func)
 
@@ -70,6 +88,7 @@ def find_calls(
     try:
         src = dedent(inspect.getsource(func))
     except TypeError:
+        # TODO: Handle builtins
         return []
 
     # Parse the source into an AST
@@ -114,6 +133,7 @@ def find_calls(
 def get_lexical_scope(func: Func) -> dict[str, Any]:
     if isinstance(func, partial):
         return get_lexical_scope(func.func)
+
     globals = func.__globals__ if hasattr(func, "__globals__") else {}
     closure_vars = {}
     if hasattr(func, "__closure__") and func.__closure__ is not None:

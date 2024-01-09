@@ -1,21 +1,16 @@
 import os
 from typing import Any, Callable, Optional, cast
-from pydantic import BaseModel
 
+from pydantic import BaseModel
 from types_aiobotocore_s3 import S3Client
 
-from refinery.folder import Folder
-from refinery.globals import BUCKETS
-from refinery.spec import BucketSubscriptionScope
-
+from .folder import Folder
+from .function import LambdaFunction, function
+from .globals import BUCKETS
 from .integration import integration
 from .memoize import memoize
 from .resource import Resource
-from .function import LambdaFunction, function
-
-# from aws_lambda_typing import context, events
-from aws_lambda_typing.events.event_bridge import EventBridgeEvent
-from aws_lambda_typing.events.s3 import S3
+from .spec import BucketSubscriptionScope
 
 
 class ObjectRef:
@@ -131,7 +126,10 @@ class Bucket(Resource):
         prefix: Optional[str] = None,
         function_id: str | None = None,
     ):
-        def wrap(handler: Callable[[Bucket.ObjectCreatedEvent], Any]):
+        def decorate(handler: Callable[[Bucket.ObjectCreatedEvent], Any]):
+            from aws_lambda_typing.events.event_bridge import EventBridgeEvent
+            from aws_lambda_typing.events.s3 import S3
+
             # see https://kevinhakanson.com/2022-04-10-python-typings-for-aws-lambda-function-events/
             @function(function_id=function_id or handler.__name__)
             async def lambda_func(event: EventBridgeEvent, context: Any):
@@ -149,6 +147,6 @@ class Bucket(Resource):
                 BucketSubscription(self, scope, lambda_func, prefix)
             )
 
-            pass
+            return lambda_func
 
-        return wrap
+        return decorate

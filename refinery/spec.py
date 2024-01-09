@@ -12,6 +12,7 @@ class BindingSpec(BaseModel):
     resource_type: ResourceType
     resource_id: str
     scopes: list[str]
+    props: dict[str, str] | None
 
 
 class BucketBindingSpec(BindingSpec):
@@ -44,6 +45,7 @@ class QueueSpec(BaseModel):
     subscriptions: list[QueueSubscriptionSpec]
 
 
-class Spec(BaseModel):
-    functions: list[FunctionSpec]
+class RefinerySpec(BaseModel):
     buckets: list[BucketSpec]
+    queues: list[QueueSpec]
+    functions: list[FunctionSpec]

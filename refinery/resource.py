@@ -2,6 +2,8 @@ from refinery.spec import ResourceType
 
 
 class Resource:
+    resource_type: ResourceType
+
     def __init__(self, resource_type: ResourceType, resource_id: str):
         self.resource_type = resource_type
         self.resource_id = resource_id

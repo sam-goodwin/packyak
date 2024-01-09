@@ -1,5 +1,5 @@
-from functools import wraps
 from typing import (
+    Any,
     Callable,
     Generic,
     Protocol,
@@ -16,18 +16,16 @@ R = TypeVar("R", covariant=True)
 @runtime_checkable
 class Integration(Protocol, Generic[P, R]):
     scopes: List[str]
+    metadata: dict[str, Any] | None
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> R:
         ...
 
 
-def integration(*scopes: str):
+def integration(*scopes: str, **kwargs: property):
     def decorator(func: Callable[P, R]) -> Callable[P, R]:
-        @wraps(func)
-        def wrapper(*args: P.args, **kwargs: P.kwargs):
-            return func(*args, **kwargs)
-
-        setattr(wrapper, "scopes", scopes)
-        return wrapper
+        setattr(func, "scopes", scopes)
+        setattr(func, "metadata", kwargs if kwargs and len(kwargs) > 0 else None)
+        return func
 
     return decorator

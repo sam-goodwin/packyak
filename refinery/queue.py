@@ -2,15 +2,14 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Callable, Optional, Type, cast
+from typing import Any, Callable, Type, cast
 
 from aiobotocore.session import get_session
 from pydantic import BaseModel
 from types_aiobotocore_sqs import SQSClient
-from refinery.function import LambdaFunction
 
-from refinery.globals import QUEUES
-
+from .function import LambdaFunction, function
+from .globals import QUEUES
 from .integration import integration
 from .memoize import memoize
 from .resource import Resource
@@ -24,7 +23,8 @@ type Body = str | BaseModel
 
 
 class ReceivedMessagesEvent[B: Body]:
-    body: B
+    def __init__(self, messages: list[Message[B]]):
+        self.messages = messages
 
 
 class Message[B: Body]:
@@ -106,11 +106,31 @@ class Queue[B: Body](Resource):
                 VisibilityTimeout=visibility_timeout,
             )
 
-    def on(self, _path: Optional[str] = None):
-        def wrap(handler: Callable[[ReceivedMessagesEvent[B]], Any]):
-            pass
+    def consumer(self, function_id: str | None = None):
+        def decorate(handler: Callable[[ReceivedMessagesEvent[B]], Any]):
+            from aws_lambda_typing.events.sqs import SQSEvent
 
-        return wrap
+            # see https://kevinhakanson.com/2022-04-10-python-typings-for-aws-lambda-function-events/
+            @function(function_id=function_id or handler.__name__)
+            async def lambda_func(event: SQSEvent, context: Any):
+                result = await handler(
+                    ReceivedMessagesEvent(
+                        messages=[
+                            Message(
+                                queue=self,
+                                message_id=message["messageId"],
+                                body=self.from_json(message["body"]),
+                            )
+                            for message in event["Records"]
+                        ]
+                    )
+                )
+                # TODO: adapt response
+                return result
+
+            self.subscriptions.append(QueueSubscription(self, lambda_func))
+
+        return decorate
 
     def from_json(self, body: str) -> B:
         if issubclass(self.model, BaseModel):

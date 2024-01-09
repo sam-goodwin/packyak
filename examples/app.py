@@ -12,19 +12,19 @@ files = Bucket("files")
 videos = files / "videos"
 
 
-@video_queue.on("create")
-async def process_video_(event: ReceivedMessagesEvent[str]):
-    pass
+@video_queue.consumer()
+async def process_video_queue(event: ReceivedMessagesEvent[str]):
+    await upload("key", "val")
 
 
-@videos.on("create")
-async def process_video(event: Bucket.ObjectCreatedEvent):
-    await video_queue.send(event.key)
+# @videos.on("create")
+# async def process_video(event: Bucket.ObjectCreatedEvent):
+#     await video_queue.send(event.key)
 
 
-@function()
-async def upload_video():
-    await upload("key", "data")
+# @function()
+# async def upload_video():
+#     await upload("key", "data")
 
 
 async def upload(key: str, file: str):

@@ -8,7 +8,6 @@ from typing import (
     runtime_checkable,
     cast,
 )
-from functools import wraps
 
 from refinery.globals import FUNCTIONS
 
@@ -27,7 +26,7 @@ class LambdaFunction(Protocol, Generic[Params, Return]):
 
 def function(*, function_id: Optional[str] = None):
     def decorator(func: Callable[Params, Return]) -> LambdaFunction[Params, Return]:
-        @wraps(func)
+        # @wraps(func)
         def wrapper(*args: Params.args, **kwargs: Params.kwargs) -> Return:
             return func(*args, **kwargs)
 

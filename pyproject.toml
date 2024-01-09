@@ -5,6 +5,7 @@ description = ""
 authors = ["sam <sam@eventual.ai>"]
 readme = "README.md"
 
+
 [tool.poetry.dependencies]
 python = "3.12.1"
 botocore = ">=1.33.2,<1.33.14"
