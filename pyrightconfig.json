@@ -1,5 +1,12 @@
 {
-  "exclude": ["node_modules", "cdk.out", ".venv"],
+  "exclude": [
+    "**/node_modules",
+    "**/cdk.out",
+    "**/.venv",
+    "**/dist",
+    "**/lib",
+    "**/pycache"
+  ],
   "reportUnusedExpression": false,
   "reportUnknownArgumentType": false,
   "reportUnknownVariableType": false

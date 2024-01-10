@@ -4,12 +4,12 @@ T = TypeVar("T")
 
 
 def memoize(fn: Callable[[], T]) -> Callable[[], T]:
-    cache = None
+  cache = None
 
-    def wrapper():
-        nonlocal cache
-        if cache is None:
-            cache = fn()
-        return cache
+  def wrapper():
+    nonlocal cache
+    if cache is None:
+      cache = fn()
+    return cache
 
-    return wrapper
+  return wrapper

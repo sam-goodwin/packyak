@@ -27,3 +27,6 @@ streamlit = "^1.29.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+indent-width = 2

@@ -28,6 +28,8 @@ export class Yakka extends Construct {
     super(scope, id);
     this.entry = props.entry;
     this.spec = loadYakka(this.entry);
+
+    this.buckets = this.spec.buckets.map(bucket => )
   }
 }
 
