@@ -33,7 +33,7 @@ export class Yakka extends Construct {
   readonly queueIndex: {
     [queue_id: string]: Queue;
   };
-  readonly functions: Function[];
+  // readonly functions: Function[];
 
   constructor(scope: Construct, id: string, props: YakkaProps) {
     super(scope, id);
@@ -57,16 +57,17 @@ export class Yakka extends Construct {
     this.queueIndex = Object.fromEntries(
       this.queues.map((q) => [q.queueName, q])
     );
-    this.functions = this.spec.functions.map((funcSpec) => {
-      return new Function(this, funcSpec.function_id, {
-        code: Code.fromAsset(funcSpec.file_name),
-        handler: funcSpec.handler,
-        runtime: Runtime.PYTHON_3_8,
-        environment: {
-          YAKKA_SYNTH: "true",
-        },
-      });
-    });
+    // this.functions = this.spec.functions.map((funcSpec) => {
+    //   return new Function(this, funcSpec.function_id, {
+    //     code: Code.fromAsset(funcSpec.file_name),
+    //     // @ts-expect-error - TODO
+    //     handler: funcSpec.handler,
+    //     runtime: Runtime.PYTHON_3_8,
+    //     environment: {
+    //       YAKKA_SYNTH: "true",
+    //     },
+    //   });
+    // });
   }
 }
 
@@ -95,7 +96,7 @@ export interface StreamlitSiteProps
    *
    * @example "my/app.py"
    */
-  entry: string;
+  home: string;
   /**
    * The VPC to deploy the streamlit application into.
    *

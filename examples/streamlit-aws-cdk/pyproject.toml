@@ -11,6 +11,7 @@ python = "3.12.1"
 streamlit = "^1.29.0"
 yakka = { path = "../../" }
 types-aiobotocore = { extras = ["essential"], version = "^2.9.0" }
+aioboto3 = "^12.1.0"
 
 
 [build-system]

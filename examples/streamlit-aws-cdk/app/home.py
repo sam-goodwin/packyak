@@ -1,16 +1,7 @@
-import warnings
-
-warnings.filterwarnings(
-    "ignore", category=SyntaxWarning
-)  # streamlit has bugs when run in python 3.12
-
 import streamlit as st
 import pandas as pd
-import yakka
 
 from .resources import videos
-
-yakka.init()
 
 
 @st.cache_data()
