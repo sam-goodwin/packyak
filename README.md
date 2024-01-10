@@ -1,4 +1,4 @@
-# Yakka ![image](https://github.com/sam-goodwin/yakka/assets/38672686/d1c3f71b-5602-4a63-b615-59ac0564253c)
+# Yakka ![image](https://github.com/sam-goodwin/yakka/assets/38672686/249af136-45fb-4d13-82bb-5818e803eeb0)
 
 Yakka is a python library and platform for building data pipelines that clean datasets and train ML models with human supervision and feedback.
 
