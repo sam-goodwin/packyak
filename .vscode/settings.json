@@ -1,4 +1,9 @@
 {
+  "files.exclude": {
+    "**/__pycache__": true,
+    ".pycache": true,
+    ".ruff_cache": true
+  },
   "cSpell.words": [
     "aiobotocore",
     "boto",

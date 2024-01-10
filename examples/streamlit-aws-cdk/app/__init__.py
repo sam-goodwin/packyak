@@ -6,6 +6,12 @@ warnings.filterwarnings(
 
 import yakka
 
-from .resources import *
+#####
+# Import all resources that exist in the application
+#
+# TODO: can this be streaminlined/automated?
+# Solution?: auto-import home.py and pages/*.py?
+####
+import app.videos
 
 yakka.init()

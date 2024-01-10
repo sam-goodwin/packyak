@@ -44,6 +44,8 @@ Inspired by (and integrating with):
 - [ ] https://www.llamaindex.ai/
 - [ ] https://unstructured.io/
 - [ ] https://docs.modular.com/mojo/roadmap.html
+- [ ] https://www.nextflow.io/
+- [ ] https://github.com/OpenLineage/openlineage
 
 # Naming Options
 

@@ -20,7 +20,7 @@ from .typed_resource import TypedResource
 sqs = boto3.client("sqs")
 session: aioboto3.Session = aioboto3.Session()
 
-aio_sqs = TypedResource[SQSClient](session.client("sqs"))
+aio_sqs = TypedResource[SQSClient](session.client("sqs"))  # type: ignore
 
 type Body = str | BaseModel
 

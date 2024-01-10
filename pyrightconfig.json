@@ -10,5 +10,8 @@
   "reportUnusedExpression": false,
   "reportUnknownArgumentType": false,
   "reportUnknownVariableType": false,
-  "reportUnknownMemberType": false
+  "reportUnknownMemberType": false,
+  "reportUnusedImport": false,
+  "reportOptionalMemberAccess": false,
+  "reportMissingTypeStubs": false
 }

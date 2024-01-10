@@ -1,14 +1,12 @@
 import streamlit as st
 import pandas as pd
 
-from .resources import videos
+from .videos import videos
 
 
 @st.cache_data()
 def get_large_video():
-    # interact with the bucket
-    videos.get_sync("key")
-    return df
+    return videos.get_sync("key")
 
 
 df = pd.DataFrame(

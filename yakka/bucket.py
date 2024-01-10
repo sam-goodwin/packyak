@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 from typing import Any, Callable, Optional, cast
 
@@ -21,7 +22,7 @@ from .sync import sync
 s3 = boto3.client("s3")
 session: aioboto3.Session = aioboto3.Session()
 
-aio_s3 = TypedResource[S3Client](session.client("s3"))
+aio_s3 = TypedResource[S3Client](session.client("s3"))  # type: ignore
 
 
 class ObjectRef:
@@ -29,12 +30,16 @@ class ObjectRef:
         self.bucket = bucket
         self.key = key
         self.etag = etag
+        self.created_at = datetime.now()
+
+    def __hash__(self):
+        return hash((self.bucket.bucket_id, self.key, self.etag, self.created_at))
 
 
 class Object[Body](ObjectRef):
     def __init__(self, bucket: "Bucket", key: str, body: Body, etag: str):
         super().__init__(bucket, key, etag)
-        self.bucket = bucket
+        self.body = body
 
 
 class ListObjectsResponse:
