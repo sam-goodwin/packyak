@@ -4,7 +4,7 @@ warnings.filterwarnings(
     "ignore", category=SyntaxWarning
 )  # streamlit has bugs when run in python 3.12
 
-import yakka
+import packyak
 
 #####
 # Import all resources that exist in the application
@@ -14,4 +14,4 @@ import yakka
 ####
 import app.videos
 
-yakka.init()
+packyak.init()

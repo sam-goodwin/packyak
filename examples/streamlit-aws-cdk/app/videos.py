@@ -1,4 +1,4 @@
-from yakka import Bucket
+from packyak import Bucket
 
 
 videos = Bucket("videos")

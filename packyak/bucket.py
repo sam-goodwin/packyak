@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from types_aiobotocore_s3.client import S3Client
 from types_aiobotocore_s3.type_defs import ListObjectsV2OutputTypeDef
 
-from yakka.typed_resource import TypedResource
+from packyak.typed_resource import TypedResource
 
 from .folder import Folder
 from .function import LambdaFunction, function

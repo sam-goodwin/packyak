@@ -9,7 +9,7 @@ from typing import (
     cast,
 )
 
-from yakka.globals import FUNCTIONS
+from packyak.globals import FUNCTIONS
 
 Params = ParamSpec("Params")
 Return = TypeVar("Return", covariant=True)

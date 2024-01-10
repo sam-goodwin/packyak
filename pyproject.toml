@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "yakka"
+name = "packyak"
 version = "0.1.0"
 description = "Infrastructure for AI applications and machine learning pipelines"
 authors = ["sam <sam@eventual.ai>"]

@@ -1,4 +1,4 @@
-export type YakkaSpec = {
+export type PackyakSpec = {
   buckets: BucketSpec[];
   queues: QueueSpec[];
   functions: FunctionSpec[];

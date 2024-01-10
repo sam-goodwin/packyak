@@ -3,7 +3,7 @@ __pycache__
 .pycache
 .ruff_cache
 .venv
-.yakka
+.packyak
 *.tsbuildinfo
 cdk.out
 dist

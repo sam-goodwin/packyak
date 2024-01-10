@@ -4,7 +4,7 @@ import typing
 import inspect
 
 from pydantic import BaseModel
-from yakka.spec import YakkaSpec
+from packyak.spec import PackyakSpec
 # from pydantic import BaseModel
 
 generated_classes = set[Any]()
@@ -105,13 +105,13 @@ def is_dict_type(value: type):
 
 
 if __name__ == "__main__":
-    visit_type(YakkaSpec)
+    visit_type(PackyakSpec)
     types.reverse()
     print("\n".join(types))
     import os
 
     outfile = os.path.join(
-        os.path.dirname(__file__), "..", "yakka", "generated", "spec.ts"
+        os.path.dirname(__file__), "..", "packyak", "generated", "spec.ts"
     )
 
     os.makedirs(os.path.dirname(outfile), exist_ok=True)

@@ -1,4 +1,4 @@
-from yakka.spec import ResourceType
+from packyak.spec import ResourceType
 
 
 class Resource:

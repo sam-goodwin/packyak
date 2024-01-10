@@ -2,7 +2,7 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.yakka.json"
+      "path": "./tsconfig.packyak.json"
     },
     {
       "path": "./examples/streamlit-aws-cdk"

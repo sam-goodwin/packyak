@@ -12,18 +12,18 @@ from .spec import (
     FunctionSpec,
     QueueSpec,
     QueueSubscriptionSpec,
-    YakkaSpec,
+    PackyakSpec,
 )
 
 
 def is_synth():
-    yakka_synth = os.environ.get("YAKKA_SYNTH")
-    return yakka_synth is not None and (
-        yakka_synth == "1" or yakka_synth.lower() == "true"
+    packyak_synth = os.environ.get("PACKYAK_SYNTH")
+    return packyak_synth is not None and (
+        packyak_synth == "1" or packyak_synth.lower() == "true"
     )
 
 
-def synth() -> YakkaSpec:
+def synth() -> PackyakSpec:
     functions: list[FunctionSpec] = []
     buckets: list[BucketSpec] = []
     queues: list[QueueSpec] = []
@@ -82,9 +82,9 @@ def synth() -> YakkaSpec:
     for function in find_all_functions():
         visit(function)
 
-    yakka_spec = YakkaSpec(
+    packyak_spec = PackyakSpec(
         buckets=buckets,
         queues=queues,
         functions=functions,
     )
-    return yakka_spec
+    return packyak_spec

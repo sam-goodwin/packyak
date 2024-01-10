@@ -1,10 +1,10 @@
 {
   "extends": "./tsconfig.base.json",
   "exclude": ["node_modules", "dist", ".venv"],
-  "include": ["yakka"],
+  "include": ["packyak"],
   "compilerOptions": {
     "composite": true,
     "outDir": "lib",
-    "rootDir": "yakka"
+    "rootDir": "packyak"
   }
 }

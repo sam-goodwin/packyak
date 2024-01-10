@@ -3,13 +3,13 @@ name = "app"
 
 version = "0.1.0"
 description = ""
-authors = ["sam <sam@yakka.sh>"]
+authors = ["sam <sam@packyak.sh>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.12.1"
 streamlit = "^1.29.0"
-yakka = { path = "../../" }
+packyak = { path = "../../" }
 types-aiobotocore = { extras = ["essential"], version = "^2.9.0" }
 aioboto3 = "^12.1.0"
 

@@ -1,13 +1,13 @@
 {
   "name": "examples-streamlit-aws-cdk",
   "version": "0.1.0",
-  "description": "A Streamlit app deployed to AWS with Yakka for AWS CDK",
+  "description": "A Streamlit app deployed to AWS with Packyak for AWS CDK",
   "scripts": {
     "start": "poetry run streamlit run app.py",
     "synth": "cdk synth --quiet"
   },
   "dependencies": {
-    "yakka": "workspace:^"
+    "packyak": "workspace:^"
   },
   "devDependencies": {
     "aws-cdk": "2.118.0",

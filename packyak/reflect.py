@@ -3,9 +3,9 @@ from functools import partial
 import inspect
 from typing import Any, Callable, Sequence, cast
 
-from yakka.globals import BUCKETS, FUNCTIONS, QUEUES
+from packyak.globals import BUCKETS, FUNCTIONS, QUEUES
 
-from yakka.resource import Resource
+from packyak.resource import Resource
 
 from .binding import Binding
 from .function import LambdaFunction

@@ -8,13 +8,13 @@ import {
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { execSync } from "child_process";
 import { Construct } from "constructs";
-import { YakkaSpec } from "./generated/spec";
+import { PackyakSpec } from "./generated/spec";
 import path from "path";
 import { Stack } from "aws-cdk-lib/core";
 import { Queue } from "aws-cdk-lib/aws-sqs";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 
-export interface YakkaProps {
+export interface PackyakProps {
   /**
    * Entrypoint to the streamlit application.
    *
@@ -23,8 +23,8 @@ export interface YakkaProps {
   entry: string;
 }
 
-export class Yakka extends Construct {
-  readonly spec: YakkaSpec;
+export class Packyak extends Construct {
+  readonly spec: PackyakSpec;
   readonly buckets: Bucket[];
   readonly queues: Queue[];
   readonly bucketIndex: {
@@ -35,9 +35,9 @@ export class Yakka extends Construct {
   };
   // readonly functions: Function[];
 
-  constructor(scope: Construct, id: string, props: YakkaProps) {
+  constructor(scope: Construct, id: string, props: PackyakProps) {
     super(scope, id);
-    this.spec = loadYakka(props.entry);
+    this.spec = loadPackyak(props.entry);
     const stack = Stack.of(this);
     this.buckets = this.spec.buckets.map(
       (bucket) =>
@@ -64,14 +64,14 @@ export class Yakka extends Construct {
     //     handler: funcSpec.handler,
     //     runtime: Runtime.PYTHON_3_8,
     //     environment: {
-    //       YAKKA_SYNTH: "true",
+    //       PACKYAK_SYNTH: "true",
     //     },
     //   });
     // });
   }
 }
 
-function loadYakka(entry: string): YakkaSpec {
+function loadPackyak(entry: string): PackyakSpec {
   let pythonCommand = "python";
   if (fs.existsSync(path.join(".venv", "bin", "python"))) {
     pythonCommand = ".venv/bin/python";
@@ -81,16 +81,16 @@ function loadYakka(entry: string): YakkaSpec {
   const cmd = `${pythonCommand} ${entry}`;
   execSync(cmd, {
     env: {
-      YAKKA_SYNTH: "true",
+      PACKYAK_SYNTH: "true",
     },
   });
-  const spec = JSON.parse(fs.readFileSync(".yakka/spec.json", "utf-8"));
+  const spec = JSON.parse(fs.readFileSync(".packyak/spec.json", "utf-8"));
   return spec;
 }
 
 export interface StreamlitSiteProps
   extends ApplicationLoadBalancedTaskImageOptions {
-  yakka: Yakka;
+  packyak: Packyak;
   /**
    * Entrypoint to the streamlit application.
    *
@@ -119,7 +119,7 @@ export class StreamlitSite extends Construct {
 
   constructor(scope: Construct, id: string, props: StreamlitSiteProps) {
     super(scope, id);
-    // const yakka = loadYakka(props.entry);
+    // const packyak = loadPackyak(props.entry);
     this.vpc =
       props.vpc ??
       new Vpc(this, "Vpc", {

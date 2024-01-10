@@ -1,6 +1,6 @@
-# Yakka ![image](https://github.com/sam-goodwin/yakka/assets/38672686/249af136-45fb-4d13-82bb-5818e803eeb0)
+# Packyak ![image](https://github.com/sam-goodwin/packyak/assets/38672686/249af136-45fb-4d13-82bb-5818e803eeb0)
 
-Yakka is a python library and platform for building data pipelines that clean datasets and train ML models with human supervision and feedback.
+Packyak is a python library and platform for building data pipelines that clean datasets and train ML models with human supervision and feedback.
 
 It automatically provisions all required infrastructure and guarantees a least-privilege and privacy compliant data architecture.
 
@@ -16,14 +16,14 @@ It automatically provisions all required infrastructure and guarantees a least-p
 
 # Example
 
-> 🔧 Note: Yakka is in active development. Not all features are implemented. Check back to see the following example grow.
+> 🔧 Note: Packyak is in active development. Not all features are implemented. Check back to see the following example grow.
 
-Below is the most simple Yakka application: a Bucket with a Function that writes to it.
+Below is the most simple Packyak application: a Bucket with a Function that writes to it.
 
-Your application's infrastructure is declared in code. The Yakka compiler analyzes it to auto-provision cloud resources (in this case AWS S3 Bucket and Lambda Function) with least privilege IAM Policy inference.
+Your application's infrastructure is declared in code. The Packyak compiler analyzes it to auto-provision cloud resources (in this case AWS S3 Bucket and Lambda Function) with least privilege IAM Policy inference.
 
 ```py
-from yakka import Bucket, function
+from packyak import Bucket, function
 
 videos = Bucket("videos")
 
@@ -46,9 +46,7 @@ Inspired by (and integrating with):
 - [ ] https://docs.modular.com/mojo/roadmap.html
 - [ ] https://www.nextflow.io/
 - [ ] https://github.com/OpenLineage/openlineage
-
-# Naming Options
-
-- Smelt is available on Pip
-- Yakka is not available on NPM or Pip
-- I maybe have access to alchemy on NPM but it's taken on PIP
+- [ ] https://aws.amazon.com/what-is/vector-databases/
+- [ ] https://aws.amazon.com/neptune/machine-learning/
+- [ ] https://www.dgl.ai/
+- [ ] https://aws.amazon.com/blogs/machine-learning/build-streamlit-apps-in-amazon-sagemaker-studio/

@@ -10,6 +10,7 @@
     "dagster",
     "dedupe",
     "Fargate",
+    "packyak",
     "selectbox",
     "streamlit"
   ],
