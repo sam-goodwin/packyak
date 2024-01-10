@@ -9,5 +9,6 @@
   ],
   "reportUnusedExpression": false,
   "reportUnknownArgumentType": false,
-  "reportUnknownVariableType": false
+  "reportUnknownVariableType": false,
+  "reportUnknownMemberType": false
 }

@@ -4,7 +4,7 @@
   "description": "A Streamlit app deployed to AWS with Yakka for AWS CDK",
   "scripts": {
     "start": "poetry run streamlit run app.py",
-    "synth": "cdk synth"
+    "synth": "cdk synth --quiet"
   },
   "dependencies": {
     "yakka": "workspace:^"

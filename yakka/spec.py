@@ -9,43 +9,43 @@ type ResourceType = Literal["bucket"] | Literal["queue"] | Literal["function"]
 
 
 class BindingSpec(BaseModel):
-  resource_type: ResourceType
-  resource_id: str
-  scopes: list[str]
-  props: dict[str, str] | None
+    resource_type: ResourceType
+    resource_id: str
+    scopes: list[str]
+    props: dict[str, str] | None
 
 
 class BucketBindingSpec(BindingSpec):
-  selector: Optional[str]
+    selector: Optional[str]
 
 
 class FunctionSpec(BaseModel):
-  function_id: str
-  file_name: str
-  bindings: list[BindingSpec]
+    function_id: str
+    file_name: str
+    bindings: list[BindingSpec]
 
 
 class BucketSubscriptionSpec(BaseModel):
-  scope: BucketSubscriptionScope
-  function_id: str
+    scope: BucketSubscriptionScope
+    function_id: str
 
 
 class BucketSpec(BaseModel):
-  bucket_id: str
-  subscriptions: list[BucketSubscriptionSpec]
+    bucket_id: str
+    subscriptions: list[BucketSubscriptionSpec]
 
 
 class QueueSubscriptionSpec(BaseModel):
-  function_id: str
+    function_id: str
 
 
 class QueueSpec(BaseModel):
-  queue_id: str
-  fifo: bool
-  subscriptions: list[QueueSubscriptionSpec]
+    queue_id: str
+    fifo: bool
+    subscriptions: list[QueueSubscriptionSpec]
 
 
 class YakkaSpec(BaseModel):
-  buckets: list[BucketSpec]
-  queues: list[QueueSpec]
-  functions: list[FunctionSpec]
+    buckets: list[BucketSpec]
+    queues: list[QueueSpec]
+    functions: list[FunctionSpec]
