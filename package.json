@@ -8,12 +8,18 @@
     ".": {
       "import": "./lib/index.js",
       "require": "./lib/index.js"
+    },
+    "./aws-cdk": {
+      "import": "./lib/aws-cdk.js",
+      "require": "./lib/aws-cdk.js",
+      "types": "./lib/aws-cdk.d.ts"
     }
   },
   "files": [
     "lib"
   ],
   "scripts": {
+    "watch": "tsc -b -w",
     "codegen": "poetry run python ./scripts/codegen.py",
     "typecheck": "poetry run pyright",
     "build": "pnpm typecheck && pnpm codegen && tsc -b",
@@ -24,6 +30,7 @@
   "license": "ISC",
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",
+    "@types/node": "^20.10.8",
     "aws-cdk": "2.118.0",
     "aws-cdk-lib": "2.118.0",
     "constructs": "10.3.0",

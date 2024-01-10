@@ -1,5 +1,12 @@
 {
-  "cSpell.words": ["aiobotocore", "dagster", "dedupe"],
+  "cSpell.words": [
+    "aiobotocore",
+    "dagster",
+    "dedupe",
+    "Fargate",
+    "selectbox",
+    "streamlit"
+  ],
   "[python]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "charliermarsh.ruff"

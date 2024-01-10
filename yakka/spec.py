@@ -45,7 +45,7 @@ class QueueSpec(BaseModel):
     subscriptions: list[QueueSubscriptionSpec]
 
 
-class RefinerySpec(BaseModel):
+class YakkaSpec(BaseModel):
     buckets: list[BucketSpec]
     queues: list[QueueSpec]
     functions: list[FunctionSpec]

@@ -1,11 +1,11 @@
 {
-  "extends": "@tsconfig/node20",
-  "exclude": ["node_modules", ".venv"],
-  "include": ["yakka/**/*.ts"],
-  "compilerOptions": {
-    "outDir": "lib",
-    "moduleResolution": "Bundler",
-    "module": "ESNext",
-    "target": "ESNext"
-  }
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.yakka.json"
+    },
+    {
+      "path": "./examples/streamlit-aws-cdk"
+    }
+  ]
 }

@@ -1,3 +1,4 @@
+import os
 from typing import Any
 from .bucket import Bucket
 from .function import LambdaFunction
@@ -11,11 +12,21 @@ from .spec import (
     FunctionSpec,
     QueueSpec,
     QueueSubscriptionSpec,
-    RefinerySpec,
+    YakkaSpec,
 )
 
 
-def synth() -> RefinerySpec:
+def is_synth():
+    yakka_synth = os.environ.get("YAKKA_SYNTH")
+    return yakka_synth is not None and (
+        yakka_synth == "1" or yakka_synth.lower() == "true"
+    )
+
+
+def synth() -> YakkaSpec | None:
+    if not is_synth():
+        return None
+
     functions: list[FunctionSpec] = []
     buckets: list[BucketSpec] = []
     queues: list[QueueSpec] = []
@@ -74,8 +85,16 @@ def synth() -> RefinerySpec:
     for function in find_all_functions():
         visit(function)
 
-    return RefinerySpec(
+    yakka_spec = YakkaSpec(
         buckets=buckets,
         queues=queues,
         functions=functions,
     )
+    if not os.path.exists(".yakka"):
+        os.makedirs(".yakka")
+    with open(".yakka/spec.json", "w") as f:
+        f.write(
+            yakka_spec.model_dump_json(indent=2, exclude_unset=True, exclude_none=True)
+        )
+
+    exit(0)
