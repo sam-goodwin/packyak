@@ -1,9 +1,9 @@
 import fs from "fs";
 import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
-import { Cluster } from "aws-cdk-lib/aws-ecs";
+import { Cluster, ContainerImage } from "aws-cdk-lib/aws-ecs";
 import {
   ApplicationLoadBalancedFargateService,
-  ApplicationLoadBalancedTaskImageOptions,
+  ApplicationLoadBalancedFargateServiceProps,
 } from "aws-cdk-lib/aws-ecs-patterns";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { execSync } from "child_process";
@@ -21,10 +21,24 @@ export interface PackyakProps {
    * @example "my/app.py"
    */
   entry: string;
+  /**
+   * The VPC to deploy the Packyak resources in to.
+   *
+   * @default - A new VPC is created.
+   */
+  vpc?: IVpc;
+  /**
+   * Number of NAT gateways to configure
+   *
+   * @default 1
+   */
+  natGateways?: number;
 }
 
-export class Packyak extends Construct {
+export class DataLake extends Construct {
   readonly spec: PackyakSpec;
+  readonly vpc: IVpc;
+  readonly cluster: Cluster;
   readonly buckets: Bucket[];
   readonly queues: Queue[];
   readonly bucketIndex: {
@@ -33,6 +47,7 @@ export class Packyak extends Construct {
   readonly queueIndex: {
     [queue_id: string]: Queue;
   };
+
   // readonly functions: Function[];
 
   constructor(scope: Construct, id: string, props: PackyakProps) {
@@ -57,6 +72,12 @@ export class Packyak extends Construct {
     this.queueIndex = Object.fromEntries(
       this.queues.map((q) => [q.queueName, q])
     );
+    this.vpc =
+      props.vpc ??
+      new Vpc(this, "Vpc", {
+        natGateways: props.natGateways ?? 1,
+      });
+    this.cluster = new Cluster(this, "Cluster", {});
     // this.functions = this.spec.functions.map((funcSpec) => {
     //   return new Function(this, funcSpec.function_id, {
     //     code: Code.fromAsset(funcSpec.file_name),
@@ -89,50 +110,36 @@ function loadPackyak(entry: string): PackyakSpec {
 }
 
 export interface StreamlitSiteProps
-  extends ApplicationLoadBalancedTaskImageOptions {
-  packyak: Packyak;
+  extends ApplicationLoadBalancedFargateServiceProps {
+  /**
+   * The {@link DataLake} that this Streamlit application will use.
+   */
+  readonly dataLake: DataLake;
   /**
    * Entrypoint to the streamlit application.
    *
    * @example "my/app.py"
    */
-  home: string;
-  /**
-   * The VPC to deploy the streamlit application into.
-   *
-   * @default - A new VPC is created.
-   */
-  vpc?: IVpc;
-  /**
-   * Number of NAT gateways to configure
-   *
-   * @default 1
-   */
-  natGateways?: number;
+  readonly home: string;
 }
 
 export class StreamlitSite extends Construct {
-  readonly vpc;
-  readonly state;
-  readonly cluster;
   readonly service;
+  readonly endpoint;
 
   constructor(scope: Construct, id: string, props: StreamlitSiteProps) {
     super(scope, id);
-    // const packyak = loadPackyak(props.entry);
-    this.vpc =
-      props.vpc ??
-      new Vpc(this, "Vpc", {
-        natGateways: props.natGateways ?? 1,
-      });
-    this.state = new Bucket(this, "State");
-    this.cluster = new Cluster(this, "Cluster", {});
+
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
       cpu: 256,
-      cluster: this.cluster,
+      cluster: props.dataLake.cluster,
+      ...props,
       taskImageOptions: {
-        image: props.image,
+        image: ContainerImage.fromRegistry("python:3.12-slim"),
+        ...(props.taskImageOptions ?? {}),
       },
     });
+
+    this.endpoint = `https://${this.service.loadBalancer.loadBalancerDnsName}`;
   }
 }

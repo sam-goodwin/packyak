@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "exclude": ["node_modules", ".venv"],
-  "include": ["./packyak.ts"],
+  "include": ["packyak.config.ts"],
   "compilerOptions": {
     "noEmit": true
   },

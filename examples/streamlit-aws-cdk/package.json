@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "description": "A Streamlit app deployed to AWS with Packyak for AWS CDK",
   "scripts": {
-    "start": "poetry run streamlit run app.py",
-    "synth": "cdk synth --quiet"
+    "start": "poetry run streamlit run ./app/home.py",
+    "synth": "cdk synth --quiet",
+    "dev": "cdk deploy --require-approval never"
   },
   "dependencies": {
     "packyak": "workspace:^"

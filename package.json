@@ -4,6 +4,9 @@
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "bin": {
+    "packyak": "./bin/packyak.mjs"
+  },
   "exports": {
     ".": {
       "import": "./lib/index.js",
@@ -16,6 +19,7 @@
     }
   },
   "files": [
+    "bin",
     "lib"
   ],
   "scripts": {

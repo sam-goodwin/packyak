@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from .videos import videos
+from app.videos import videos
 
 
 @st.cache_data()

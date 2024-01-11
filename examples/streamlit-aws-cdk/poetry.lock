@@ -256,13 +256,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "boto3-stubs"
-version = "1.34.15"
-description = "Type annotations for boto3 1.34.15 generated with mypy-boto3-builder 7.23.1"
+version = "1.34.16"
+description = "Type annotations for boto3 1.34.16 generated with mypy-boto3-builder 7.23.1"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "boto3-stubs-1.34.15.tar.gz", hash = "sha256:93321cfd3b2f161ed3b9fdf4176e5aed4a6f5a0d124cb9661cc238843180e6e0"},
-    {file = "boto3_stubs-1.34.15-py3-none-any.whl", hash = "sha256:d9b21c2771e2f067097400ee34d92e08e71986e4bc20f1f4f3b1be0fc3f7f61b"},
+    {file = "boto3-stubs-1.34.16.tar.gz", hash = "sha256:0e44f92ea9172767ee6dbc3a92fd21f37fff732aa85cc571ba7213cf997c5f34"},
+    {file = "boto3_stubs-1.34.16-py3-none-any.whl", hash = "sha256:674a1fa4b2803e75e860a4fec37ee5bfd3d43365556a0972d306961bc83e0a13"},
 ]
 
 [package.dependencies]
@@ -318,7 +318,7 @@ bedrock-agent = ["mypy-boto3-bedrock-agent (>=1.34.0,<1.35.0)"]
 bedrock-agent-runtime = ["mypy-boto3-bedrock-agent-runtime (>=1.34.0,<1.35.0)"]
 bedrock-runtime = ["mypy-boto3-bedrock-runtime (>=1.34.0,<1.35.0)"]
 billingconductor = ["mypy-boto3-billingconductor (>=1.34.0,<1.35.0)"]
-boto3 = ["boto3 (==1.34.15)", "botocore (==1.34.15)"]
+boto3 = ["boto3 (==1.34.16)", "botocore (==1.34.16)"]
 braket = ["mypy-boto3-braket (>=1.34.0,<1.35.0)"]
 budgets = ["mypy-boto3-budgets (>=1.34.0,<1.35.0)"]
 ce = ["mypy-boto3-ce (>=1.34.0,<1.35.0)"]
@@ -678,13 +678,13 @@ crt = ["awscrt (==0.19.17)"]
 
 [[package]]
 name = "botocore-stubs"
-version = "1.34.15"
+version = "1.34.16"
 description = "Type annotations and code completion for botocore"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "botocore_stubs-1.34.15-py3-none-any.whl", hash = "sha256:4cd79dd4419e2a229ffa8512154e91c91cad2376675f3ee3b07cbcbb5fd7a256"},
-    {file = "botocore_stubs-1.34.15.tar.gz", hash = "sha256:b42c5aa7bd00a11ff299cac20516db2901254a9b1abad531bddc8400213d91cd"},
+    {file = "botocore_stubs-1.34.16-py3-none-any.whl", hash = "sha256:cd71a578c1d36410e78db39e96b3c90ab88ab2d8079c643b81396c5c8e0c346b"},
+    {file = "botocore_stubs-1.34.16.tar.gz", hash = "sha256:f11369ca8e53c91641390734a4dfce93432e29e5d4d267bcb77ded7d08b18302"},
 ]
 
 [package.dependencies]
@@ -941,20 +941,20 @@ smmap = ">=3.0.1,<6"
 
 [[package]]
 name = "gitpython"
-version = "3.1.40"
+version = "3.1.41"
 description = "GitPython is a Python library used to interact with Git repositories"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "GitPython-3.1.40-py3-none-any.whl", hash = "sha256:cf14627d5a8049ffbf49915732e5eddbe8134c3bdb9d476e6182b676fc573f8a"},
-    {file = "GitPython-3.1.40.tar.gz", hash = "sha256:22b126e9ffb671fdd0c129796343a02bf67bf2994b35449ffc9321aa755e18a4"},
+    {file = "GitPython-3.1.41-py3-none-any.whl", hash = "sha256:c36b6634d069b3f719610175020a9aed919421c87552185b085e04fbbdb10b7c"},
+    {file = "GitPython-3.1.41.tar.gz", hash = "sha256:ed66e624884f76df22c8e16066d567aaa5a37d5b5fa19db2c6df6f7156db9048"},
 ]
 
 [package.dependencies]
 gitdb = ">=4.0.1,<5"
 
 [package.extras]
-test = ["black", "coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mock", "mypy", "pre-commit", "pytest", "pytest-cov", "pytest-instafail", "pytest-subtests", "pytest-sugar"]
+test = ["black", "coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mock", "mypy", "pre-commit", "pytest (>=7.3.1)", "pytest-cov", "pytest-instafail", "pytest-mock", "pytest-sugar", "sumtypes"]
 
 [[package]]
 name = "idna"
@@ -988,13 +988,13 @@ testing = ["flufl.flake8", "importlib-resources (>=1.3)", "packaging", "pyfakefs
 
 [[package]]
 name = "jinja2"
-version = "3.1.2"
+version = "3.1.3"
 description = "A very fast and expressive template engine."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "Jinja2-3.1.2-py3-none-any.whl", hash = "sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"},
-    {file = "Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
+    {file = "Jinja2-3.1.3-py3-none-any.whl", hash = "sha256:7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa"},
+    {file = "Jinja2-3.1.3.tar.gz", hash = "sha256:ac8bd6544d4bb2c9792bf3a159e80bba8fda7f07e81bc3aed565432d5925ba90"},
 ]
 
 [package.dependencies]
@@ -1392,6 +1392,31 @@ files = [
 ]
 
 [[package]]
+name = "packyak"
+version = "0.1.0"
+description = "Infrastructure for AI applications and machine learning pipelines"
+optional = false
+python-versions = "3.12.1"
+files = []
+develop = false
+
+[package.dependencies]
+aioboto3 = "^12.1.0"
+aiobotocore = {version = "2.8.0", extras = ["boto3"]}
+aws-lambda-typing = "^2.18.0"
+boto3-stubs = {version = "^1.34.15", extras = ["essential"]}
+pandas = "^2.1.4"
+pandas-stubs = "^2.1.4.231227"
+pandera = "^0.18.0"
+pydantic = "^2.5.3"
+types-aiobotocore = {version = "^2.9.0", extras = ["essential"]}
+types-boto3 = "^1.0.2"
+
+[package.source]
+type = "directory"
+url = "../.."
+
+[[package]]
 name = "pandas"
 version = "2.1.4"
 description = "Powerful data structures for data analysis, time series, and statistics"
@@ -1592,22 +1617,22 @@ xmp = ["defusedxml"]
 
 [[package]]
 name = "protobuf"
-version = "4.25.1"
+version = "4.25.2"
 description = ""
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "protobuf-4.25.1-cp310-abi3-win32.whl", hash = "sha256:193f50a6ab78a970c9b4f148e7c750cfde64f59815e86f686c22e26b4fe01ce7"},
-    {file = "protobuf-4.25.1-cp310-abi3-win_amd64.whl", hash = "sha256:3497c1af9f2526962f09329fd61a36566305e6c72da2590ae0d7d1322818843b"},
-    {file = "protobuf-4.25.1-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:0bf384e75b92c42830c0a679b0cd4d6e2b36ae0cf3dbb1e1dfdda48a244f4bcd"},
-    {file = "protobuf-4.25.1-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:0f881b589ff449bf0b931a711926e9ddaad3b35089cc039ce1af50b21a4ae8cb"},
-    {file = "protobuf-4.25.1-cp37-abi3-manylinux2014_x86_64.whl", hash = "sha256:ca37bf6a6d0046272c152eea90d2e4ef34593aaa32e8873fc14c16440f22d4b7"},
-    {file = "protobuf-4.25.1-cp38-cp38-win32.whl", hash = "sha256:abc0525ae2689a8000837729eef7883b9391cd6aa7950249dcf5a4ede230d5dd"},
-    {file = "protobuf-4.25.1-cp38-cp38-win_amd64.whl", hash = "sha256:1484f9e692091450e7edf418c939e15bfc8fc68856e36ce399aed6889dae8bb0"},
-    {file = "protobuf-4.25.1-cp39-cp39-win32.whl", hash = "sha256:8bdbeaddaac52d15c6dce38c71b03038ef7772b977847eb6d374fc86636fa510"},
-    {file = "protobuf-4.25.1-cp39-cp39-win_amd64.whl", hash = "sha256:becc576b7e6b553d22cbdf418686ee4daa443d7217999125c045ad56322dda10"},
-    {file = "protobuf-4.25.1-py3-none-any.whl", hash = "sha256:a19731d5e83ae4737bb2a089605e636077ac001d18781b3cf489b9546c7c80d6"},
-    {file = "protobuf-4.25.1.tar.gz", hash = "sha256:57d65074b4f5baa4ab5da1605c02be90ac20c8b40fb137d6a8df9f416b0d0ce2"},
+    {file = "protobuf-4.25.2-cp310-abi3-win32.whl", hash = "sha256:b50c949608682b12efb0b2717f53256f03636af5f60ac0c1d900df6213910fd6"},
+    {file = "protobuf-4.25.2-cp310-abi3-win_amd64.whl", hash = "sha256:8f62574857ee1de9f770baf04dde4165e30b15ad97ba03ceac65f760ff018ac9"},
+    {file = "protobuf-4.25.2-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:2db9f8fa64fbdcdc93767d3cf81e0f2aef176284071507e3ede160811502fd3d"},
+    {file = "protobuf-4.25.2-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:10894a2885b7175d3984f2be8d9850712c57d5e7587a2410720af8be56cdaf62"},
+    {file = "protobuf-4.25.2-cp37-abi3-manylinux2014_x86_64.whl", hash = "sha256:fc381d1dd0516343f1440019cedf08a7405f791cd49eef4ae1ea06520bc1c020"},
+    {file = "protobuf-4.25.2-cp38-cp38-win32.whl", hash = "sha256:33a1aeef4b1927431d1be780e87b641e322b88d654203a9e9d93f218ee359e61"},
+    {file = "protobuf-4.25.2-cp38-cp38-win_amd64.whl", hash = "sha256:47f3de503fe7c1245f6f03bea7e8d3ec11c6c4a2ea9ef910e3221c8a15516d62"},
+    {file = "protobuf-4.25.2-cp39-cp39-win32.whl", hash = "sha256:5e5c933b4c30a988b52e0b7c02641760a5ba046edc5e43d3b94a74c9fc57c1b3"},
+    {file = "protobuf-4.25.2-cp39-cp39-win_amd64.whl", hash = "sha256:d66a769b8d687df9024f2985d5137a337f957a0916cf5464d1513eee96a63ff0"},
+    {file = "protobuf-4.25.2-py3-none-any.whl", hash = "sha256:a8b7a98d4ce823303145bf3c1a8bdb0f2f4642a414b196f04ad9853ed0c8f830"},
+    {file = "protobuf-4.25.2.tar.gz", hash = "sha256:fe599e175cb347efc8ee524bcd4b902d11f7262c0e569ececcb89995c15f0a5e"},
 ]
 
 [[package]]
@@ -2900,31 +2925,6 @@ files = [
 ]
 
 [[package]]
-name = "packyak"
-version = "0.1.0"
-description = "Infrastructure for AI applications and machine learning pipelines"
-optional = false
-python-versions = "3.12.1"
-files = []
-develop = false
-
-[package.dependencies]
-aioboto3 = "^12.1.0"
-aiobotocore = {version = "2.8.0", extras = ["boto3"]}
-aws-lambda-typing = "^2.18.0"
-boto3-stubs = {version = "^1.34.15", extras = ["essential"]}
-pandas = "^2.1.4"
-pandas-stubs = "^2.1.4.231227"
-pandera = "^0.18.0"
-pydantic = "^2.5.3"
-types-aiobotocore = {version = "^2.9.0", extras = ["essential"]}
-types-boto3 = "^1.0.2"
-
-[package.source]
-type = "directory"
-url = "../.."
-
-[[package]]
 name = "yarl"
 version = "1.9.4"
 description = "Yet another URL library"
@@ -3045,4 +3045,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.1"
-content-hash = "20eff512704419f4587a8c3c465a7680f1eee0d7ae6a35e232a186724b664658"
+content-hash = "52255a86041459019deb5a2f282c5b9b08ebab3680477adf990954fd20eb2505"
