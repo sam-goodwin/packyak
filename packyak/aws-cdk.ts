@@ -10,11 +10,22 @@ import { execSync } from "child_process";
 import { Construct } from "constructs";
 import { PackyakSpec } from "./generated/spec";
 import path from "path";
-import { Stack } from "aws-cdk-lib/core";
+import { type App, Stack, CfnOutput } from "aws-cdk-lib/core";
 import { Queue } from "aws-cdk-lib/aws-sqs";
-import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 
-export interface PackyakProps {
+declare module "aws-cdk-lib/core" {
+  interface Stack {
+    addOutputs(outputs: Record<string, string>): void;
+  }
+}
+
+Stack.prototype.addOutputs = function (outputs: Record<string, string>) {
+  for (const [key, value] of Object.entries(outputs)) {
+    new CfnOutput(this, key, { value });
+  }
+};
+
+export interface DataLakeProps {
   /**
    * Entrypoint to the streamlit application.
    *
@@ -50,7 +61,7 @@ export class DataLake extends Construct {
 
   // readonly functions: Function[];
 
-  constructor(scope: Construct, id: string, props: PackyakProps) {
+  constructor(scope: Construct, id: string, props: DataLakeProps) {
     super(scope, id);
     this.spec = loadPackyak(props.entry);
     const stack = Stack.of(this);
@@ -125,7 +136,7 @@ export interface StreamlitSiteProps
 
 export class StreamlitSite extends Construct {
   readonly service;
-  readonly endpoint;
+  readonly url;
 
   constructor(scope: Construct, id: string, props: StreamlitSiteProps) {
     super(scope, id);
@@ -140,6 +151,6 @@ export class StreamlitSite extends Construct {
       },
     });
 
-    this.endpoint = `https://${this.service.loadBalancer.loadBalancerDnsName}`;
+    this.url = `https://${this.service.loadBalancer.loadBalancerDnsName}`;
   }
 }

@@ -17,14 +17,7 @@ if (!packyakConfig) {
 
 const ext = path.extname(packyakConfig);
 
-const command = `pnpm tsx -e 'import("./packyak.config${ext}").then(${function synth(
-  mod
-) {
-  if (typeof mod.default.default !== "function") {
-    throw new Error("packyak.${ext} must export a default function");
-  }
-  return mod.default.default();
-}.toString()})'`;
+const command = `pnpm tsx -e 'import("./packyak.config${ext}")'`;
 
 try {
   const { stdout, stderr } = await execAsync(command);

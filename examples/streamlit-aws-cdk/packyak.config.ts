@@ -1,22 +1,19 @@
-import { StreamlitSite, DataLake } from "packyak/aws-cdk";
 import { App, Stack } from "aws-cdk-lib/core";
+import { StreamlitSite, DataLake } from "packyak/aws-cdk";
 
-export default function () {
-  const app = new App({
-    autoSynth: false,
-  });
-  const stack = new Stack(app, "example-streamlit");
+const app = new App();
 
-  const dataLake = new DataLake(stack, "Packyak", {
-    entry: "-m app",
-  });
+const stack = new Stack(app, "streamlit-example-aws-cdk");
 
-  const site = new StreamlitSite(stack, "StreamlitSite", {
-    dataLake,
-    home: "app/home.py",
-  });
+const dataLake = new DataLake(stack, "DataLake", {
+  entry: "-m app",
+});
 
-  return {
-    endpoint: site.endpoint,
-  };
-}
+const site = new StreamlitSite(stack, "StreamlitSite", {
+  dataLake,
+  home: "app/home.py",
+});
+
+stack.addOutputs({
+  SiteUrl: site.url,
+});
