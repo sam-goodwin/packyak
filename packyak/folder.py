@@ -68,7 +68,7 @@ class Folder:
     def __truediv__(self, other: str) -> "Folder":
         return Folder(self, other)
 
-    def on(self, scope: BucketSubscriptionScope, prefix: Optional[str] = None):
+    def on(self, scope: BucketSubscriptionScope, prefix: str | None = None):
         return self.bucket.on(
             scope, prefix=self.path + prefix if prefix else self.path + "/*"
         )

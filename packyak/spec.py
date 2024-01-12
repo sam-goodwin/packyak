@@ -7,6 +7,8 @@ type BucketSubscriptionScope = Literal["create"] | Literal["update"] | Literal["
 
 type ResourceType = Literal["bucket"] | Literal["queue"] | Literal["function"]
 
+type DependencyGroup = list[str] | str | None
+
 
 class BindingSpec(BaseModel):
     resource_type: ResourceType
@@ -16,13 +18,14 @@ class BindingSpec(BaseModel):
 
 
 class BucketBindingSpec(BindingSpec):
-    selector: Optional[str]
+    selector: str | None
 
 
 class FunctionSpec(BaseModel):
     function_id: str
     file_name: str
     bindings: list[BindingSpec]
+    dependencies: DependencyGroup
 
 
 class BucketSubscriptionSpec(BaseModel):

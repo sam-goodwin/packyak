@@ -1,7 +1,6 @@
 from typing import (
     Callable,
     Generic,
-    Optional,
     TypeVar,
     Protocol,
     ParamSpec,
@@ -9,7 +8,8 @@ from typing import (
     cast,
 )
 
-from packyak.globals import FUNCTIONS
+from .spec import DependencyGroup
+from .globals import FUNCTIONS
 
 Params = ParamSpec("Params")
 Return = TypeVar("Return", covariant=True)
@@ -19,12 +19,18 @@ Return = TypeVar("Return", covariant=True)
 class LambdaFunction(Protocol, Generic[Params, Return]):
     file_name: str
     function_id: str
+    groups: DependencyGroup
 
     def __call__(self, *args: Params.args, **kwargs: Params.kwargs) -> Return:
         ...
 
 
-def function(*, function_id: Optional[str] = None):
+def function(
+    *,
+    function_id: str | None = None,
+    group: DependencyGroup = None,
+    groups: DependencyGroup = None,
+):
     def decorator(func: Callable[Params, Return]) -> LambdaFunction[Params, Return]:
         # @wraps(func)
         def wrapper(*args: Params.args, **kwargs: Params.kwargs) -> Return:
@@ -33,6 +39,7 @@ def function(*, function_id: Optional[str] = None):
         func_id = function_id or func.__name__
         setattr(wrapper, "file_name", func.__code__.co_filename)
         setattr(wrapper, "function_id", func_id)
+        setattr(wrapper, "dependencies", group or groups)
 
         if func_id in FUNCTIONS:
             raise Exception(f"Lambda Function {func_id} already exists")

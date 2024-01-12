@@ -16,7 +16,7 @@ from .function import LambdaFunction, function
 from .globals import BUCKETS
 from .integration import integration
 from .resource import Resource
-from .spec import BucketSubscriptionScope
+from .spec import BucketSubscriptionScope, DependencyGroup
 from .sync import sync
 
 s3 = boto3.client("s3")
@@ -152,7 +152,7 @@ class Bucket(Resource):
 
     @integration("list")
     def list_sync(
-        self, prefix: str, *, limit: int | None, next_token: Optional[str] = None
+        self, prefix: str, *, limit: int | None, next_token: str | None = None
     ):
         response = s3.list_objects_v2(
             Bucket=self.bucket_name,
@@ -164,7 +164,7 @@ class Bucket(Resource):
 
     @integration("list")
     async def list(
-        self, prefix: str, *, limit: int | None, next_token: Optional[str] = None
+        self, prefix: str, *, limit: int | None, next_token: str | None = None
     ):
         async with aio_s3 as client:
             response = await client.list_objects_v2(
@@ -190,15 +190,21 @@ class Bucket(Resource):
     def on(
         self,
         scope: BucketSubscriptionScope,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         function_id: str | None = None,
+        group: DependencyGroup = None,
+        groups: DependencyGroup = None,
     ):
         def decorate(handler: Callable[[Bucket.ObjectCreatedEvent], Any]):
             from aws_lambda_typing.events.event_bridge import EventBridgeEvent
             from aws_lambda_typing.events.s3 import S3
 
             # see https://kevinhakanson.com/2022-04-10-python-typings-for-aws-lambda-function-events/
-            @function(function_id=function_id or handler.__name__)
+            @function(
+                function_id=function_id or handler.__name__,
+                group=group,
+                groups=groups,
+            )
             async def lambda_func(event: EventBridgeEvent, context: Any):
                 event_detail = S3(event["detail"])  # type: ignore
                 result = await handler(

@@ -5,12 +5,15 @@
     ".ruff_cache": true
   },
   "cSpell.words": [
+    "aioboto",
     "aiobotocore",
     "boto",
+    "botocore",
     "dagster",
     "dedupe",
     "Fargate",
     "packyak",
+    "pydantic",
     "selectbox",
     "streamlit"
   ],

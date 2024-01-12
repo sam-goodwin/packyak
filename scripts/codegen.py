@@ -1,4 +1,4 @@
-from typing import Union, get_origin, get_args, get_type_hints, Any
+from typing import Literal, Union, get_origin, get_args, get_type_hints, Any
 import typing
 
 import inspect
@@ -17,12 +17,9 @@ def visit_type(type_: type) -> str:
 
     if type_ not in generated_classes:
         if is_union(type_):
-            items = " | ".join(
-                f'"{value}"' if isinstance(value, str) else to_type_expr(value)
-                for value in get_union_values(type_)
-            )
+            items = " | ".join(v for v in get_union_values(type_))
             if hasattr(type_, "__name__"):
-                types.append(f"type {type_.__name__} = {items};")
+                types.append(f"export type {type_.__name__} = {items};")
             else:
                 return items
         elif issubclass(type_, BaseModel):
@@ -45,25 +42,40 @@ def visit_type(type_: type) -> str:
     return type_.__name__
 
 
-def to_type_expr(class_type: type) -> str:
-    if is_list_type(class_type):
-        return f"{to_type_expr(get_list_item_type(class_type))}[]"
-    # elif is_dict_type(class_type):
-    #     return f"Record<string, any>"
-    elif isinstance(class_type, type):
-        if issubclass(class_type, BaseModel):
-            return visit_type(class_type)
-        elif issubclass(class_type, dict):
-            return f"Record<string, {visit_type(get_list_item_type(class_type))}>"
-        elif issubclass(class_type, str):
+def to_type_expr(type_: type | str) -> str:
+    if isinstance(type_, str):
+        return f'"{type_}"'
+    elif is_list_type(type_):
+        return f"{to_type_expr(get_list_item_type(type_))}[]"
+    elif is_dict_type(type_):
+        (key_type, value_type) = get_args(type_)
+        return f"Record<{to_type_expr(key_type)}, {to_type_expr(value_type)}>"
+    elif isinstance(type_, type):
+        if issubclass(type_, type(None)):
+            return "undefined"
+        elif issubclass(type_, BaseModel):
+            return visit_type(type_)
+        elif issubclass(type_, dict):
+            return f"Record<string, {visit_type(get_list_item_type(type_))}>"
+        elif issubclass(type_, str):
             return "string"
-        elif issubclass(class_type, int) or issubclass(class_type, float):
+        elif issubclass(type_, int) or issubclass(type_, float):
             return "number"
-        elif issubclass(class_type, bool):
+        elif issubclass(type_, bool):
             return "boolean"
-    elif is_union(class_type):
-        return visit_type(class_type)
-    raise Exception(f"Unsupported type: {class_type}")
+    elif is_literal(type_):
+        options = get_args(type_)
+        if len(options) == 1:
+            return to_type_expr(options[0])
+        else:
+            return " | ".join(to_type_expr(option) for option in options)
+    elif is_union(type_):
+        return visit_type(type_)
+    raise Exception(f"Unsupported type: {type_}")
+
+
+def is_literal(type_: type):
+    return get_origin(type_) is Literal
 
 
 def is_union(type_: type):
@@ -80,34 +92,33 @@ def get_union_values(type_: Any) -> list[Any]:
         return get_union_values(type_.__value__)
 
     for arg in get_args(type_):
-        if hasattr(arg, "__args__"):
-            args.extend(arg.__args__)
+        args.append(to_type_expr(arg))
     return args
 
 
-def get_list_item_type(class_type: Any):
+def get_list_item_type(type_: Any):
     # For Python 3.8 and newer
     if hasattr(typing, "get_args"):
-        return get_args(class_type)[0]
+        return get_args(type_)[0]
     # For Python 3.7
-    elif hasattr(class_type, "__args__"):
-        return class_type.__args__[0]
+    elif hasattr(type_, "__args__"):
+        return type_.__args__[0]
     # Direct comparison (less reliable)
-    return class_type[0]
+    return type_[0]
 
 
-def is_list_type(class_type: Any):
-    return get_origin(class_type) is list
+def is_list_type(type_: Any):
+    return get_origin(type_) is list
 
 
-def is_dict_type(value: type):
-    return get_origin(value) is dict
+def is_dict_type(type_: type):
+    return get_origin(type_) is dict
 
 
 if __name__ == "__main__":
     visit_type(PackyakSpec)
     types.reverse()
-    print("\n".join(types))
+    # print("\n".join(types))
     import os
 
     outfile = os.path.join(

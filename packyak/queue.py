@@ -11,6 +11,7 @@ from types_aiobotocore_sqs.type_defs import ReceiveMessageResultTypeDef
 from pydantic import BaseModel
 from types_aiobotocore_sqs import SQSClient
 
+from .spec import DependencyGroup
 from .function import LambdaFunction, function
 from .globals import QUEUES
 from .integration import integration
@@ -116,12 +117,21 @@ class Queue[B: Body](Resource):
                 VisibilityTimeout=visibility_timeout,
             )
 
-    def consumer(self, function_id: str | None = None):
+    def consumer(
+        self,
+        function_id: str | None = None,
+        group: DependencyGroup = None,
+        groups: DependencyGroup = None,
+    ):
         def decorate(handler: Callable[[ReceivedMessagesEvent[B]], Any]):
             from aws_lambda_typing.events.sqs import SQSEvent
 
             # see https://kevinhakanson.com/2022-04-10-python-typings-for-aws-lambda-function-events/
-            @function(function_id=function_id or handler.__name__)
+            @function(
+                function_id=function_id or handler.__name__,
+                group=group,
+                groups=groups,
+            )
             async def lambda_func(event: SQSEvent, context: Any):
                 result = await handler(
                     ReceivedMessagesEvent(
