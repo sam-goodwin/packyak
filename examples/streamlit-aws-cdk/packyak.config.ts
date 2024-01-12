@@ -6,7 +6,7 @@ const app = new App();
 const stack = new Stack(app, "streamlit-example-aws-cdk");
 
 const dataLake = new DataLake(stack, "DataLake", {
-  entry: "-m app",
+  src: "app",
 });
 
 const site = new StreamlitSite(stack, "StreamlitSite", {

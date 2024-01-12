@@ -27,11 +27,15 @@ Stack.prototype.addOutputs = function (outputs: Record<string, string>) {
 
 export interface DataLakeProps {
   /**
+   *
+   */
+  src: string;
+  /**
    * Entrypoint to the streamlit application.
    *
-   * @example "my/app.py"
+   * @example {@link src}/__init__.py
    */
-  entry: string;
+  entry?: string;
   /**
    * The VPC to deploy the Packyak resources in to.
    *
@@ -63,7 +67,8 @@ export class DataLake extends Construct {
 
   constructor(scope: Construct, id: string, props: DataLakeProps) {
     super(scope, id);
-    this.spec = loadPackyak(props.entry);
+
+    this.spec = loadPackyak(props);
     const stack = Stack.of(this);
     this.buckets = this.spec.buckets.map(
       (bucket) =>
@@ -103,7 +108,7 @@ export class DataLake extends Construct {
   }
 }
 
-function loadPackyak(entry: string): PackyakSpec {
+function loadPackyak({ src, entry }: DataLakeProps): PackyakSpec {
   let pythonCommand = "python";
   if (fs.existsSync(path.join(".venv", "bin", "python"))) {
     pythonCommand = ".venv/bin/python";

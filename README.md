@@ -14,6 +14,10 @@ It automatically provisions all required infrastructure and guarantees a least-p
 6. Auto-configured to be compliant with privacy regulations such as HIPAA and GDPR
 7. Least-privilege IAM policies with auto-generated reports for regulators
 
+# Pre-requisites
+
+1. Docker (for bundling Python applications for the target runtime, e.g. in an Amazon Linux Lambda Function)
+
 # Example
 
 > 🔧 Note: Packyak is in active development. Not all features are implemented. Check back to see the following example grow.

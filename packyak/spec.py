@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import List, Literal, Optional
 from pydantic import BaseModel
 
 type BucketSubscriptionScope = Literal["create"] | Literal["update"] | Literal["delete"]
 
 type ResourceType = Literal["bucket"] | Literal["queue"] | Literal["function"]
 
-type DependencyGroup = list[str] | str | None
+type DependencyGroup = NonEmptyList[str] | str | None
+
+type NonEmptyList[Item] = list[Item]
 
 
 class BindingSpec(BaseModel):
@@ -21,11 +23,19 @@ class BucketBindingSpec(BindingSpec):
     selector: str | None
 
 
-class FunctionSpec(BaseModel):
+class PythonPoetryArgs(BaseModel):
+    with_: DependencyGroup | None
+    without: DependencyGroup | None
+    dev: bool | None
+    all_extras: bool | None
+    without_hashes: bool | None
+    without_urls: bool | None
+
+
+class FunctionSpec(PythonPoetryArgs):
     function_id: str
     file_name: str
     bindings: list[BindingSpec]
-    dependencies: DependencyGroup
 
 
 class BucketSubscriptionSpec(BaseModel):

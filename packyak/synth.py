@@ -64,7 +64,13 @@ def synth() -> PackyakSpec:
                 FunctionSpec(
                     function_id=resource.function_id,
                     file_name=resource.file_name,
-                    dependencies=resource.groups,
+                    groups=(
+                        []
+                        if resource.groups is None
+                        else resource.groups
+                        if isinstance(resource.groups, list)
+                        else [resource.groups]
+                    ),
                     bindings=[
                         BindingSpec(
                             resource_type=binding.resource.resource_type,
