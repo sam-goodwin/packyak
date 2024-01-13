@@ -1,0 +1,10 @@
+!.packyak
+.venv
+cdk.json
+node_modules
+package.json
+packyak.config.ts
+poetry.lock
+pyproject.toml
+README.md
+tsconfig.json

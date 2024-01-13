@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@aws-cdk/aws-lambda-python-alpha':
+        specifier: 2.118.0-alpha.0
+        version: 2.118.0-alpha.0(aws-cdk-lib@2.118.0)(constructs@10.3.0)
       '@tsconfig/node20':
         specifier: ^20.1.2
         version: 20.1.2
@@ -20,6 +23,9 @@ importers:
       aws-cdk-lib:
         specifier: 2.118.0
         version: 2.118.0(constructs@10.3.0)
+      bun:
+        specifier: ^1.0.22
+        version: 1.0.22
       constructs:
         specifier: 10.3.0
         version: 10.3.0
@@ -58,6 +64,17 @@ packages:
 
   /@aws-cdk/asset-node-proxy-agent-v6@2.0.1:
     resolution: {integrity: sha512-DDt4SLdLOwWCjGtltH4VCST7hpOI5DzieuhGZsBpZ+AgJdSI2GCjklCXm0GCTwJG/SolkL5dtQXyUKgg9luBDg==}
+    dev: true
+
+  /@aws-cdk/aws-lambda-python-alpha@2.118.0-alpha.0(aws-cdk-lib@2.118.0)(constructs@10.3.0):
+    resolution: {integrity: sha512-gCaZreqjweN04DAa2E0ApAl0HpO73632iyWMCIRGJ5q397K2ZQRxk20fmxJ+PJGyN7HLMP/NJ0BBg62+rqJWqg==}
+    engines: {node: '>= 14.15.0'}
+    peerDependencies:
+      aws-cdk-lib: ^2.118.0
+      constructs: ^10.0.0
+    dependencies:
+      aws-cdk-lib: 2.118.0(constructs@10.3.0)
+      constructs: 10.3.0
     dev: true
 
   /@esbuild/aix-ppc64@0.19.11:
@@ -267,6 +284,54 @@ packages:
     dev: true
     optional: true
 
+  /@oven/bun-darwin-aarch64@1.0.22:
+    resolution: {integrity: sha512-BPeX5D3nkmjmNpThjxo/T5bAycjrTX32rAILdIgPtI3V2YGdYloeaqWxdOZ7bcf+aXAfjweYTA3zIKq1V5t8uQ==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@oven/bun-darwin-x64-baseline@1.0.22:
+    resolution: {integrity: sha512-hA7B4uTwTR1gtNyO/UTOaNabeIpCa3VsQc3p8zFcctIIwzWvxauEXZFCPOf84ZW7iyX4W9s0GUHMqldST5dmew==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@oven/bun-darwin-x64@1.0.22:
+    resolution: {integrity: sha512-NheA/RWtI8hFdGJTGJyBGNePUF/3M68h8iMRewuZmgSEBZCsw3O1fHYDYWnz/eipi7IzDB9KkyfHyv29qpEp8A==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@oven/bun-linux-aarch64@1.0.22:
+    resolution: {integrity: sha512-wAevxpBG4tKoxthVyjuWWF4bGDiYqScTcocKI3jox07Aan40RJ5Xu3RlF1vM7YnPgctKTNNGxQ9d6c4JcifwRg==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@oven/bun-linux-x64-baseline@1.0.22:
+    resolution: {integrity: sha512-AgaZv3XUk4mEHUVAusLdTUGlVi6h3coCEvUR/gspoQg77MLggpTtxrTrhMcI5OXhgGsKPtVKHa6n+oMhUpoF4A==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@oven/bun-linux-x64@1.0.22:
+    resolution: {integrity: sha512-RzriXZap7iChJMMeYkAKEgO5rdpEjzzXz8K3aXgxqKhfKB88BXFvcMVGeQhQ3siLJIfg4sGgXUqLOFb47jSVHw==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@tsconfig/node20@20.1.2:
     resolution: {integrity: sha512-madaWq2k+LYMEhmcp0fs+OGaLFk0OenpHa4gmI4VEmCKX4PJntQ6fnnGADVFrVkBj0wIdAlQnK/MrlYTHsa1gQ==}
     dev: true
@@ -306,6 +371,21 @@ packages:
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
+
+  /bun@1.0.22:
+    resolution: {integrity: sha512-ONJv4SGRREx4sxWEN0iQOIHOD75C0r0m/EpLb8VyEJtTpJgNnNgT/dGxk0C/HP0wg+/M+LlerxngCDy8ACofpQ==}
+    cpu: [arm64, x64]
+    os: [darwin, linux]
+    hasBin: true
+    requiresBuild: true
+    optionalDependencies:
+      '@oven/bun-darwin-aarch64': 1.0.22
+      '@oven/bun-darwin-x64': 1.0.22
+      '@oven/bun-darwin-x64-baseline': 1.0.22
+      '@oven/bun-linux-aarch64': 1.0.22
+      '@oven/bun-linux-x64': 1.0.22
+      '@oven/bun-linux-x64-baseline': 1.0.22
     dev: true
 
   /constructs@10.3.0:

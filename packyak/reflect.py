@@ -25,7 +25,6 @@ type Func = Callable[..., Any]
 
 # walks a function to detect its dependencies
 def find_bindings(func: LambdaFunction[Any, Any]) -> list[Binding]:
-    print("analyze", func.function_id)
     bindings: list[Binding] = []
 
     for call in find_calls(func):

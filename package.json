@@ -33,15 +33,18 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@aws-cdk/aws-lambda-python-alpha": "2.118.0-alpha.0",
     "@tsconfig/node20": "^20.1.2",
     "@types/node": "^20.10.8",
     "aws-cdk": "2.118.0",
     "aws-cdk-lib": "2.118.0",
+    "bun": "^1.0.22",
     "constructs": "10.3.0",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "aws-cdk-lib": "^2.118.0",
+    "@aws-cdk/aws-lambda-python-alpha": "2.118.0-alpha.0",
+    "aws-cdk-lib": "2.118.0",
     "constructs": "^10.3.0"
   },
   "peerDependenciesMeta": {
@@ -49,6 +52,9 @@
       "optional": true
     },
     "aws-cdk-lib": {
+      "optional": true
+    },
+    "@aws-cdk/aws-lambda-python-alpha": {
       "optional": true
     }
   }

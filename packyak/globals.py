@@ -10,3 +10,9 @@ if TYPE_CHECKING:
 BUCKETS: dict[str, Bucket] = {}
 FUNCTIONS: dict[str, LambdaFunction[Any, Any]] = {}
 QUEUES: dict[str, Queue[Any]] = {}
+
+
+def lookup_function(function_id: str) -> LambdaFunction[Any, Any]:
+    if function_id not in FUNCTIONS:
+        raise Exception(f"Lambda Function {function_id} does not exist")
+    return FUNCTIONS[function_id]

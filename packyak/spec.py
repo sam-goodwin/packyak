@@ -24,18 +24,18 @@ class BucketBindingSpec(BindingSpec):
 
 
 class PythonPoetryArgs(BaseModel):
-    with_: DependencyGroup | None
-    without: DependencyGroup | None
-    dev: bool | None
-    all_extras: bool | None
-    without_hashes: bool | None
-    without_urls: bool | None
+    with_: DependencyGroup | None = None
+    without: DependencyGroup | None = None
+    dev: bool | None = None
+    all_extras: bool | None = None
+    without_hashes: bool | None = None
+    without_urls: bool | None = None
 
 
 class FunctionSpec(PythonPoetryArgs):
     function_id: str
     file_name: str
-    bindings: list[BindingSpec]
+    bindings: list[BindingSpec] | None
 
 
 class BucketSubscriptionSpec(BaseModel):

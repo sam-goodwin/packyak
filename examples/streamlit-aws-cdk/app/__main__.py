@@ -12,6 +12,9 @@ import packyak
 # TODO: can this be streaminlined/automated?
 # Solution?: auto-import home.py and pages/*.py?
 ####
-import app.videos
+
+# ruff: noqa: F403 - ruff warns about this patter, we need to find something better
+
+from .videos import *
 
 packyak.init()

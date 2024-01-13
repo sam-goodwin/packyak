@@ -47,7 +47,12 @@ Options:
 class LambdaFunction(Protocol, Generic[Params, Return]):
     file_name: str
     function_id: str
-    groups: DependencyGroup
+    with_: DependencyGroup | None
+    without: DependencyGroup | None
+    dev: bool | None
+    all_extras: bool | None
+    without_hashes: bool | None
+    without_urls: bool | None
 
     def __call__(self, *args: Params.args, **kwargs: Params.kwargs) -> Return:
         ...
@@ -56,14 +61,14 @@ class LambdaFunction(Protocol, Generic[Params, Return]):
 def function(
     function_id: str | None = None,
     *,
-    # python poetry CLI options below
+    file_name: str | None = None,
     with_: DependencyGroup = None,
     without: DependencyGroup = None,
     # deprecated, use with_ and without
-    dev: bool | None = False,
-    all_extras: bool | None = False,
-    without_hashes: bool | None = False,
-    without_urls: bool | None = False,
+    dev: bool | None = None,
+    all_extras: bool | None = None,
+    without_hashes: bool | None = None,
+    without_urls: bool | None = None,
 ):
     def decorator(func: Callable[Params, Return]) -> LambdaFunction[Params, Return]:
         # @wraps(func)
@@ -71,9 +76,14 @@ def function(
             return func(*args, **kwargs)
 
         func_id = function_id or func.__name__
-        setattr(wrapper, "file_name", func.__code__.co_filename)
+        setattr(wrapper, "file_name", file_name or func.__code__.co_filename)
         setattr(wrapper, "function_id", func_id)
-        setattr(wrapper, "with", with_)
+        setattr(wrapper, "with_", with_)
+        setattr(wrapper, "without", without)
+        setattr(wrapper, "dev", dev)
+        setattr(wrapper, "all_extras", all_extras)
+        setattr(wrapper, "without_hashes", without_hashes)
+        setattr(wrapper, "without_urls", without_urls)
 
         if func_id in FUNCTIONS:
             raise Exception(f"Lambda Function {func_id} already exists")

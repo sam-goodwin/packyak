@@ -120,17 +120,28 @@ class Queue[B: Body](Resource):
     def consumer(
         self,
         function_id: str | None = None,
-        group: DependencyGroup = None,
-        groups: DependencyGroup = None,
+        *,
+        with_: DependencyGroup | None = None,
+        without: DependencyGroup | None = None,
+        # deprecated = None, use with_ and without
+        dev: bool | None = None,
+        all_extras: bool | None = None,
+        without_hashes: bool | None = None,
+        without_urls: bool | None = None,
     ):
         def decorate(handler: Callable[[ReceivedMessagesEvent[B]], Any]):
             from aws_lambda_typing.events.sqs import SQSEvent
 
             # see https://kevinhakanson.com/2022-04-10-python-typings-for-aws-lambda-function-events/
             @function(
+                file_name=handler.__code__.co_filename,
                 function_id=function_id or handler.__name__,
-                group=group,
-                groups=groups,
+                with_=with_,
+                without=without,
+                dev=dev,
+                all_extras=all_extras,
+                without_hashes=without_hashes,
+                without_urls=without_urls,
             )
             async def lambda_func(event: SQSEvent, context: Any):
                 result = await handler(

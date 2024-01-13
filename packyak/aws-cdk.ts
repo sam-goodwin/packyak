@@ -1,17 +1,32 @@
 import fs from "fs";
 import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
-import { Cluster, ContainerImage } from "aws-cdk-lib/aws-ecs";
+import {
+  Cluster,
+  ContainerImage,
+  CpuArchitecture,
+  FargatePlatformVersion,
+  HealthCheck,
+  OperatingSystemFamily,
+  RuntimePlatform,
+} from "aws-cdk-lib/aws-ecs";
 import {
   ApplicationLoadBalancedFargateService,
   ApplicationLoadBalancedFargateServiceProps,
 } from "aws-cdk-lib/aws-ecs-patterns";
 import { Bucket } from "aws-cdk-lib/aws-s3";
-import { execSync } from "child_process";
+import { exec, execSync } from "child_process";
 import { Construct } from "constructs";
-import { PackyakSpec } from "./generated/spec";
+import {
+  DependencyGroup,
+  PackyakSpec,
+  PythonPoetryArgs,
+} from "./generated/spec.js";
 import path from "path";
-import { type App, Stack, CfnOutput } from "aws-cdk-lib/core";
+import { Stack, CfnOutput, RemovalPolicy, IgnoreMode } from "aws-cdk-lib/core";
 import { Queue } from "aws-cdk-lib/aws-sqs";
+import { PythonFunction } from "@aws-cdk/aws-lambda-python-alpha";
+import { Runtime } from "aws-cdk-lib/aws-lambda";
+import { Platform } from "aws-cdk-lib/aws-ecr-assets";
 
 declare module "aws-cdk-lib/core" {
   interface Stack {
@@ -27,15 +42,21 @@ Stack.prototype.addOutputs = function (outputs: Record<string, string>) {
 
 export interface DataLakeProps {
   /**
+   * The name of this Data Lake.
    *
+   * @default - the Construct's id, e.g. new DateLake(this, id)
    */
-  src: string;
+  name: string;
   /**
-   * Entrypoint to the streamlit application.
+   * The stage of the deployment.
    *
-   * @example {@link src}/__init__.py
+   * @example  "prod", "dev", "sam-personal"
    */
-  entry?: string;
+  stage: string;
+  /**
+   * Source directory for the Packyak application.
+   */
+  module: string;
   /**
    * The VPC to deploy the Packyak resources in to.
    *
@@ -51,6 +72,7 @@ export interface DataLakeProps {
 }
 
 export class DataLake extends Construct {
+  readonly stage: string;
   readonly spec: PackyakSpec;
   readonly vpc: IVpc;
   readonly cluster: Cluster;
@@ -62,23 +84,34 @@ export class DataLake extends Construct {
   readonly queueIndex: {
     [queue_id: string]: Queue;
   };
-
-  // readonly functions: Function[];
+  readonly functions: PythonFunction[];
+  readonly functionIndex: {
+    [function_id: string]: PythonFunction;
+  };
 
   constructor(scope: Construct, id: string, props: DataLakeProps) {
     super(scope, id);
-
+    this.stage = props.stage;
     this.spec = loadPackyak(props);
     const stack = Stack.of(this);
+
+    const buckets = new Construct(this, "Buckets");
+    const queues = new Construct(this, "Queues");
+    const functions = new Construct(this, "Functions");
+
     this.buckets = this.spec.buckets.map(
       (bucket) =>
-        new Bucket(this, bucket.bucket_id, {
+        new Bucket(buckets, bucket.bucket_id, {
           bucketName: `${bucket.bucket_id}-${stack.account}-${stack.region}`,
+          removalPolicy:
+            props.stage === "prod" || props.stage === "dev"
+              ? RemovalPolicy.RETAIN
+              : RemovalPolicy.DESTROY,
         })
     );
     this.queues = this.spec.queues.map(
       (queue) =>
-        new Queue(this, queue.queue_id, {
+        new Queue(queues, queue.queue_id, {
           queueName: `${queue.queue_id}`,
         })
     );
@@ -93,29 +126,83 @@ export class DataLake extends Construct {
       new Vpc(this, "Vpc", {
         natGateways: props.natGateways ?? 1,
       });
-    this.cluster = new Cluster(this, "Cluster", {});
-    // this.functions = this.spec.functions.map((funcSpec) => {
-    //   return new Function(this, funcSpec.function_id, {
-    //     code: Code.fromAsset(funcSpec.file_name),
-    //     // @ts-expect-error - TODO
-    //     handler: funcSpec.handler,
-    //     runtime: Runtime.PYTHON_3_8,
-    //     environment: {
-    //       PACKYAK_SYNTH: "true",
-    //     },
-    //   });
-    // });
+    this.cluster = new Cluster(this, "Cluster");
+    this.functions = this.spec.functions.map((funcSpec) => {
+      const indexFolder = path.join(".packyak", funcSpec.function_id);
+      const index = path.join(indexFolder, "index.py");
+      if (fs.existsSync(indexFolder)) {
+        fs.rmSync(indexFolder, { recursive: true });
+      }
+      fs.mkdirSync(indexFolder, { recursive: true });
+      exportRequirements(indexFolder, funcSpec);
+
+      const mod = path
+        .relative(process.cwd(), funcSpec.file_name)
+        .replace(".py", "")
+        .replaceAll("/", ".");
+      fs.writeFileSync(
+        index,
+        `from typing import Any
+from packyak import lookup_function
+
+# import the @function() decorated function
+import ${mod}
+
+func = lookup_function("${funcSpec.function_id}")
+
+def handle(event: Any, context: Any):
+    return func(event, context)`
+      );
+      const functionName = `${props.name}-${props.stage}-${funcSpec.function_id}`;
+      return new PythonFunction(functions, funcSpec.function_id, {
+        functionName:
+          functionName.length > 64
+            ? // TODO: better truncation method, AWS Lambda only support functions with 64 characters
+              undefined
+            : functionName,
+        entry: indexFolder,
+        index: "index.py",
+        handler: "handle",
+        runtime: Runtime.PYTHON_3_12,
+        vpc: this.vpc,
+      });
+    });
+    this.functionIndex = Object.fromEntries(
+      this.functions.map((f) => [f.functionName, f])
+    );
   }
 }
 
-function loadPackyak({ src, entry }: DataLakeProps): PackyakSpec {
-  let pythonCommand = "python";
-  if (fs.existsSync(path.join(".venv", "bin", "python"))) {
-    pythonCommand = ".venv/bin/python";
-  } else if (fs.existsSync("pyproject.toml")) {
-    pythonCommand = "poetry run python";
+function exportRequirements(dir: string, options?: PythonPoetryArgs) {
+  const command = [
+    "poetry export -f requirements.txt",
+    arg("with", options?.with),
+    arg("without", options?.without),
+    arg("without-urls", options?.without_urls),
+    arg("without-hashes", options?.without_hashes ?? true),
+    arg("dev", options?.dev),
+    arg("all-extras", options?.all_extras),
+    `> ${dir}/requirements.txt`,
+  ];
+
+  execSync(command.join(" "));
+
+  function arg<T extends string[] | string | boolean | number>(
+    flag: string,
+    value: T | undefined
+  ) {
+    if (value === undefined) {
+      return "";
+    } else if (typeof value === "boolean") {
+      return value ? ` --${flag}` : "";
+    } else {
+      return ` --${flag}=${Array.isArray(value) ? value.join(",") : value}`;
+    }
   }
-  const cmd = `${pythonCommand} ${entry}`;
+}
+
+function loadPackyak({ module }: DataLakeProps): PackyakSpec {
+  const cmd = `${findPython()} -m ${module}`;
   execSync(cmd, {
     env: {
       PACKYAK_SYNTH: "true",
@@ -123,6 +210,15 @@ function loadPackyak({ src, entry }: DataLakeProps): PackyakSpec {
   });
   const spec = JSON.parse(fs.readFileSync(".packyak/spec.json", "utf-8"));
   return spec;
+}
+
+function findPython() {
+  if (fs.existsSync(path.join(".venv", "bin", "python"))) {
+    return ".venv/bin/python";
+  } else if (fs.existsSync("pyproject.toml")) {
+    return "poetry run python";
+  }
+  return "python";
 }
 
 export interface StreamlitSiteProps
@@ -137,6 +233,25 @@ export interface StreamlitSiteProps
    * @example "my/app.py"
    */
   readonly home: string;
+  /**
+   * The name of the Dockerfile to use to build this Streamlit site.
+   *
+   * @default "Dockerfile"
+   */
+  readonly dockerfile?: string;
+  /**
+   * The platform to use to build this Streamlit site.
+   *
+   * @default {@link Platform.LINUX_AMD64}
+   */
+  readonly platform?: Platform;
+  /**
+   * Override the {@link HealthCheck} for this Streamlit site.
+   *
+   * @default /_stcore/health
+   * @see https://docs.streamlit.io/knowledge-base/tutorials/deploy/docker
+   */
+  readonly healthCheck?: HealthCheck;
 }
 
 export class StreamlitSite extends Construct {
@@ -146,15 +261,38 @@ export class StreamlitSite extends Construct {
   constructor(scope: Construct, id: string, props: StreamlitSiteProps) {
     super(scope, id);
 
+    exportRequirements(".packyak");
+
+    const platform = props.platform ?? Platform.LINUX_AMD64;
+
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
       cpu: 256,
+      memoryLimitMiB: 512,
       cluster: props.dataLake.cluster,
+      runtimePlatform: {
+        cpuArchitecture:
+          platform === Platform.LINUX_AMD64
+            ? CpuArchitecture.X86_64
+            : CpuArchitecture.ARM64,
+        operatingSystemFamily: OperatingSystemFamily.LINUX,
+      },
       ...props,
       taskImageOptions: {
-        image: ContainerImage.fromRegistry("python:3.12-slim"),
+        containerPort: 8501,
+        image:
+          props.taskImageOptions?.image ??
+          ContainerImage.fromAsset(".", {
+            ignoreMode: IgnoreMode.DOCKER,
+            platform,
+          }),
         ...(props.taskImageOptions ?? {}),
       },
     });
+    this.service.targetGroup.configureHealthCheck(
+      props.healthCheck ?? {
+        path: "/_stcore/health",
+      }
+    );
 
     this.url = `https://${this.service.loadBalancer.loadBalancerDnsName}`;
   }

@@ -5,7 +5,8 @@
   "scripts": {
     "start": "poetry run streamlit run ./app/home.py",
     "synth": "cdk synth --quiet",
-    "dev": "cdk deploy --require-approval never"
+    "dev": "cdk deploy --require-approval never",
+    "deploy": "cdk deploy --require-approval never"
   },
   "dependencies": {
     "packyak": "workspace:^"

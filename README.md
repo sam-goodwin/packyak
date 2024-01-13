@@ -1,22 +1,41 @@
 # Packyak ![image](https://github.com/sam-goodwin/packyak/assets/38672686/249af136-45fb-4d13-82bb-5818e803eeb0)
 
-Packyak is a python library and platform for building data pipelines that clean datasets and train ML models with human supervision and feedback.
+[![PyPI version](https://badge.fury.io/py/packyak.svg)](https://badge.fury.io/py/packyak)
 
-It automatically provisions all required infrastructure and guarantees a least-privilege and privacy compliant data architecture.
+Packyak makes it easy to build Data-driven applications on AWS.
 
-# Features
+Packyak deploys your Data Lakes, Data Pipelines and RAG applications to AWS with a best-practice secure and compliant configuration.
 
-1. Train transformation functions (using AI) that are supervised by humans and continually improved with feedback and corrections.
-2. Orchestrate transformation with dependency graphs (DAGs)
-3. Compute data sets when new data arrives or when its dependencies change
-4. Re-compute data sets when a transformation function is changed or improves from learning
-5. Auto-provision all required cloud infrastructure
-6. Auto-configured to be compliant with privacy regulations such as HIPAA and GDPR
-7. Least-privilege IAM policies with auto-generated reports for regulators
+# Roadmap
 
-# Pre-requisites
+- [x] `StreamlitSite` - deploy a Streamlit application to ECS with VPC and Load Balancing
+- [ ] Infer least privilege IAM Policies for Streamlit scripts (`home.py`, `pages/*.py`)
+- [x] `@function` - host an Lambda Function
+- [x] Infer least privilege IAM Policies for functions
+- [x] `Bucket` - work with files in S3, attach event handlers
+- [x] `Queues` - send messages to, attach event handlers
+- [ ] `Stream` - send and consume records through AWS Kinesis
+- [ ] `Table` - store structured data (Parquet, Orc, etc.) in a Glue Catalog. Model data using `pydantic`
+- [ ] `@asset` - build data pipelines with dependency graphs
+- [ ] `@train` - capture the inputs and outputs of a function for ML training and human feedback
+- [ ] Generate audit reports for HIPAA and GDPR compliance policies
+
+# Installation
+
+## Pre-requisites
 
 1. Docker (for bundling Python applications for the target runtime, e.g. in an Amazon Linux Lambda Function)
+2. Python Poetry
+
+```sh
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+3. `poetry-plugin-export` - see https://python-poetry.org/docs/plugins/#using-plugins
+
+```sh
+poetry self add poetry-plugin-export
+```
 
 # Example
 
@@ -35,22 +54,12 @@ videos = Bucket("videos")
 async def upload_video():
     await videos.put("key", "value")
 
+@videos.on("create")
+async def on_uploaded_video(event: Bucket.ObjectCreatedEvent):
+  video = await videos.get(event.key)
+  transcription
+
 @asset()
 async def transcribed_videos():
   ...
 ```
-
-# Research
-
-Inspired by (and integrating with):
-
-- [ ] https://dagster.io/
-- [ ] https://www.llamaindex.ai/
-- [ ] https://unstructured.io/
-- [ ] https://docs.modular.com/mojo/roadmap.html
-- [ ] https://www.nextflow.io/
-- [ ] https://github.com/OpenLineage/openlineage
-- [ ] https://aws.amazon.com/what-is/vector-databases/
-- [ ] https://aws.amazon.com/neptune/machine-learning/
-- [ ] https://www.dgl.ai/
-- [ ] https://aws.amazon.com/blogs/machine-learning/build-streamlit-apps-in-amazon-sagemaker-studio/

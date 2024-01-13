@@ -4,13 +4,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Run app.py",
+      "name": "Python: Streamlit AWS CDK",
       "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}/examples/app.py",
       "console": "integratedTerminal",
       "justMyCode": true,
-      "python": "${workspaceFolder}/.venv/bin/python"
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "module": "app",
+      "cwd": "${workspaceFolder}/examples/streamlit-aws-cdk"
     },
     {
       "name": "Python: CodeGen",

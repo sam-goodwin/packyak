@@ -16,13 +16,6 @@ from .spec import (
 )
 
 
-def is_synth():
-    packyak_synth = os.environ.get("PACKYAK_SYNTH")
-    return packyak_synth is not None and (
-        packyak_synth == "1" or packyak_synth.lower() == "true"
-    )
-
-
 def synth() -> PackyakSpec:
     functions: list[FunctionSpec] = []
     buckets: list[BucketSpec] = []
@@ -60,26 +53,30 @@ def synth() -> PackyakSpec:
                 )
             )
         elif isinstance(resource, LambdaFunction):
+            bindings = find_bindings(resource)
             functions.append(
                 FunctionSpec(
                     function_id=resource.function_id,
                     file_name=resource.file_name,
-                    groups=(
-                        []
-                        if resource.groups is None
-                        else resource.groups
-                        if isinstance(resource.groups, list)
-                        else [resource.groups]
+                    bindings=(
+                        [
+                            BindingSpec(
+                                resource_type=binding.resource.resource_type,
+                                resource_id=binding.resource.resource_id,
+                                scopes=binding.scopes,
+                                props=binding.metadata,
+                            )
+                            for binding in find_bindings(resource)
+                        ]
+                        if len(bindings) > 0
+                        else None
                     ),
-                    bindings=[
-                        BindingSpec(
-                            resource_type=binding.resource.resource_type,
-                            resource_id=binding.resource.resource_id,
-                            scopes=binding.scopes,
-                            props=binding.metadata,
-                        )
-                        for binding in find_bindings(resource)
-                    ],
+                    with_=resource.with_,
+                    without=resource.without,
+                    dev=resource.dev,
+                    all_extras=resource.all_extras,
+                    without_hashes=resource.without_hashes,
+                    without_urls=resource.without_urls,
                 )
             )
 

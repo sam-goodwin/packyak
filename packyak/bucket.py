@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-from typing import Any, Callable, Optional, cast
+from typing import IO, Any, Callable, Optional, cast
 
 import aioboto3
 import boto3
@@ -17,7 +17,6 @@ from .globals import BUCKETS
 from .integration import integration
 from .resource import Resource
 from .spec import BucketSubscriptionScope, DependencyGroup
-from .sync import sync
 
 s3 = boto3.client("s3")
 session: aioboto3.Session = aioboto3.Session()
@@ -71,6 +70,9 @@ class BucketSubscription:
         self.prefix = prefix
 
 
+type Blob = str | bytes | IO[Any] | StreamingBody
+
+
 class Bucket(Resource):
     subscriptions: list[BucketSubscription]
 
@@ -112,13 +114,13 @@ class Bucket(Resource):
             raise ValueError(f"{bucket_name_env} is not defined")
         return bucket_name
 
-    def put_sync(self, key: str, body: str):
-        return sync(self.put(key, body))
+    def put_sync(self, key: str, body: Blob):
+        return s3.put_object(Bucket=self.bucket_name, Key=key, Body=body)
 
     @integration("write")
-    async def put(self, key: str, body: str):
+    async def put(self, key: str, body: Blob):
         async with aio_s3 as s3:
-            await s3.put_object(Bucket=self.bucket_name, Key=key, Body=body)
+            await s3.put_object(Bucket=self.bucket_name, Key=key, Body=body)  # type: ignore
 
     @integration("read")
     def get_sync(self, key: str) -> Object[StreamingBody]:
@@ -192,8 +194,14 @@ class Bucket(Resource):
         scope: BucketSubscriptionScope,
         prefix: str | None = None,
         function_id: str | None = None,
-        group: DependencyGroup = None,
-        groups: DependencyGroup = None,
+        *,
+        with_: DependencyGroup | None = None,
+        without: DependencyGroup | None = None,
+        # deprecated = None, use with_ and without
+        dev: bool | None = None,
+        all_extras: bool | None = None,
+        without_hashes: bool | None = None,
+        without_urls: bool | None = None,
     ):
         def decorate(handler: Callable[[Bucket.ObjectCreatedEvent], Any]):
             from aws_lambda_typing.events.event_bridge import EventBridgeEvent
@@ -201,9 +209,14 @@ class Bucket(Resource):
 
             # see https://kevinhakanson.com/2022-04-10-python-typings-for-aws-lambda-function-events/
             @function(
+                file_name=handler.__code__.co_filename,
                 function_id=function_id or handler.__name__,
-                group=group,
-                groups=groups,
+                with_=with_,
+                without=without,
+                dev=dev,
+                all_extras=all_extras,
+                without_hashes=without_hashes,
+                without_urls=without_urls,
             )
             async def lambda_func(event: EventBridgeEvent, context: Any):
                 event_detail = S3(event["detail"])  # type: ignore

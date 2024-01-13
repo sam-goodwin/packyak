@@ -113,10 +113,10 @@ def to_type_expr(type_: type | str) -> str:
             return to_type(type_)
         elif issubclass(type_, str):
             return "string"
-        elif issubclass(type_, int) or issubclass(type_, float):
-            return "number"
         elif issubclass(type_, bool):
             return "boolean"
+        elif issubclass(type_, int) or issubclass(type_, float):
+            return "number"
     elif isinstance(type_, TypeAliasType):
         return to_type(type_)
     elif is_literal(type_):

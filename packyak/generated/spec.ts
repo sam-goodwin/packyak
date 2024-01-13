@@ -6,21 +6,21 @@ export interface PackyakSpec {
 export interface FunctionSpec extends PythonPoetryArgs {
   with: DependencyGroup | undefined;
   without: DependencyGroup | undefined;
-  dev: number | undefined;
-  all_extras: number | undefined;
-  without_hashes: number | undefined;
-  without_urls: number | undefined;
+  dev: boolean | undefined;
+  all_extras: boolean | undefined;
+  without_hashes: boolean | undefined;
+  without_urls: boolean | undefined;
   function_id: string;
   file_name: string;
-  bindings: BindingSpec[];
+  bindings: BindingSpec[] | undefined;
 }
 export interface PythonPoetryArgs {
   with: DependencyGroup | undefined;
   without: DependencyGroup | undefined;
-  dev: number | undefined;
-  all_extras: number | undefined;
-  without_hashes: number | undefined;
-  without_urls: number | undefined;
+  dev: boolean | undefined;
+  all_extras: boolean | undefined;
+  without_hashes: boolean | undefined;
+  without_urls: boolean | undefined;
 }
 export interface BindingSpec {
   resource_type: ResourceType;
@@ -32,7 +32,7 @@ export type ResourceType = "bucket" | "queue" | "function";
 export type DependencyGroup = [string, ...string[]] | string | undefined;
 export interface QueueSpec {
   queue_id: string;
-  fifo: number;
+  fifo: boolean;
   subscriptions: QueueSubscriptionSpec[];
 }
 export interface QueueSubscriptionSpec {
