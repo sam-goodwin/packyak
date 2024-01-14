@@ -18,6 +18,8 @@ RUN pip install -r requirements.txt
 
 COPY app /app
 
+ENV PYTHONPATH=/
+
 EXPOSE 8501
 
-CMD ["streamlit", "run", "app/home.py", "--server.port=8501", "--server.address=0.0.0.0"]]
+CMD ["streamlit", "run", "app/home.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.fileWatcherType=none"]

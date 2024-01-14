@@ -2,6 +2,8 @@
 
 - [ ] instructions for arm64 and amd64 - just means passing in a parameter in the StreamlitSite construct
 - [ ] publish base images for things like Streamlit and other Packyak-optimized services
+- [ ] Create a certificate and secure the Streamlit site
+- [ ] Support HTTPS on streamlit
 
 # Research
 
