@@ -86,6 +86,7 @@ async def synth(root_dir: str) -> PackyakSpec:
         for file in files:
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
+                absolute_file_path = os.path.abspath(file_path)
                 async with aiofiles.open(file_path, mode="r") as f:
                     module_ast = ast.parse(await f.read())
                 module_name = file_path_to_module_name(file_path)
@@ -97,7 +98,7 @@ async def synth(root_dir: str) -> PackyakSpec:
                 if len(bindings) > 0:
                     modules.append(
                         ModuleSpec(
-                            file_name=loaded_module.file_name,
+                            file_name=absolute_file_path,
                             bindings=[
                                 binding.to_binding_spec() for binding in bindings
                             ],
