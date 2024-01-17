@@ -38,7 +38,7 @@ async def synth(root_dir: str) -> PackyakSpec:
                     bucket_id=resource.resource_id,
                     subscriptions=[
                         BucketSubscriptionSpec(
-                            scope=sub.scope,  # type: ignore - sub.scope is typed properly
+                            scopes=sub.scopes,
                             function_id=sub.function.function_id,
                         )
                         for sub in resource.subscriptions

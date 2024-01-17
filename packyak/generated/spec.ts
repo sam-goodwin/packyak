@@ -28,10 +28,10 @@ export interface BucketSpec {
   subscriptions: BucketSubscriptionSpec[];
 }
 export interface BucketSubscriptionSpec {
-  scope: BucketSubscriptionScope;
+  scopes: BucketSubscriptionScope[];
   function_id: string;
 }
-export type BucketSubscriptionScope = "create" | "update" | "delete";
+export type BucketSubscriptionScope = "create" | "delete";
 export interface ModuleSpec extends PythonPoetryArgs {
   with: DependencyGroup | undefined;
   without: DependencyGroup | undefined;

@@ -1,3 +1,4 @@
+import fs from "fs";
 import { execSync } from "child_process";
 import type { PythonPoetryArgs } from "../generated/spec.js";
 
@@ -16,6 +17,7 @@ export function exportRequirementsSync(
     `> ${dir}/requirements.txt`,
   ];
 
+  fs.mkdirSync(dir, { recursive: true });
   execSync(command.join(" "));
 
   function arg<T extends string[] | string | boolean | number>(

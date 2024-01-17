@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import IO, Any, Callable, Optional, cast
+from typing import IO, Any, Callable, Optional, cast, List
 
 import aioboto3
 import boto3
@@ -20,6 +20,7 @@ from packyak.resource import Resource
 
 s3 = boto3.client("s3")
 session: aioboto3.Session = aioboto3.Session()
+
 
 aio_s3 = TypedResource[S3Client](session.client("s3"))  # type: ignore
 
@@ -60,12 +61,12 @@ class BucketSubscription:
     def __init__(
         self,
         bucket: "Bucket",
-        scope: BucketSubscriptionScope,
+        scopes: List[BucketSubscriptionScope],
         function: LambdaFunction[Any, Any],
         prefix: str | None = None,
     ):
         self.bucket = bucket
-        self.scope = scope
+        self.scopes = scopes
         self.function = function
         self.prefix = prefix
 
@@ -117,12 +118,12 @@ class Bucket(Resource):
     def put_sync(self, key: str, body: Blob):
         return s3.put_object(Bucket=self.bucket_name, Key=key, Body=body)
 
-    @integration("write")
+    @integration("put")
     async def put(self, key: str, body: Blob):
         async with aio_s3 as s3:
             await s3.put_object(Bucket=self.bucket_name, Key=key, Body=body)  # type: ignore
 
-    @integration("read")
+    @integration("get")
     def get_sync(self, key: str) -> Object[StreamingBody]:
         response = s3.get_object(Bucket=self.bucket_name, Key=key)
         return Object(
@@ -132,7 +133,7 @@ class Bucket(Resource):
             etag=response["ETag"],
         )
 
-    @integration("read")
+    @integration("get")
     async def get(self, key: str) -> Object[StreamingBody]:
         async with aio_s3 as s3:
             response = await s3.get_object(Bucket=self.bucket_name, Key=key)
@@ -191,11 +192,11 @@ class Bucket(Resource):
 
     def on(
         self,
-        scope: BucketSubscriptionScope,
-        prefix: str | None = None,
-        function_id: str | None = None,
+        scope: BucketSubscriptionScope | List[BucketSubscriptionScope],
+        prefix: Optional[str] = None,
+        function_id: Optional[str] = None,
         *,
-        with_: DependencyGroup | None = None,
+        with_: Optional[DependencyGroup] = None,
         without: DependencyGroup | None = None,
         # deprecated = None, use with_ and without
         dev: bool | None = None,
@@ -230,7 +231,12 @@ class Bucket(Resource):
                 return result
 
             self.subscriptions.append(
-                BucketSubscription(self, scope, lambda_func, prefix)
+                BucketSubscription(
+                    self,
+                    scope if isinstance(scope, List) else [scope],
+                    lambda_func,
+                    prefix,
+                )
             )
 
             return lambda_func

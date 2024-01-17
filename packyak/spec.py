@@ -1,9 +1,13 @@
 from __future__ import annotations
 
-from typing import List, Literal, Optional
+from typing import List, Literal
 from pydantic import BaseModel
 
-type BucketSubscriptionScope = Literal["create"] | Literal["update"] | Literal["delete"]
+type BucketSubscriptionScope = Literal["create"] | Literal["delete"]
+
+type BucketIntegrationScope = (
+    Literal["get"] | Literal["list"] | Literal["put"] | Literal["delete"]
+)
 
 type ResourceType = Literal["bucket"] | Literal["queue"] | Literal["function"]
 
@@ -45,7 +49,7 @@ class FunctionSpec(PythonPoetryArgs):
 
 
 class BucketSubscriptionSpec(BaseModel):
-    scope: BucketSubscriptionScope
+    scopes: List[BucketSubscriptionScope]
     function_id: str
 
 

@@ -33,7 +33,7 @@ class Folder:
 
     @property
     def prefix(self) -> str:
-        return f"{self.path}/"
+        return f"{self.path}/*"
 
     @property
     def bucket(self) -> "Bucket":
@@ -52,7 +52,7 @@ class Folder:
     def delete(self, key: str):
         return self.bucket.delete(f"{self.name}/{key}")
 
-    @integration("write", prefix=prefix)
+    @integration("put", prefix=prefix)
     def put(self, key: str, body: str):
         return self.bucket.put(f"{self.name}/{key}", body)
 

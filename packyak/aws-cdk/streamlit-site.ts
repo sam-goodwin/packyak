@@ -15,6 +15,7 @@ import type { PythonPoetryArgs } from "../generated/spec.js";
 import { exportRequirementsSync } from "./export-requirements";
 import type { LakeHouse } from "./lakehouse";
 import path from "path";
+import { Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
 export interface StreamlitSiteProps
   extends ApplicationLoadBalancedFargateServiceProps {
@@ -66,13 +67,38 @@ export class StreamlitSite extends Construct {
     exportRequirementsSync(requirementsPath, props.pythonPoetryArgs);
 
     // enumerate over the module specs to discover what the home and pages/*.py depend on
-    props.lakeHouse.spec.modules;
+    const homeFilePath = path.resolve(props.home);
+    const pagesDirPath = path.join(path.dirname(homeFilePath), "pages");
+
+    const homeAndPagesModules = props.lakeHouse.spec.modules.flatMap((module) =>
+      module.file_name === homeFilePath ||
+      module.file_name.startsWith(path.join(pagesDirPath, ""))
+        ? [module]
+        : []
+    );
 
     const platform = props.platform ?? Platform.LINUX_AMD64;
 
+    const taskRole =
+      props.taskImageOptions?.taskRole ??
+      new Role(this, "TaskRole", {
+        assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
+      });
+    const environment: Record<string, string> = {
+      ...props.taskImageOptions?.environment,
+    };
+    props.lakeHouse.bind(
+      {
+        grantPrincipal: taskRole,
+        addEnvironment: (key, value) => {
+          environment[key] = value;
+        },
+      },
+      homeAndPagesModules
+    );
+
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
-      cpu: 256,
-      memoryLimitMiB: 512,
+      ...props,
       cluster: props.lakeHouse.cluster,
       runtimePlatform: {
         cpuArchitecture:
@@ -81,9 +107,13 @@ export class StreamlitSite extends Construct {
             : CpuArchitecture.ARM64,
         operatingSystemFamily: OperatingSystemFamily.LINUX,
       },
-      ...props,
+      cpu: props.cpu ?? 256,
+      memoryLimitMiB: props.memoryLimitMiB ?? 512,
       taskImageOptions: {
-        containerPort: 8501,
+        ...(props.taskImageOptions ?? {}),
+        environment,
+        containerPort: props.taskImageOptions?.containerPort ?? 8501,
+        taskRole,
         image:
           props.taskImageOptions?.image ??
           ContainerImage.fromAsset(".", {
@@ -93,9 +123,9 @@ export class StreamlitSite extends Construct {
               REQUIREMENTS_PATH: requirementsPath,
             },
           }),
-        ...(props.taskImageOptions ?? {}),
       },
     });
+
     this.service.targetGroup.configureHealthCheck(
       props.healthCheck ?? {
         path: "/_stcore/health",
