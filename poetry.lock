@@ -41,6 +41,17 @@ awscli = ["awscli (>=1.30.4,<1.31.2)"]
 boto3 = ["boto3 (>=1.29.4,<1.33.2)"]
 
 [[package]]
+name = "aiofiles"
+version = "23.2.1"
+description = "File support for asyncio."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "aiofiles-23.2.1-py3-none-any.whl", hash = "sha256:19297512c647d4b27a2cf7c34caa7e405c0d60b5560618a29a9fe027b18b0107"},
+    {file = "aiofiles-23.2.1.tar.gz", hash = "sha256:84ec2218d8419404abcb9f0c02df3f34c6e0a68ed41072acfb1cef5cbc29051a"},
+]
+
+[[package]]
 name = "aiohttp"
 version = "3.9.1"
 description = "Async http client/server framework (asyncio)"
@@ -3512,4 +3523,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.1"
-content-hash = "89ae067f43fc961178c7c6a0e3134cbac2ff7f7b798158f5f92c8f0d0f70aa60"
+content-hash = "f422de3db69e738ba3187655eaf0aecb3a9f36369cb27520b8f414236ae65b3c"

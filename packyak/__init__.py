@@ -1,9 +1,8 @@
-from .globals import lookup_function
+from .registry import lookup_function
 from .function import function
 from .bucket import Bucket
 from .queue import Queue, Message, ReceivedMessagesEvent
-from .synth import synth
-from .init import init
+from .synth.synth import synth
 
 __all__ = [
     "lookup_function",
@@ -12,6 +11,5 @@ __all__ = [
     "Queue",
     "Message",
     "ReceivedMessagesEvent",
-    "init",
     "synth",
 ]

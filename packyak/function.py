@@ -8,8 +8,8 @@ from typing import (
     cast,
 )
 
-from .spec import DependencyGroup
-from .globals import FUNCTIONS
+from packyak.spec import DependencyGroup
+from .registry import FUNCTIONS
 
 Params = ParamSpec("Params")
 Return = TypeVar("Return", covariant=True)

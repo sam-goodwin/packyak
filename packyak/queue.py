@@ -6,17 +6,16 @@ from typing import Any, Callable, Type, cast
 
 import aioboto3
 import boto3
-from types_aiobotocore_sqs.type_defs import ReceiveMessageResultTypeDef
-
 from pydantic import BaseModel
 from types_aiobotocore_sqs import SQSClient
+from types_aiobotocore_sqs.type_defs import ReceiveMessageResultTypeDef
 
-from .spec import DependencyGroup
-from .function import LambdaFunction, function
-from .globals import QUEUES
-from .integration import integration
-from .resource import Resource
-from .typed_resource import TypedResource
+from packyak.function import LambdaFunction, function
+from packyak.integration import integration
+from packyak.registry import QUEUES
+from packyak.resource import Resource
+from packyak.spec import DependencyGroup
+from packyak.util.typed_resource import TypedResource
 
 sqs = boto3.client("sqs")
 session: aioboto3.Session = aioboto3.Session()
@@ -61,7 +60,7 @@ class Queue[B: Body](Resource):
         self.subscriptions = []
         if resource_id in QUEUES:
             raise Exception(f"Queue {resource_id} already exists")
-        QUEUES[resource_id] = self
+        QUEUES[resource_id] = self  # type: ignore
 
     @property
     def queue_url(self):

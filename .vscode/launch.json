@@ -14,6 +14,20 @@
       "cwd": "${workspaceFolder}/examples/streamlit-aws-cdk"
     },
     {
+      "name": "Python: packyak.synth",
+      "type": "python",
+      "request": "launch",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "module": "packyak.synth",
+      "cwd": "${workspaceFolder}/examples/streamlit-aws-cdk",
+      "args": ["--root=app"],
+      "env": {
+        "AWS_DEFAULT_REGION": "us-east-1"
+      }
+    },
+    {
       "name": "Python: CodeGen",
       "type": "python",
       "request": "launch",

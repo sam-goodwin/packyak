@@ -13,9 +13,9 @@
       "require": "./lib/index.js"
     },
     "./aws-cdk": {
-      "import": "./lib/aws-cdk.js",
-      "require": "./lib/aws-cdk.js",
-      "types": "./lib/aws-cdk.d.ts"
+      "import": "./lib/aws-cdk/index.js",
+      "require": "./lib/aws-cdk/index.js",
+      "types": "./lib/aws-cdk/index.d.ts"
     }
   },
   "files": [
@@ -27,7 +27,8 @@
     "codegen": "poetry run python ./scripts/codegen.py",
     "typecheck": "poetry run pyright",
     "build": "pnpm typecheck && pnpm codegen && tsc -b",
-    "synth": "poetry run python ./examples/app.py"
+    "synth": "poetry run python ./examples/app.py",
+    "synth:website": "cdk synth --app 'tsx ./packyak.config.ts'"
   },
   "keywords": [],
   "author": "",
@@ -40,6 +41,8 @@
     "aws-cdk-lib": "2.118.0",
     "bun": "^1.0.22",
     "constructs": "10.3.0",
+    "sst": "^2.39.5",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {

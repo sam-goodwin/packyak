@@ -19,6 +19,7 @@ pandera = "^0.18.0"
 pydantic = "^2.5.3"
 python = "3.12.1"
 pandas-stubs = "^2.1.4.231227"
+aiofiles = "^23.2.1"
 
 [tool.poetry.group.dev.dependencies]
 matplotlib = "^3.8.2"

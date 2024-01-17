@@ -12,7 +12,9 @@ RUN apk add --no-cache \
 
 RUN pip install pyarrow pandas
 
-COPY .packyak/requirements.txt requirements.txt
+ARG REQUIREMENTS_PATH
+
+COPY ${REQUIREMENTS_PATH} requirements.txt
 
 RUN pip install -r requirements.txt
 

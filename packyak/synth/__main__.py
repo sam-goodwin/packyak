@@ -1,10 +1,17 @@
 import os
-from typing import Any, Never
-from .synth import synth
+from typing import Any
+
+from packyak.synth.synth import synth
 
 
-def init() -> None | Never:
-    packyak_spec = synth()
+async def main():
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=str, help="root directory", required=True)
+    args = parser.parse_args()
+
+    packyak_spec = await synth(root_dir=args.root)
     packyak_dir = ".packyak"
 
     if not os.path.exists(packyak_dir):
@@ -38,3 +45,9 @@ def init() -> None | Never:
         import json
 
         f.write(json.dumps(transform(spec), indent=2))
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    asyncio.run(main())

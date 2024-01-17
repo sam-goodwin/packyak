@@ -22,6 +22,10 @@ class Integration(Protocol, Generic[P, R]):
         ...
 
 
+def is_integration(func: Any) -> bool:
+    return hasattr(func, "scopes") and hasattr(func, "metadata")
+
+
 def integration(*scopes: str, **kwargs: property):
     def decorator(func: Callable[P, R]) -> Callable[P, R]:
         setattr(func, "scopes", scopes)

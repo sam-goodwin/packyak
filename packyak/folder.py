@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING, Optional
 from packyak.integration import integration
 
 if TYPE_CHECKING:
-    from packyak.bucket import Bucket, BucketSubscriptionScope
+    from packyak.bucket import Bucket
+    from packyak.spec import BucketSubscriptionScope
 
 
 class Folder:

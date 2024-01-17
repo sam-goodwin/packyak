@@ -1,28 +1,32 @@
+import ast
+from importlib import import_module
 import os
+import types
 from typing import Any
-from .bucket import Bucket
-from .function import LambdaFunction
-from .queue import Queue
-from .reflect import find_all_functions, find_all_resources, find_bindings
-from .resource import Resource
-from .spec import (
+
+import aiofiles
+
+from packyak.bucket import Bucket
+from packyak.function import LambdaFunction
+from packyak.queue import Queue
+from packyak.registry import find_all_functions, find_all_resources
+from packyak.resource import Resource
+from packyak.spec import (
     BindingSpec,
     BucketSpec,
     BucketSubscriptionSpec,
     FunctionSpec,
+    ModuleSpec,
+    PackyakSpec,
     QueueSpec,
     QueueSubscriptionSpec,
-    PackyakSpec,
 )
+from packyak.synth.analyze import bind
+from packyak.synth.file_utils import file_path_to_module_name
+from packyak.synth.loaded_module import LoadedModule
 
 
-def synth() -> PackyakSpec:
-    functions: list[FunctionSpec] = []
-    buckets: list[BucketSpec] = []
-    queues: list[QueueSpec] = []
-
-    seen = set[Any]()
-
+async def synth(root_dir: str) -> PackyakSpec:
     def visit(resource: Resource | LambdaFunction[Any, Any]):
         if resource in seen:
             return
@@ -53,21 +57,13 @@ def synth() -> PackyakSpec:
                 )
             )
         elif isinstance(resource, LambdaFunction):
-            bindings = find_bindings(resource)
+            bindings = bind(resource)
             functions.append(
                 FunctionSpec(
                     function_id=resource.function_id,
                     file_name=resource.file_name,
                     bindings=(
-                        [
-                            BindingSpec(
-                                resource_type=binding.resource.resource_type,
-                                resource_id=binding.resource.resource_id,
-                                scopes=binding.scopes,
-                                props=binding.metadata,
-                            )
-                            for binding in find_bindings(resource)
-                        ]
+                        [binding.to_binding_spec() for binding in bindings]
                         if len(bindings) > 0
                         else None
                     ),
@@ -80,6 +76,34 @@ def synth() -> PackyakSpec:
                 )
             )
 
+    modules: list[ModuleSpec] = []
+    functions: list[FunctionSpec] = []
+    buckets: list[BucketSpec] = []
+    queues: list[QueueSpec] = []
+    seen = set[Any]()
+
+    for root, _, files in os.walk(root_dir):
+        for file in files:
+            if file.endswith(".py"):
+                file_path = os.path.join(root, file)
+                async with aiofiles.open(file_path, mode="r") as f:
+                    module_ast = ast.parse(await f.read())
+                module_name = file_path_to_module_name(file_path)
+                module: types.ModuleType = import_module(module_name)
+
+                loaded_module = LoadedModule(module, module_ast, module_name, file_path)
+
+                bindings = bind(loaded_module)
+                if len(bindings) > 0:
+                    modules.append(
+                        ModuleSpec(
+                            file_name=loaded_module.file_name,
+                            bindings=[
+                                binding.to_binding_spec() for binding in bindings
+                            ],
+                        )
+                    )
+
     for resource in find_all_resources():
         visit(resource)
 
@@ -87,6 +111,7 @@ def synth() -> PackyakSpec:
         visit(function)
 
     packyak_spec = PackyakSpec(
+        modules=modules,
         buckets=buckets,
         queues=queues,
         functions=functions,

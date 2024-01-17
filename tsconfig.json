@@ -5,6 +5,12 @@
       "path": "./tsconfig.packyak.json"
     },
     {
+      "path": "./tsconfig.packyak.synth.json"
+    },
+    {
+      "path": "./packyak-docs/tsconfig.json"
+    },
+    {
       "path": "./examples/streamlit-aws-cdk"
     }
   ]

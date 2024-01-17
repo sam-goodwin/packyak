@@ -1,3 +1,6 @@
 import streamlit as st
+from ..videos import get_video
 
-st.write("Hello world!")
+if __name__ == "__main__":
+    st.write("Hello world!")
+    video = get_video("foo")

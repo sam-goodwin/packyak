@@ -1,10 +1,8 @@
-# Packyak ![image](https://github.com/sam-goodwin/packyak/assets/38672686/249af136-45fb-4d13-82bb-5818e803eeb0)
+# PackYak ![image](https://github.com/sam-goodwin/packyak/assets/38672686/249af136-45fb-4d13-82bb-5818e803eeb0)
 
 [![PyPI version](https://badge.fury.io/py/packyak.svg)](https://badge.fury.io/py/packyak)
 
-Packyak makes it easy to build Data-driven applications on AWS.
-
-Packyak deploys your Data Lakes, Data Pipelines and RAG applications to AWS with a best-practice secure and compliant configuration.
+Packyak makes it easy to build Lakehouses, Data Pipelines and and AI applications on AWS.
 
 # Roadmap
 
@@ -22,6 +20,10 @@ Packyak deploys your Data Lakes, Data Pipelines and RAG applications to AWS with
 
 # Installation
 
+```ts
+
+```
+
 ## Pre-requisites
 
 1. Docker (for bundling Python applications for the target runtime, e.g. in an Amazon Linux Lambda Function)
@@ -36,6 +38,18 @@ curl -sSL https://install.python-poetry.org | python3 -
 ```sh
 poetry self add poetry-plugin-export
 ```
+
+# How To: Deploy Streamlit
+
+## Custom Domain
+
+1. Create a Hosted Zone
+2. Transfer the DNS nameservers from your DNS provider to the Hosted Zone
+3. Create a Certificate
+
+## HTTPS
+
+1. Create a Certificate via the AWS Console
 
 # Example
 

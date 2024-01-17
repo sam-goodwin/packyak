@@ -32,6 +32,12 @@ class PythonPoetryArgs(BaseModel):
     without_urls: bool | None = None
 
 
+# defines the bindings within a Python module (file)
+class ModuleSpec(PythonPoetryArgs):
+    file_name: str
+    bindings: list[BindingSpec] | None
+
+
 class FunctionSpec(PythonPoetryArgs):
     function_id: str
     file_name: str
@@ -59,6 +65,7 @@ class QueueSpec(BaseModel):
 
 
 class PackyakSpec(BaseModel):
+    modules: list[ModuleSpec]
     buckets: list[BucketSpec]
     queues: list[QueueSpec]
     functions: list[FunctionSpec]
