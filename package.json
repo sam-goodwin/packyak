@@ -28,7 +28,8 @@
     "typecheck": "poetry run pyright",
     "build": "pnpm typecheck && pnpm codegen && tsc -b",
     "synth": "poetry run python ./examples/app.py",
-    "synth:website": "cdk synth --app 'tsx ./packyak.config.ts'"
+    "synth:website": "cdk synth --app 'tsx ./packyak.config.ts'",
+    "publish:pypi": "poetry build && poetry publish"
   },
   "keywords": [],
   "author": "",

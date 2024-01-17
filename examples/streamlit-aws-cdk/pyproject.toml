@@ -9,8 +9,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.12.1"
 streamlit = "^1.29.0"
-packyak = { path = "../../" }
-# packyak = "0.1.1"
+# packyak = { path = "../../" }
+packyak = "0.1.2"
 types-aiobotocore = { extras = ["essential"], version = "^2.9.0" }
 aioboto3 = "^12.1.0"
 

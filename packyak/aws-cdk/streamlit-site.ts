@@ -63,8 +63,10 @@ export class StreamlitSite extends Construct {
   constructor(scope: Construct, id: string, props: StreamlitSiteProps) {
     super(scope, id);
 
-    const requirementsPath = path.join(".packyak", this.node.addr);
-    exportRequirementsSync(requirementsPath, props.pythonPoetryArgs);
+    const requirementsPath = exportRequirementsSync(
+      path.join(".packyak", this.node.addr),
+      props.pythonPoetryArgs
+    );
 
     // enumerate over the module specs to discover what the home and pages/*.py depend on
     const homeFilePath = path.resolve(props.home);

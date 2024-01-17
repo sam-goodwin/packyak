@@ -1,11 +1,13 @@
 import fs from "fs";
 import { execSync } from "child_process";
 import type { PythonPoetryArgs } from "../generated/spec.js";
+import path from "path";
 
 export function exportRequirementsSync(
   dir: string,
   options?: PythonPoetryArgs
-) {
+): string {
+  const requirements = path.join(dir, "requirements.txt");
   const command = [
     "poetry export -f requirements.txt",
     arg("with", options?.with),
@@ -14,11 +16,12 @@ export function exportRequirementsSync(
     arg("without-hashes", options?.without_hashes ?? true),
     arg("dev", options?.dev),
     arg("all-extras", options?.all_extras),
-    `> ${dir}/requirements.txt`,
+    `> ${requirements}`,
   ];
 
   fs.mkdirSync(dir, { recursive: true });
   execSync(command.join(" "));
+  return requirements;
 
   function arg<T extends string[] | string | boolean | number>(
     flag: string,
