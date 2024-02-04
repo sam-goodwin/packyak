@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Callable, Type, cast
+from typing import Any, Callable, Generic, Type, TypeVar, cast
 
 import aioboto3
 import boto3
@@ -22,15 +22,17 @@ session: aioboto3.Session = aioboto3.Session()
 
 aio_sqs = TypedResource[SQSClient](session.client("sqs"))  # type: ignore
 
-type Body = str | BaseModel
+Body = str | BaseModel
+
+B = TypeVar("B", bound=Body)
 
 
-class ReceivedMessagesEvent[B: Body]:
+class ReceivedMessagesEvent(Generic[B]):
     def __init__(self, messages: list[Message[B]]):
         self.messages = messages
 
 
-class Message[B: Body]:
+class Message(Generic[B]):
     def __init__(self, queue: "Queue[B]", message_id: str, body: B):
         self.queue = queue
         self.message_id = message_id
@@ -50,7 +52,7 @@ class QueueSubscription:
         self.function = function
 
 
-class Queue[B: Body](Resource):
+class Queue(Generic[B], Resource):
     subscriptions: list[QueueSubscription]
 
     def __init__(self, resource_id: str, model: Type[B] = str, fifo: bool = False):

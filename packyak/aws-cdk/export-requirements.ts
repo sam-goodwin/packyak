@@ -5,7 +5,7 @@ import path from "path";
 
 export function exportRequirementsSync(
   dir: string,
-  options?: PythonPoetryArgs
+  options?: PythonPoetryArgs,
 ): string {
   const requirements = path.join(dir, "requirements.txt");
   const command = [
@@ -25,7 +25,7 @@ export function exportRequirementsSync(
 
   function arg<T extends string[] | string | boolean | number>(
     flag: string,
-    value: T | undefined
+    value: T | undefined,
   ) {
     if (value === undefined) {
       return "";

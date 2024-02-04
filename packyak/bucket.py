@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import IO, Any, Callable, Optional, cast, List
+from typing import IO, Any, Callable, Generic, Optional, TypeVar, cast, List
 
 import aioboto3
 import boto3
@@ -36,7 +36,10 @@ class ObjectRef:
         return hash((self.bucket.bucket_id, self.key, self.etag, self.created_at))
 
 
-class Object[Body](ObjectRef):
+Body = TypeVar("Body", bound=Any)
+
+
+class Object(Generic[Body], ObjectRef):
     def __init__(self, bucket: "Bucket", key: str, body: Body, etag: str):
         super().__init__(bucket, key, etag)
         self.body = body
@@ -71,7 +74,7 @@ class BucketSubscription:
         self.prefix = prefix
 
 
-type Blob = str | bytes | IO[Any] | StreamingBody
+Blob = str | bytes | IO[Any] | StreamingBody
 
 
 class Bucket(Resource):

@@ -84,19 +84,19 @@ export class LakeHouse extends Construct {
             props.stage === "prod" || props.stage === "dev"
               ? RemovalPolicy.RETAIN
               : RemovalPolicy.DESTROY,
-        })
+        }),
     );
     this.queues = this.spec.queues.map(
       (queue) =>
         new Queue(queues, queue.queue_id, {
           queueName: `${queue.queue_id}`,
-        })
+        }),
     );
     this.bucketIndex = Object.fromEntries(
-      this.buckets.map((b) => [b.node.id, b])
+      this.buckets.map((b) => [b.node.id, b]),
     );
     this.queueIndex = Object.fromEntries(
-      this.queues.map((q) => [q.node.id, q])
+      this.queues.map((q) => [q.node.id, q]),
     );
     this.vpc =
       props.vpc ??
@@ -128,7 +128,7 @@ import ${mod}
 func = lookup_function("${funcSpec.function_id}")
 
 def handle(event: Any, context: Any):
-    return func(event, context)`
+    return func(event, context)`,
       );
       const functionName = `${props.name}-${props.stage}-${funcSpec.function_id}`;
       return new PythonFunction(functions, funcSpec.function_id, {
@@ -145,14 +145,14 @@ def handle(event: Any, context: Any):
       });
     });
     this.functionIndex = Object.fromEntries(
-      this.functions.map((f) => [f.node.id, f])
+      this.functions.map((f) => [f.node.id, f]),
     );
 
     for (const funcSpec of this.spec.functions) {
       const func = this.functionIndex[funcSpec.function_id];
       if (!func) {
         throw new Error(
-          `Could not find function with id ${funcSpec.function_id}`
+          `Could not find function with id ${funcSpec.function_id}`,
         );
       }
       this.bind(func, funcSpec);
@@ -167,7 +167,7 @@ def handle(event: Any, context: Any):
         const bucket = this.bucketIndex[bucketSpec.bucket_id];
         if (!bucket) {
           throw new Error(
-            `Could not find bucket with id ${bucketSpec.bucket_id}`
+            `Could not find bucket with id ${bucketSpec.bucket_id}`,
           );
         }
         func.addEventSource(
@@ -175,9 +175,9 @@ def handle(event: Any, context: Any):
             events: sub.scopes.map((s) =>
               s === "create"
                 ? EventType.OBJECT_CREATED
-                : EventType.OBJECT_REMOVED
+                : EventType.OBJECT_REMOVED,
             ),
-          })
+          }),
         );
       }
     }
@@ -195,7 +195,7 @@ def handle(event: Any, context: Any):
         func.addEventSource(
           new SqsEventSource(queue, {
             reportBatchItemFailures: true,
-          })
+          }),
         );
       }
     }
@@ -203,7 +203,7 @@ def handle(event: Any, context: Any):
 
   public bind(
     target: Bindable,
-    spec: ModuleSpec[] | FunctionSpec | ModuleSpec
+    spec: ModuleSpec[] | FunctionSpec | ModuleSpec,
   ) {
     if (Array.isArray(spec)) {
       for (const module of spec) {
@@ -215,19 +215,19 @@ def handle(event: Any, context: Any):
           const bucket = this.bucketIndex[binding.resource_id];
           if (!bucket) {
             throw new Error(
-              `Could not find bucket with id ${binding.resource_id}`
+              `Could not find bucket with id ${binding.resource_id}`,
             );
           }
           const prefix = binding.props?.prefix;
           if (prefix !== undefined && typeof prefix !== "string") {
             throw new Error(
-              `prefix must be a string, got ${JSON.stringify(prefix)}`
+              `prefix must be a string, got ${JSON.stringify(prefix)}`,
             );
           }
 
           target.addEnvironment(
             `${binding.resource_id}_bucket_name`,
-            bucket.bucketName
+            bucket.bucketName,
           );
           if (binding.scopes.find((s) => s === "put")) {
             bucket.grantPut(target, prefix);
@@ -240,16 +240,16 @@ def handle(event: Any, context: Any):
           const queue = this.queueIndex[binding.resource_id];
           if (!queue) {
             throw new Error(
-              `Could not find queue with id ${binding.resource_id}`
+              `Could not find queue with id ${binding.resource_id}`,
             );
           }
           target.addEnvironment(
             `${binding.resource_id}_queue_name`,
-            queue.queueName
+            queue.queueName,
           );
           target.addEnvironment(
             `${binding.resource_id}_queue_url`,
-            queue.queueUrl
+            queue.queueUrl,
           );
           if (binding.scopes.find((s) => s === "send")) {
             queue.grantSendMessages(target);
@@ -260,12 +260,12 @@ def handle(event: Any, context: Any):
           const func = this.functionIndex[binding.resource_id];
           if (!func) {
             throw new Error(
-              `Could not find function with id ${binding.resource_id}`
+              `Could not find function with id ${binding.resource_id}`,
             );
           }
           target.addEnvironment(
             `${binding.resource_id}_function_name`,
-            func.functionName
+            func.functionName,
           );
           func.grantInvoke(target);
         }

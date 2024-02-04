@@ -7,8 +7,8 @@ type ConstructInstance<
   Base extends new (
     scope: Construct,
     id: string,
-    props?: any
-  ) => any = typeof Construct
+    props?: any,
+  ) => any = typeof Construct,
 > = {
   construct: InstanceType<Base> & Awaited<ReturnType<F>>;
 } & (undefined extends Parameters<F>[0]
@@ -16,23 +16,23 @@ type ConstructInstance<
       new (scope: Construct, id: string): InstanceType<Base> & ReturnType<F>;
     }
   : Parameters<F>[0] extends undefined
-  ? {
-      new (
-        scope: Construct,
-        id: string,
-        props?: Parameters<F>[0]
-      ): InstanceType<Base> & ReturnType<F>;
-    }
-  : {
-      new (
-        scope: Construct,
-        id: string,
-        props: Parameters<F>[0]
-      ): InstanceType<Base> & ReturnType<F>;
-    });
+    ? {
+        new (
+          scope: Construct,
+          id: string,
+          props?: Parameters<F>[0],
+        ): InstanceType<Base> & ReturnType<F>;
+      }
+    : {
+        new (
+          scope: Construct,
+          id: string,
+          props: Parameters<F>[0],
+        ): InstanceType<Base> & ReturnType<F>;
+      });
 
 export function stack<F extends (this: Stack, props?: any) => any>(
-  func: F
+  func: F,
 ): ConstructInstance<F, typeof Stack> {
   return construct(func, Stack);
 }
@@ -42,12 +42,12 @@ export function construct<
   Base extends new (
     scope: Construct,
     id: string,
-    props?: any
-  ) => any = typeof Construct
+    props?: any,
+  ) => any = typeof Construct,
 >(
   func: F,
   // @ts-ignore
-  base: Base = Construct
+  base: Base = Construct,
 ): ConstructInstance<F, Base> {
   // @ts-ignore
   return class extends base {
@@ -58,7 +58,7 @@ export function construct<
       const result = func.bind(this)(props);
 
       if (isPromise(result)) {
-        // @ts-ignore
+        // biome-ignore lint/correctness/noConstructorReturn: <explanation>
         return result.then((outputs: any) => {
           Object.assign(this, outputs);
           return this;
@@ -75,7 +75,7 @@ declare module "constructs" {
     create<F extends (this: Stack) => any>(id: string, func: F): ReturnType<F>;
     create<F extends (this: Construct) => any>(
       id: string,
-      func: F
+      func: F,
     ): ReturnType<F>;
     create<F extends (this: Stack) => any>(func: F): ReturnType<F>;
     create<F extends (this: Construct) => any>(func: F): ReturnType<F>;

@@ -65,7 +65,7 @@ export class StreamlitSite extends Construct {
 
     const requirementsPath = exportRequirementsSync(
       path.join(".packyak", this.node.addr),
-      props.pythonPoetryArgs
+      props.pythonPoetryArgs,
     );
 
     // enumerate over the module specs to discover what the home and pages/*.py depend on
@@ -76,7 +76,7 @@ export class StreamlitSite extends Construct {
       module.file_name === homeFilePath ||
       module.file_name.startsWith(path.join(pagesDirPath, ""))
         ? [module]
-        : []
+        : [],
     );
 
     const platform = props.platform ?? Platform.LINUX_AMD64;
@@ -96,7 +96,7 @@ export class StreamlitSite extends Construct {
           environment[key] = value;
         },
       },
-      homeAndPagesModules
+      homeAndPagesModules,
     );
 
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
@@ -131,7 +131,7 @@ export class StreamlitSite extends Construct {
     this.service.targetGroup.configureHealthCheck(
       props.healthCheck ?? {
         path: "/_stcore/health",
-      }
+      },
     );
 
     this.url = `https://${this.service.loadBalancer.loadBalancerDnsName}`;
