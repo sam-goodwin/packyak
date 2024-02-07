@@ -16,6 +16,8 @@ import {
   S3EventSource,
   SqsEventSource,
 } from "aws-cdk-lib/aws-lambda-event-sources";
+import { NessieECSService } from "./nessie/nessie-ecs-service.js";
+import { INessieService } from "./nessie/base-nessie-service.js";
 
 export interface LakeHouseProps {
   /**
@@ -49,20 +51,21 @@ export interface LakeHouseProps {
 }
 
 export class LakeHouse extends Construct {
-  readonly stage: string;
-  readonly spec: PackyakSpec;
-  readonly vpc: IVpc;
-  readonly cluster: Cluster;
-  readonly buckets: Bucket[];
-  readonly queues: Queue[];
-  readonly bucketIndex: {
+  public readonly stage: string;
+  public readonly spec: PackyakSpec;
+  public readonly vpc: IVpc;
+  public readonly cluster: Cluster;
+  public readonly nessie: INessieService;
+  public readonly buckets: Bucket[];
+  public readonly queues: Queue[];
+  public readonly bucketIndex: {
     [bucket_id: string]: Bucket;
   };
-  readonly queueIndex: {
+  public readonly queueIndex: {
     [queue_id: string]: Queue;
   };
-  readonly functions: PythonFunction[];
-  readonly functionIndex: {
+  public readonly functions: PythonFunction[];
+  public readonly functionIndex: {
     [function_id: string]: PythonFunction;
   };
 
@@ -104,6 +107,9 @@ export class LakeHouse extends Construct {
         natGateways: props.natGateways ?? 1,
       });
     this.cluster = new Cluster(this, "Cluster");
+    this.nessie = new NessieECSService(this, "Nessie", {
+      cluster: this.cluster,
+    });
     this.functions = this.spec.functions.map((funcSpec) => {
       const indexFolder = path.join(".packyak", funcSpec.function_id);
       const index = path.join(indexFolder, "index.py");
