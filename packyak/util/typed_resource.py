@@ -4,7 +4,7 @@ from typing import Any, TypeVar, AsyncContextManager
 T = TypeVar("T")
 
 
-class TypedResource[T](AsyncContextManager[T]):
+class TypedResource(AsyncContextManager[T]):
     def __init__(self, untyped_resource: AsyncContextManager[Any]):
         self.untyped_resource = untyped_resource
         self.typed_resource: T | None = None  # To be set in __aenter__

@@ -18,7 +18,10 @@
 			"types": "./lib/aws-cdk/index.d.ts"
 		}
 	},
-	"files": ["bin", "lib"],
+	"files": [
+		"bin",
+		"lib"
+	],
 	"scripts": {
 		"watch": "tsc -b -w",
 		"codegen": "poetry run python ./scripts/codegen.py",
@@ -59,5 +62,8 @@
 		"@aws-cdk/aws-lambda-python-alpha": {
 			"optional": true
 		}
+	},
+	"dependencies": {
+		"@aws-cdk/aws-glue-alpha": "2.126.0-alpha.0"
 	}
 }

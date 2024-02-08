@@ -8,18 +8,30 @@ import {
   NessieVersionStoreType,
   nessieConfigToEnvironment,
 } from "./nessie-config";
+import { RemovalPolicy } from "aws-cdk-lib/core";
 
 export interface BaseNessieServiceProps {
+  serviceName: string;
   /**
-   * The main branch of a Nessie repository.
+   * The name of the log group that will be created for the Nessie server.
+   */
+  logGroupName?: string;
+  /**
+   * The default main branch of a Nessie repository.
    *
    * @default main
    */
-  mainBranch?: string;
+  defaultMainBranch?: string;
   /**
    * Properties for configuring the {@link NessieVersionStore}
    */
   versionStore?: NessieVersionStoreProps;
+  /**
+   * The removal policy to apply to the Nessie service.
+   *
+   * @default RemovalPolicy.DESTROY - dynamodb tables will be destroyed.
+   */
+  removalPolicy?: RemovalPolicy;
 }
 
 export interface INessieService {
@@ -39,6 +51,7 @@ export abstract class BaseNessieService
    * @see https://projectnessie.org/develop/kernel/#high-level-abstract
    */
   public readonly versionStore: NessieVersionStore;
+
   /**
    * The default main branch of a Nessie repository created in this service.
    */
@@ -59,7 +72,7 @@ export abstract class BaseNessieService
   constructor(scope: Construct, id: string, props?: BaseNessieServiceProps) {
     super(scope, id);
 
-    this.defaultMainBranch = props?.mainBranch ?? "main";
+    this.defaultMainBranch = props?.defaultMainBranch ?? "main";
 
     // @see https://github.com/projectnessie/nessie/blob/09762d2b80ca448782c2f4326e3e41f1447ae6e0/versioned/storage/dynamodb/src/main/java/org/projectnessie/versioned/storage/dynamodb/DynamoDBConstants.java#L37
     this.versionStore = new NessieVersionStore(
@@ -75,6 +88,7 @@ export abstract class BaseNessieService
       "nessie.server.default-branch": this.defaultMainBranch,
       "quarkus.dynamodb.async-client.type": "aws-crt",
       "quarkus.dynamodb.sync-client.type": "aws-crt",
+      "quarkus.oidc.tenant-enabled": false,
     };
   }
 

@@ -3,7 +3,8 @@ export function nessieConfigToEnvironment(config: NessieConfig): {
 } {
   return Object.fromEntries(
     Object.entries(config).map(([k, v]) => [
-      k.toUpperCase().replace(/\._-/g, "_"),
+      k.toUpperCase().replaceAll(/[\._-]/g, "_"),
+      v.toString(),
     ]),
   );
 }
@@ -58,4 +59,15 @@ export interface NessieConfig {
    * @see https://projectnessie.org/try/configuration/#dynamodb-version-store-settings
    */
   readonly "nessie.version.store.persist.dynamodb.table-prefix"?: string;
+
+  // auth: https://github.com/projectnessie/nessie/blob/ae208dd02d18e003da6c4223e42da1b0099ebb19/servers/quarkus-server/src/main/resources/application.properties#L171-L177
+
+  readonly "quarkus.oidc.tenant-enabled"?: boolean;
+
+  readonly "quarkus.smallrye-health.root-path"?: string;
+
+  /**
+   * @see https://quarkus.io/guides/aws-lambda-snapstart
+   */
+  readonly "quarkus.snapstart.enable"?: boolean;
 }

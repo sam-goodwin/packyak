@@ -1,6 +1,7 @@
 import { PythonFunction } from "@aws-cdk/aws-lambda-python-alpha";
 import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
 import { Cluster } from "aws-cdk-lib/aws-ecs";
+import { Database } from "@aws-cdk/aws-glue-alpha";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { Bucket, EventType } from "aws-cdk-lib/aws-s3";
 import { Queue } from "aws-cdk-lib/aws-sqs";
@@ -22,16 +23,8 @@ import { INessieService } from "./nessie/base-nessie-service.js";
 export interface LakeHouseProps {
   /**
    * The name of this Lake House.
-   *
-   * @default - the Construct's id, e.g. new DateLake(this, id)
    */
-  name: string;
-  /**
-   * The stage of the deployment.
-   *
-   * @example  "prod", "dev", "sam-personal"
-   */
-  stage: string;
+  lakehouseName: string;
   /**
    * Source directory for the Packyak application.
    */
@@ -48,13 +41,17 @@ export interface LakeHouseProps {
    * @default 1
    */
   natGateways?: number;
+  /**
+   * The removal policy to apply to the Lake House.
+   */
+  removalPolicy?: RemovalPolicy;
 }
 
 export class LakeHouse extends Construct {
-  public readonly stage: string;
   public readonly spec: PackyakSpec;
   public readonly vpc: IVpc;
   public readonly cluster: Cluster;
+  public readonly database: Database;
   public readonly nessie: INessieService;
   public readonly buckets: Bucket[];
   public readonly queues: Queue[];
@@ -71,7 +68,8 @@ export class LakeHouse extends Construct {
 
   constructor(scope: Construct, id: string, props: LakeHouseProps) {
     super(scope, id);
-    this.stage = props.stage;
+    const removalPolicy = props.removalPolicy ?? RemovalPolicy.RETAIN;
+
     this.spec = analyzePackyakSync(props);
     const stack = Stack.of(this);
 
@@ -83,16 +81,14 @@ export class LakeHouse extends Construct {
       (bucketSpec) =>
         new Bucket(buckets, bucketSpec.bucket_id, {
           bucketName: `${bucketSpec.bucket_id}-${stack.account}-${stack.region}`,
-          removalPolicy:
-            props.stage === "prod" || props.stage === "dev"
-              ? RemovalPolicy.RETAIN
-              : RemovalPolicy.DESTROY,
+          removalPolicy,
         }),
     );
     this.queues = this.spec.queues.map(
       (queue) =>
         new Queue(queues, queue.queue_id, {
           queueName: `${queue.queue_id}`,
+          removalPolicy,
         }),
     );
     this.bucketIndex = Object.fromEntries(
@@ -107,8 +103,17 @@ export class LakeHouse extends Construct {
         natGateways: props.natGateways ?? 1,
       });
     this.cluster = new Cluster(this, "Cluster");
+    this.database = new Database(this, "Database", {
+      databaseName: props.lakehouseName,
+    });
+    this.database.applyRemovalPolicy(
+      props.removalPolicy ?? RemovalPolicy.DESTROY,
+    );
     this.nessie = new NessieECSService(this, "Nessie", {
       cluster: this.cluster,
+      serviceName: `${props.lakehouseName}-nessie`,
+      logGroupName: `/${props.lakehouseName}/nessie`,
+      removalPolicy,
     });
     this.functions = this.spec.functions.map((funcSpec) => {
       const indexFolder = path.join(".packyak", funcSpec.function_id);
@@ -136,7 +141,7 @@ func = lookup_function("${funcSpec.function_id}")
 def handle(event: Any, context: Any):
     return func(event, context)`,
       );
-      const functionName = `${props.name}-${props.stage}-${funcSpec.function_id}`;
+      const functionName = `${props.lakehouseName}-${funcSpec.function_id}`;
       return new PythonFunction(functions, funcSpec.function_id, {
         functionName:
           functionName.length > 64

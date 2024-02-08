@@ -7,12 +7,15 @@ authors = ["sam <sam@packyak.sh>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.12.1"
+python = "3.10.13"
 streamlit = "^1.29.0"
-# packyak = { path = "../../" }
-packyak = "0.1.2"
+packyak = { path = "../../" }
+# packyak = "0.1.2"
 types-aiobotocore = { extras = ["essential"], version = "^2.9.0" }
 aioboto3 = "^12.1.0"
+
+[tool.poetry.group.dev.dependencies]
+poetry-plugin-export = "^1.6.0"
 
 [build-system]
 requires = ["poetry-core"]

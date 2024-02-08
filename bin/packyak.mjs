@@ -8,7 +8,7 @@ import { promisify } from "util";
 const execAsync = promisify(exec);
 
 const packyakConfig = (await fs.readdir(".")).find((file) =>
-  file.match(/packyak\.config\.(js|ts)/)
+  file.match(/packyak\.config\.(js|ts)/),
 );
 if (!packyakConfig) {
   console.error("No packyak.(js|ts) file found in current directory");
@@ -17,7 +17,7 @@ if (!packyakConfig) {
 
 const ext = path.extname(packyakConfig);
 
-const command = `pnpm tsx -e 'import("./packyak.config${ext}")'`;
+const command = `npx tsx -e 'import("./packyak.config${ext}")'`;
 
 try {
   const { stdout, stderr } = await execAsync(command);

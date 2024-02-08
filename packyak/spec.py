@@ -1,19 +1,21 @@
 from __future__ import annotations
 
-from typing import List, Literal
+from typing import List, Literal, TypeVar
 from pydantic import BaseModel
 
-type BucketSubscriptionScope = Literal["create"] | Literal["delete"]
+BucketSubscriptionScope = Literal["create"] | Literal["delete"]
 
-type BucketIntegrationScope = (
+BucketIntegrationScope = (
     Literal["get"] | Literal["list"] | Literal["put"] | Literal["delete"]
 )
 
-type ResourceType = Literal["bucket"] | Literal["queue"] | Literal["function"]
+ResourceType = Literal["bucket"] | Literal["queue"] | Literal["function"]
 
-type DependencyGroup = NonEmptyList[str] | str | None
+Item = TypeVar("Item")
 
-type NonEmptyList[Item] = list[Item]
+NonEmptyList = list[Item]
+
+DependencyGroup = NonEmptyList[str] | str | None
 
 
 class BindingSpec(BaseModel):

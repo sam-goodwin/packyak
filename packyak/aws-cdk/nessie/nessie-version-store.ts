@@ -1,4 +1,5 @@
 import { Table, AttributeType, BillingMode } from "aws-cdk-lib/aws-dynamodb";
+import { RemovalPolicy } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
 
 export interface NessieVersionStoreProps {
@@ -33,6 +34,10 @@ export class NessieVersionStore extends Construct {
 
 interface NessieVersionStoreTableProps {
   tableName: string;
+  /**
+   * @default - RemovalPolicy.DESTROY
+   */
+  removalPolicy?: RemovalPolicy;
 }
 
 class NessieVersionStoreTable extends Table {
@@ -49,5 +54,6 @@ class NessieVersionStoreTable extends Table {
       },
       billingMode: BillingMode.PAY_PER_REQUEST,
     });
+    this.applyRemovalPolicy(props.removalPolicy ?? RemovalPolicy.DESTROY);
   }
 }
