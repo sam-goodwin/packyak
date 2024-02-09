@@ -1,8 +1,12 @@
+import { Database } from "@aws-cdk/aws-glue-alpha";
 import { PythonFunction } from "@aws-cdk/aws-lambda-python-alpha";
 import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
 import { Cluster } from "aws-cdk-lib/aws-ecs";
-import { Database } from "@aws-cdk/aws-glue-alpha";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
+import {
+  S3EventSource,
+  SqsEventSource,
+} from "aws-cdk-lib/aws-lambda-event-sources";
 import { Bucket, EventType } from "aws-cdk-lib/aws-s3";
 import { Queue } from "aws-cdk-lib/aws-sqs";
 import { RemovalPolicy, Stack } from "aws-cdk-lib/core";
@@ -11,14 +15,10 @@ import { Construct } from "constructs";
 import fs from "fs";
 import path from "path";
 import { FunctionSpec, ModuleSpec, PackyakSpec } from "../generated/spec.js";
-import { exportRequirementsSync } from "./export-requirements.js";
 import { Bindable } from "./bind.js";
-import {
-  S3EventSource,
-  SqsEventSource,
-} from "aws-cdk-lib/aws-lambda-event-sources";
-import { NessieECSService } from "./nessie/nessie-ecs-service.js";
+import { exportRequirementsSync } from "./export-requirements.js";
 import { INessieService } from "./nessie/base-nessie-service.js";
+import { NessieECSService } from "./nessie/nessie-ecs-service.js";
 
 export interface LakeHouseProps {
   /**

@@ -77,3 +77,21 @@ async def on_uploaded_video(event: Bucket.ObjectCreatedEvent):
 async def transcribed_videos():
   ...
 ```
+
+# Nessie Setup
+
+TODO: should be done as part of `packyak init`
+
+```sh
+pip install pynessie
+
+mkdir -p ~/.config
+
+cat <<EOF > ~/.config/nessie
+auth:
+    type: aws
+    timeout: 10
+endpoint: http://localhost:19120/api/v1
+verify: yes
+EOF
+```

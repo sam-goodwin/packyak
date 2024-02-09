@@ -11,6 +11,9 @@ importers:
       '@aws-cdk/aws-glue-alpha':
         specifier: 2.126.0-alpha.0
         version: 2.126.0-alpha.0(aws-cdk-lib@2.118.0)(constructs@10.3.0)
+      '@aws-cdk/aws-sagemaker-alpha':
+        specifier: 2.126.0-alpha.0
+        version: 2.126.0-alpha.0(aws-cdk-lib@2.118.0)(constructs@10.3.0)
     devDependencies:
       '@aws-cdk/aws-lambda-python-alpha':
         specifier: 2.118.0-alpha.0
@@ -330,6 +333,17 @@ packages:
       aws-cdk-lib: 2.118.0(constructs@10.3.0)
       constructs: 10.3.0
     dev: true
+
+  /@aws-cdk/aws-sagemaker-alpha@2.126.0-alpha.0(aws-cdk-lib@2.118.0)(constructs@10.3.0):
+    resolution: {integrity: sha512-o00V7icXmVKah6hEkLVJ3aaeIfT1fp3qJKSXSoXpxX6I3p1357W0O8w4suXIGtu3DN48eOnncWI0MKtvHoxFQA==}
+    engines: {node: '>= 14.15.0'}
+    peerDependencies:
+      aws-cdk-lib: ^2.126.0
+      constructs: ^10.0.0
+    dependencies:
+      aws-cdk-lib: 2.118.0(constructs@10.3.0)
+      constructs: 10.3.0
+    dev: false
 
   /@aws-cdk/aws-service-spec@0.0.29:
     resolution: {integrity: sha512-/Zp5aPDlG5M3CTXJW5KU2Jki3l9Xu/la37gdurawp9cpgufze5vboTyBd/ymHAXNINuApQdmGJ0iDn8HihzQ0Q==}

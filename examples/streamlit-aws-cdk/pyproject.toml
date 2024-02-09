@@ -13,6 +13,7 @@ packyak = { path = "../../" }
 # packyak = "0.1.2"
 types-aiobotocore = { extras = ["essential"], version = "^2.9.0" }
 aioboto3 = "^12.1.0"
+pynessie = "^0.66.0"
 
 [tool.poetry.group.dev.dependencies]
 poetry-plugin-export = "^1.6.0"

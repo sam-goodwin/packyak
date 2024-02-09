@@ -64,6 +64,7 @@
 		}
 	},
 	"dependencies": {
-		"@aws-cdk/aws-glue-alpha": "2.126.0-alpha.0"
+		"@aws-cdk/aws-glue-alpha": "2.126.0-alpha.0",
+		"@aws-cdk/aws-sagemaker-alpha": "2.126.0-alpha.0"
 	}
 }

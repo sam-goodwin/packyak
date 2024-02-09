@@ -12,7 +12,12 @@ import {
   ApplicationLoadBalancedFargateService,
   ApplicationLoadBalancedFargateServiceProps,
 } from "aws-cdk-lib/aws-ecs-patterns";
-import { Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import {
+  IGrantable,
+  IPrincipal,
+  Role,
+  ServicePrincipal,
+} from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import {
   BaseNessieService,
@@ -28,10 +33,12 @@ export interface NessieECSServiceProps
   platform?: Platform;
 }
 
-export class NessieECSService extends BaseNessieService {
+export class NessieECSService extends BaseNessieService implements IGrantable {
   public readonly service: ApplicationLoadBalancedFargateService;
 
   public override readonly serviceUrl: string;
+
+  public readonly grantPrincipal: IPrincipal;
 
   constructor(scope: Construct, id: string, props?: NessieECSServiceProps) {
     super(scope, id, props);
@@ -41,6 +48,7 @@ export class NessieECSService extends BaseNessieService {
     const taskRole = new Role(this, "TaskRole", {
       assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
     });
+    this.grantPrincipal = taskRole;
 
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
       cluster: props?.cluster,
@@ -53,10 +61,9 @@ export class NessieECSService extends BaseNessieService {
             : CpuArchitecture.ARM64,
         operatingSystemFamily: OperatingSystemFamily.LINUX,
       },
-      // this service should only be interacted with from within the VPC
-      assignPublicIp: false,
       cpu: props?.cpu ?? 256,
       memoryLimitMiB: props?.memoryLimitMiB ?? 512,
+      publicLoadBalancer: true,
       taskImageOptions: {
         ...(props?.taskImageOptions ?? {}),
         environment: {
@@ -70,6 +77,7 @@ export class NessieECSService extends BaseNessieService {
           ContainerImage.fromRegistry("ghcr.io/projectnessie/nessie"),
       },
     });
+    this.versionStore.grantReadWriteData(taskRole);
 
     this.service.targetGroup.configureHealthCheck({
       // uses smallrye-health:

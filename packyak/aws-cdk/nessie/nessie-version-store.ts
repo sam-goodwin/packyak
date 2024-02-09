@@ -1,4 +1,5 @@
 import { Table, AttributeType, BillingMode } from "aws-cdk-lib/aws-dynamodb";
+import { IGrantable } from "aws-cdk-lib/aws-iam";
 import { RemovalPolicy } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
 
@@ -29,6 +30,21 @@ export class NessieVersionStore extends Construct {
     this.refs = new NessieVersionStoreTable(this, "refs", {
       tableName: `${this.tablePrefix}_refs`,
     });
+  }
+
+  public grantReadData(grantee: IGrantable) {
+    this.objs.grantReadData(grantee);
+    this.refs.grantReadData(grantee);
+  }
+
+  public grantWriteData(grantee: IGrantable) {
+    this.objs.grantWriteData(grantee);
+    this.refs.grantWriteData(grantee);
+  }
+
+  public grantReadWriteData(grantee: IGrantable) {
+    this.objs.grantReadWriteData(grantee);
+    this.refs.grantReadWriteData(grantee);
   }
 }
 

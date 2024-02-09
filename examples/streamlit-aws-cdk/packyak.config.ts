@@ -1,5 +1,5 @@
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
-import { StreamlitSite, LakeHouse } from "packyak/aws-cdk";
+import { LakeHouse, Domain, AuthMode } from "packyak/aws-cdk";
 
 const app = new App();
 
@@ -13,11 +13,20 @@ const lakeHouse = new LakeHouse(stack, "DataLake", {
   removalPolicy: RemovalPolicy.DESTROY,
 });
 
+const domain = new Domain(stack, "Domain", {
+  domainName: `streamlit-example-aws-cdk-${stage}`,
+  vpc: lakeHouse.vpc,
+  authMode: AuthMode.IAM,
+});
+
+domain.addUserProfile("sam");
+
 // const site = new StreamlitSite(stack, "StreamlitSite", {
 //   lakeHouse,
 //   home: "app/home.py",
 // });
 
-// stack.addOutputs({
-//   SiteUrl: site.url,
-// });
+stack.addOutputs({
+  NessieUrl: lakeHouse.nessie.serviceUrl,
+  // SiteUrl: site.url,
+});
