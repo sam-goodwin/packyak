@@ -162,6 +162,9 @@ export class Domain extends Resource {
           "glue:DeleteSession",
           "glue:GetSession",
           "glue:StopSession",
+          "glue:CancelStatement",
+          "glue:GetStatement",
+          "glue:ListStatements",
           "glue:RunStatement",
         ],
         resources: [
