@@ -1,6 +1,6 @@
 import fs from "fs";
 import { execSync } from "child_process";
-import type { PythonPoetryArgs } from "../generated/spec.js";
+import type { PythonPoetryArgs } from "./generated/spec.js";
 import path from "path";
 
 export function exportRequirementsSync(

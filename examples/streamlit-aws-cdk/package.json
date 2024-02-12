@@ -1,21 +1,21 @@
 {
-  "name": "examples-streamlit-aws-cdk",
-  "version": "0.1.0",
-  "description": "A Streamlit app deployed to AWS with Packyak for AWS CDK",
-  "scripts": {
-    "start": "poetry run streamlit run ./app/home.py",
-    "start:docker": "docker build -t packyak . && docker run -e AWS_DEFAULT_REGION=us-east-2 -p 8501:8501 -t packyak",
-    "synth": "cdk synth --quiet",
-    "dev": "cdk deploy --require-approval never",
-    "deploy": "cdk deploy --require-approval never"
-  },
-  "dependencies": {
-    "packyak": "workspace:^"
-  },
-  "devDependencies": {
-    "aws-cdk": "2.118.0",
-    "aws-cdk-lib": "2.118.0",
-    "tsx": "^4.7.0",
-    "typescript": "^5"
-  }
+	"name": "examples-streamlit-aws-cdk",
+	"version": "0.1.0",
+	"description": "A Streamlit app deployed to AWS with Packyak for AWS CDK",
+	"scripts": {
+		"start": "poetry run streamlit run ./app/home.py",
+		"start:docker": "docker build -t packyak . && docker run -e AWS_DEFAULT_REGION=us-east-2 -p 8501:8501 -t packyak",
+		"synth": "cdk synth --quiet",
+		"dev": "cdk deploy --require-approval never",
+		"deploy": "cdk deploy --require-approval never"
+	},
+	"dependencies": {
+		"@packyak/aws-cdk": "workspace:^"
+	},
+	"devDependencies": {
+		"aws-cdk": "2.118.0",
+		"aws-cdk-lib": "2.118.0",
+		"tsx": "^4.7.0",
+		"typescript": "^5"
+	}
 }

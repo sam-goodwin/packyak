@@ -1,5 +1,5 @@
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
-import { LakeHouse, Domain, AuthMode } from "packyak/aws-cdk";
+import { LakeHouse, Domain, AuthMode } from "@packyak/aws-cdk";
 
 const app = new App();
 
@@ -26,7 +26,7 @@ domain.addUserProfile("sam");
 //   home: "app/home.py",
 // });
 
-stack.addOutputs({
-  NessieUrl: lakeHouse.nessie.serviceUrl,
-  // SiteUrl: site.url,
-});
+// stack.addOutputs({
+//   NessieUrl: lakeHouse.nessie.serviceUrl,
+//   // SiteUrl: site.url,
+// });

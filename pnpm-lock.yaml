@@ -7,15 +7,63 @@ settings:
 importers:
 
   .:
+    devDependencies:
+      '@biomejs/biome':
+        specifier: ^1.5.3
+        version: 1.5.3
+      '@tsconfig/node20':
+        specifier: ^20.1.2
+        version: 20.1.2
+      '@types/node':
+        specifier: ^20.10.8
+        version: 20.10.8
+      aws-cdk-lib:
+        specifier: ^2.127.0
+        version: 2.127.0(constructs@10.3.0)
+      bun:
+        specifier: ^1.0.22
+        version: 1.0.22
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
+      sst:
+        specifier: ^2.39.5
+        version: 2.39.5
+      tsx:
+        specifier: ^4.7.0
+        version: 4.7.0
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+
+  examples/streamlit-aws-cdk:
     dependencies:
+      '@packyak/aws-cdk':
+        specifier: workspace:^
+        version: link:../../packyak-aws-cdk
+    devDependencies:
+      aws-cdk:
+        specifier: 2.118.0
+        version: 2.118.0
+      aws-cdk-lib:
+        specifier: 2.118.0
+        version: 2.118.0(constructs@10.3.0)
+      tsx:
+        specifier: ^4.7.0
+        version: 4.7.0
+      typescript:
+        specifier: ^5
+        version: 5.3.3
+
+  packyak-aws-cdk:
+    devDependencies:
       '@aws-cdk/aws-glue-alpha':
         specifier: 2.126.0-alpha.0
         version: 2.126.0-alpha.0(aws-cdk-lib@2.126.0)(constructs@10.3.0)
-      '@aws-cdk/aws-sagemaker-alpha':
+      '@aws-cdk/aws-lambda-python-alpha':
         specifier: 2.126.0-alpha.0
         version: 2.126.0-alpha.0(aws-cdk-lib@2.126.0)(constructs@10.3.0)
-    devDependencies:
-      '@aws-cdk/aws-lambda-python-alpha':
+      '@aws-cdk/aws-sagemaker-alpha':
         specifier: 2.126.0-alpha.0
         version: 2.126.0-alpha.0(aws-cdk-lib@2.126.0)(constructs@10.3.0)
       '@biomejs/biome':
@@ -26,7 +74,7 @@ importers:
         version: 20.1.2
       '@types/node':
         specifier: ^20.10.8
-        version: 20.10.8
+        version: 20.11.0
       aws-cdk:
         specifier: 2.126.0
         version: 2.126.0
@@ -47,25 +95,6 @@ importers:
         version: 4.7.0
       typescript:
         specifier: ^5.3.3
-        version: 5.3.3
-
-  examples/streamlit-aws-cdk:
-    dependencies:
-      packyak:
-        specifier: workspace:^
-        version: link:../..
-    devDependencies:
-      aws-cdk:
-        specifier: 2.118.0
-        version: 2.118.0
-      aws-cdk-lib:
-        specifier: 2.118.0
-        version: 2.118.0(constructs@10.3.0)
-      tsx:
-        specifier: ^4.7.0
-        version: 4.7.0
-      typescript:
-        specifier: ^5
         version: 5.3.3
 
   packyak-docs:
@@ -269,14 +298,17 @@ packages:
 
   /@aws-cdk/asset-awscli-v1@2.2.202:
     resolution: {integrity: sha512-JqlF0D4+EVugnG5dAsNZMqhu3HW7ehOXm5SDMxMbXNDMdsF0pxtQKNHRl52z1U9igsHmaFpUgSGjbhAJ+0JONg==}
+    dev: true
 
   /@aws-cdk/asset-kubectl-v20@2.1.2:
     resolution: {integrity: sha512-3M2tELJOxQv0apCIiuKQ4pAbncz9GuLwnKFqxifWfe77wuMxyTRPmxssYHs42ePqzap1LT6GDcPygGs+hHstLg==}
+    dev: true
 
   /@aws-cdk/asset-node-proxy-agent-v6@2.0.1:
     resolution: {integrity: sha512-DDt4SLdLOwWCjGtltH4VCST7hpOI5DzieuhGZsBpZ+AgJdSI2GCjklCXm0GCTwJG/SolkL5dtQXyUKgg9luBDg==}
+    dev: true
 
-  /@aws-cdk/aws-apigatewayv2-alpha@2.110.1-alpha.0(aws-cdk-lib@2.126.0)(constructs@10.3.0):
+  /@aws-cdk/aws-apigatewayv2-alpha@2.110.1-alpha.0(aws-cdk-lib@2.127.0)(constructs@10.3.0):
     resolution: {integrity: sha512-ldOrRsu5O0KtqMiKh43QbjHX26Q2dmDAFEBsQ4Y8pLWf0cISBkFrrcsv4VF23j9r9NEgLhPzoVOqiCyf4UUliQ==}
     engines: {node: '>= 14.15.0'}
     deprecated: This package has been stabilized and moved to aws-cdk-lib
@@ -284,7 +316,7 @@ packages:
       aws-cdk-lib: ^2.110.1
       constructs: ^10.0.0
     dependencies:
-      aws-cdk-lib: 2.126.0(constructs@10.3.0)
+      aws-cdk-lib: 2.127.0(constructs@10.3.0)
       constructs: 10.3.0
     dev: true
 
@@ -297,7 +329,7 @@ packages:
       aws-cdk-lib: ^2.110.1
       constructs: ^10.0.0
     dependencies:
-      '@aws-cdk/aws-apigatewayv2-alpha': 2.110.1-alpha.0(aws-cdk-lib@2.126.0)(constructs@10.3.0)
+      '@aws-cdk/aws-apigatewayv2-alpha': 2.110.1-alpha.0(aws-cdk-lib@2.127.0)(constructs@10.3.0)
       aws-cdk-lib: 2.110.1(constructs@10.3.0)
       constructs: 10.3.0
     dev: true
@@ -311,7 +343,7 @@ packages:
       aws-cdk-lib: ^2.110.1
       constructs: ^10.0.0
     dependencies:
-      '@aws-cdk/aws-apigatewayv2-alpha': 2.110.1-alpha.0(aws-cdk-lib@2.126.0)(constructs@10.3.0)
+      '@aws-cdk/aws-apigatewayv2-alpha': 2.110.1-alpha.0(aws-cdk-lib@2.127.0)(constructs@10.3.0)
       aws-cdk-lib: 2.110.1(constructs@10.3.0)
       constructs: 10.3.0
     dev: true
@@ -325,7 +357,7 @@ packages:
     dependencies:
       aws-cdk-lib: 2.126.0(constructs@10.3.0)
       constructs: 10.3.0
-    dev: false
+    dev: true
 
   /@aws-cdk/aws-lambda-python-alpha@2.126.0-alpha.0(aws-cdk-lib@2.126.0)(constructs@10.3.0):
     resolution: {integrity: sha512-1Ah6kZlk9V3oT+nJ0VMr29xm5bmGUusXlZjxgSsa3tbP4pUNy//h/y5bQeAzUAekMbCNl9NUFrcP6yuxLYfQuA==}
@@ -347,7 +379,7 @@ packages:
     dependencies:
       aws-cdk-lib: 2.126.0(constructs@10.3.0)
       constructs: 10.3.0
-    dev: false
+    dev: true
 
   /@aws-cdk/aws-service-spec@0.0.29:
     resolution: {integrity: sha512-/Zp5aPDlG5M3CTXJW5KU2Jki3l9Xu/la37gdurawp9cpgufze5vboTyBd/ymHAXNINuApQdmGJ0iDn8HihzQ0Q==}
@@ -5475,7 +5507,7 @@ packages:
   /@types/sax@1.2.7:
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 20.11.0
     dev: false
 
   /@types/scheduler@0.16.8:
@@ -5964,7 +5996,7 @@ packages:
     peerDependencies:
       constructs: ^10.0.0
     dependencies:
-      '@aws-cdk/asset-awscli-v1': 2.2.201
+      '@aws-cdk/asset-awscli-v1': 2.2.202
       '@aws-cdk/asset-kubectl-v20': 2.1.2
       '@aws-cdk/asset-node-proxy-agent-v6': 2.0.1
       constructs: 10.3.0
@@ -6014,6 +6046,30 @@ packages:
       '@aws-cdk/asset-kubectl-v20': 2.1.2
       '@aws-cdk/asset-node-proxy-agent-v6': 2.0.1
       constructs: 10.3.0
+    dev: true
+    bundledDependencies:
+      - '@balena/dockerignore'
+      - case
+      - fs-extra
+      - ignore
+      - jsonschema
+      - minimatch
+      - punycode
+      - semver
+      - table
+      - yaml
+
+  /aws-cdk-lib@2.127.0(constructs@10.3.0):
+    resolution: {integrity: sha512-pEdp2TqgNLYY+kAo68oVzMDEHJevYoRArZJoH+bjM9YTwqRJJiwF1k6tc78e3jca4sCNDZAgX2ytOgqW6lVTWQ==}
+    engines: {node: '>= 14.15.0'}
+    peerDependencies:
+      constructs: ^10.0.0
+    dependencies:
+      '@aws-cdk/asset-awscli-v1': 2.2.202
+      '@aws-cdk/asset-kubectl-v20': 2.1.2
+      '@aws-cdk/asset-node-proxy-agent-v6': 2.0.1
+      constructs: 10.3.0
+    dev: true
     bundledDependencies:
       - '@balena/dockerignore'
       - case
@@ -6287,7 +6343,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.1.13
+      ieee754: 1.2.1
       isarray: 1.0.0
     dev: true
 
@@ -6725,6 +6781,7 @@ packages:
   /constructs@10.3.0:
     resolution: {integrity: sha512-vbK8i3rIb/xwZxSpTjz3SagHn1qq9BChLEfy5Hf6fB3/2eFbrwt2n9kHwQcS0CPTRBesreeAcsJfMq2229FnbQ==}
     engines: {node: '>= 16.14.0'}
+    dev: true
 
   /content-disposition@0.5.2:
     resolution: {integrity: sha512-kRGRZw3bLlFISDBgwTSA1TMBFN6J6GWDeubmDE3AF+3+yXL8hTWv8r5rkLbqYXY4RjPk/EzHnClI3zQf1cFmHA==}
@@ -11554,7 +11611,7 @@ packages:
       '@sls-next/lambda-at-edge':
         optional: true
     dependencies:
-      '@aws-cdk/aws-apigatewayv2-alpha': 2.110.1-alpha.0(aws-cdk-lib@2.126.0)(constructs@10.3.0)
+      '@aws-cdk/aws-apigatewayv2-alpha': 2.110.1-alpha.0(aws-cdk-lib@2.127.0)(constructs@10.3.0)
       '@aws-cdk/aws-apigatewayv2-authorizers-alpha': 2.110.1-alpha.0(@aws-cdk/aws-apigatewayv2-alpha@2.110.1-alpha.0)(aws-cdk-lib@2.110.1)(constructs@10.3.0)
       '@aws-cdk/aws-apigatewayv2-integrations-alpha': 2.110.1-alpha.0(@aws-cdk/aws-apigatewayv2-alpha@2.110.1-alpha.0)(aws-cdk-lib@2.110.1)(constructs@10.3.0)
       '@aws-cdk/cloud-assembly-schema': 2.110.1

@@ -14,7 +14,7 @@ import { execSync } from "child_process";
 import { Construct } from "constructs";
 import fs from "fs";
 import path from "path";
-import { FunctionSpec, ModuleSpec, PackyakSpec } from "../generated/spec.js";
+import { FunctionSpec, ModuleSpec, PackyakSpec } from "./generated/spec.js";
 import { Bindable } from "./bind.js";
 import { exportRequirementsSync } from "./export-requirements.js";
 import { INessieService } from "./nessie/base-nessie-service.js";

@@ -11,7 +11,7 @@ import {
 } from "aws-cdk-lib/aws-ecs-patterns";
 import { HealthCheck } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Construct } from "constructs";
-import type { PythonPoetryArgs } from "../generated/spec.js";
+import type { PythonPoetryArgs } from "./generated/spec.js";
 import { exportRequirementsSync } from "./export-requirements";
 import type { LakeHouse } from "./lakehouse";
 import path from "path";
