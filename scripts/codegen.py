@@ -1,7 +1,6 @@
 import types
 from typing import (
     Literal,
-    TypeAliasType,
     Union,
     get_origin,
     get_args,
@@ -30,9 +29,9 @@ def to_type(type_: type) -> str:
         if issubclass(type_, BaseModel):
             declare_interface(type_)
             return type_.__name__
-    elif isinstance(type_, TypeAliasType):
-        declare_type_alias(type_)
-        return type_.__name__
+    # elif isinstance(type_, TypeAliasType):
+    #     declare_type_alias(type_)
+    #     return type_.__name__
     elif is_union(type_):
         declare_union(type_)
         return type_.__name__
@@ -63,6 +62,7 @@ def declare_interface(type_: type):
     for name, prop_type in get_type_hints(type_).items():
         if (
             isinstance(prop_type, type)
+            and inspect.isclass(prop_type)
             and issubclass(prop_type, BaseModel)
             and prop_type not in visited_types
         ):
@@ -80,8 +80,9 @@ def declare_interface(type_: type):
         and sub_type.__name__ != "BaseModel"
     ]
 
+    sub_classes = ", ".join(extends)
     exported_types.append(
-        f"export interface {type_.__name__}{f' extends {", ".join(extends)}' if len(extends) > 0 else ""} {{\n"
+        f"export interface {type_.__name__}{f' extends {sub_classes}' if len(extends) > 0 else ''} {{\n"
         + "\n".join(props)
         + "\n}"
     )
@@ -117,8 +118,8 @@ def to_type_expr(type_: type | str) -> str:
             return "boolean"
         elif issubclass(type_, int) or issubclass(type_, float):
             return "number"
-    elif isinstance(type_, TypeAliasType):
-        return to_type(type_)
+    # elif isinstance(type_, TypeAliasType):
+    #     return to_type(type_)
     elif is_literal(type_):
         options = get_args(type_)
         if len(options) == 1:

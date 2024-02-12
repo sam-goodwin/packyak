@@ -13,7 +13,7 @@ from packyak.resource import Resource
 from packyak.synth.call import Call
 from packyak.synth.loaded_module import LoadedModule
 
-type Func = Callable[..., Any]
+Func = Callable[..., Any]
 
 
 def bind(func: LambdaFunction[Any, Any] | LoadedModule) -> list[Binding]:

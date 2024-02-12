@@ -17,10 +17,28 @@ from packyak.resource import Resource
 from packyak.spec import DependencyGroup
 from packyak.util.typed_resource import TypedResource
 
-sqs = boto3.client("sqs")
-session: aioboto3.Session = aioboto3.Session()
+_sqs = None
 
-aio_sqs = TypedResource[SQSClient](session.client("sqs"))  # type: ignore
+
+def sqs():
+    global _sqs
+    if not _sqs:
+        # TODO: use a Session and make it configurable, not a global client
+        _sqs = boto3.client("sqs")
+    return _sqs
+
+
+_aio_sqs = None
+
+
+def aio_sqs():
+    global _aio_sqs
+    if not _aio_sqs:
+        session: aioboto3.Session = aioboto3.Session()
+        _aio_sqs = TypedResource[SQSClient](session.client("sqs"))  # type: ignore
+
+    return _aio_sqs
+
 
 Body = str | BaseModel
 
@@ -73,19 +91,19 @@ class Queue(Generic[B], Resource):
         return queue_url
 
     def send_sync(self, body: Body) -> None:
-        sqs.send_message(QueueUrl=self.queue_url, MessageBody=to_json(body))
+        sqs().send_message(QueueUrl=self.queue_url, MessageBody=to_json(body))
 
     @integration("write")
     async def send(self, body: Body) -> None:
-        async with aio_sqs as sqs:
+        async with aio_sqs() as sqs:
             await sqs.send_message(QueueUrl=self.queue_url, MessageBody=to_json(body))
 
     def receive_sync(self) -> list[Message[B]]:
-        return self._parse_receive(sqs.receive_message(QueueUrl=self.queue_url))
+        return self._parse_receive(sqs().receive_message(QueueUrl=self.queue_url))
 
     @integration("read")
     async def receive(self) -> list[Message[B]]:
-        async with aio_sqs as sqs:
+        async with aio_sqs() as sqs:
             return self._parse_receive(
                 await sqs.receive_message(QueueUrl=self.queue_url)
             )
@@ -98,20 +116,20 @@ class Queue(Generic[B], Resource):
 
     @integration("delete")
     async def delete(self, receipt_handle: str) -> None:
-        async with aio_sqs as sqs:
+        async with aio_sqs() as sqs:
             await sqs.delete_message(
                 QueueUrl=self.queue_url, ReceiptHandle=receipt_handle
             )
 
     @integration("list")
     async def list(self):
-        async with aio_sqs as sqs:
+        async with aio_sqs() as sqs:
             response = await sqs.list_queues()
             return response.get("QueueUrls", [])
 
     @integration("change_visibility")
     async def change_visibility(self, receipt_handle: str, visibility_timeout: int):
-        async with aio_sqs as sqs:
+        async with aio_sqs() as sqs:
             await sqs.change_message_visibility(
                 QueueUrl=self.queue_url,
                 ReceiptHandle=receipt_handle,

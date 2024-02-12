@@ -1,4 +1,4 @@
-import "./packyak/aws-cdk/index.js";
+import "./packyak-aws-cdk/lib/index.js";
 
 import {
   Certificate,
@@ -28,18 +28,18 @@ async function Dns(this: Stack) {
 
 const app = new App();
 
-const dns = await app.create(Dns);
+// const dns = await app.create(Dns);
 
-app.create(function DocsSite(this: Construct) {
-  const site = new StaticSite(this, "docs.packyak.ai", {
-    path: "docs",
-    customDomain: {
-      domainName: "docs.packyak.ai",
-      hostedZone: dns.hostedZone.hostedZoneArn,
-    },
-  });
+// app.create(function DocsSite(this: Construct) {
+//   const site = new StaticSite(this, "docs.packyak.ai", {
+//     path: "docs",
+//     customDomain: {
+//       domainName: "docs.packyak.ai",
+//       hostedZone: dns.hostedZone.hostedZoneArn,
+//     },
+//   });
 
-  return {
-    SiteUrl: site.url!,
-  };
-});
+//   return {
+//     SiteUrl: site.url!,
+//   };
+// });

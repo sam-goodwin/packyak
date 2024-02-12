@@ -2,10 +2,10 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.packyak.json"
+      "path": "./tsconfig.packyak.synth.json"
     },
     {
-      "path": "./tsconfig.packyak.synth.json"
+      "path": "./packyak-aws-cdk/tsconfig.json"
     },
     {
       "path": "./packyak-docs/tsconfig.json"
