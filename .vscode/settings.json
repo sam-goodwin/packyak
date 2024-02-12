@@ -46,7 +46,8 @@
     "editor.defaultFormatter": "biomejs.biome"
   },
   "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff"
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.indentSize": 4
   },
   "python.languageServer": "Default",
   "python.analysis.typeCheckingMode": "strict",

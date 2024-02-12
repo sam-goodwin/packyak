@@ -1,7 +1,10 @@
 import { Construct } from "constructs";
 
-import { CfnDomain } from "aws-cdk-lib/aws-sagemaker";
-import { Arn, Resource, Stack } from "aws-cdk-lib/core";
+import {
+  CfnDomain,
+  CfnNotebookInstanceLifecycleConfig,
+} from "aws-cdk-lib/aws-sagemaker";
+import { Arn, CfnMapping, Fn, Resource, Stack } from "aws-cdk-lib/core";
 import { IVpc, SubnetSelection } from "aws-cdk-lib/aws-ec2";
 import {
   CompositePrincipal,
@@ -13,6 +16,7 @@ import {
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
 import { UserProfile } from "./user-profile.js";
+import { SageMakerImage } from "./sage-maker-image.js";
 
 export enum AuthMode {
   SSO = "SSO",
@@ -57,8 +61,16 @@ export interface DomainProps {
    * @default AppNetworkAccessType.PublicInternetOnly
    */
   appNetworkAccessType?: AppNetworkAccessType;
-
+  /**
+   * The default settings for user profiles in the domain.
+   */
   defaultUserSettings?: DefaultUserSettings;
+  /**
+   * The default image for user profiles in the domain.
+   *
+   * @default {@link SageMakerImage.CPU_V1}
+   */
+  defaultImage?: SageMakerImage;
 }
 
 export interface DefaultUserSettings {
@@ -93,6 +105,8 @@ export class Domain extends Resource {
 
     this.users = new Construct(this, "Users");
 
+    const defaultImage = props.defaultImage ?? SageMakerImage.CPU_V1;
+
     const domainExecutionRole = (this.domainExecutionRole = new Role(
       this,
       "ExecutionRole",
@@ -115,6 +129,33 @@ export class Domain extends Resource {
         resources: [domainExecutionRole.roleArn],
       }),
     );
+    domainExecutionRole.addToPrincipalPolicy(
+      new PolicyStatement({
+        actions: ["elasticmapreduce:ListClusters"],
+        resources: ["*"],
+      }),
+    );
+
+    // If EMR, the driver node must be in the same private subnet as the SageMaker notebook
+    //
+
+    // Principal Tags (for SSO)
+
+    // AWS Global Config file on the local instance of the notebook
+    // Lifecycle script
+    // -> Git
+
+    // note: image/lifecycle script should include ssh
+    // error: cannot run ssh: No such file or directory
+
+    // or: GitHub CLI ...
+
+    // %glue_version 4.0
+
+    // Athena -> External Catalog (or sync to Glue Iceberg)
+    //  https://docs.aws.amazon.com/athena/latest/ug/connect-to-data-source-hive.html
+
+    // https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticmapreduce.html
 
     this.resource = new CfnDomain(this, "Resource", {
       authMode: props.authMode ?? AuthMode.SSO,
@@ -135,6 +176,19 @@ export class Domain extends Resource {
         props.appNetworkAccessType ?? AppNetworkAccessType.PublicInternetOnly,
       defaultSpaceSettings: {
         executionRole: domainExecutionRole.roleArn,
+        kernelGatewayAppSettings: {
+          defaultResourceSpec: {
+            instanceType: "system",
+            sageMakerImageArn: defaultImage.getArnForStack(Stack.of(this)),
+            // TODO:
+            // lifecycleConfigArn: ??
+          },
+        },
+        // jupyterServerAppSettings: {
+        //   defaultResourceSpec: {
+        //     what is the image
+        //   },
+        // },
       },
     });
 
@@ -192,17 +246,62 @@ export class Domain extends Resource {
     this.grantDescribeDomain(grantee);
     this.grantDescribeSpace(grantee);
     this.grantDescribeUserProfile(grantee);
+    this.grantListApps(grantee);
+    this.grantListSessions(grantee);
     this.grantListTags(grantee);
+    this.grantListSpaces(grantee);
   }
 
-  public grantListTags(grantee: IGrantable) {
+  public grantListApps(grantee: IGrantable) {
+    this.grant(grantee, {
+      actions: ["sagemaker:ListApps"],
+      resource: "app",
+    });
+  }
+
+  public grantListSessions(grantee: IGrantable) {
     grantee.grantPrincipal.addToPrincipalPolicy(
       new PolicyStatement({
-        actions: ["sagemaker:ListTags"],
-        resources: [this.domainArn],
+        actions: ["glue:ListSessions"],
+        // TODO: tag-based auth
+        resources: ["*"],
         effect: Effect.ALLOW,
       }),
     );
+  }
+
+  public grantListTags(grantee: IGrantable) {
+    this.grant(grantee, {
+      actions: ["sagemaker:ListTags"],
+      resource: "user-profile",
+    });
+    // grantee.grantPrincipal.addToPrincipalPolicy(
+    //   new PolicyStatement({
+    //     actions: ["sagemaker:ListTags"],
+    //     resources: [this.domainArn],
+    //     effect: Effect.ALLOW,
+    //   }),
+    // );
+  }
+
+  public grantSearchServiceCatalogProducts(grantee: IGrantable) {
+    grantee.grantPrincipal.addToPrincipalPolicy(
+      new PolicyStatement({
+        actions: ["servicecatalog:SearchProducts"],
+        // sagemaker scans the whole account
+        resources: ["*"],
+        effect: Effect.ALLOW,
+      }),
+    );
+  }
+
+  // elasticmapreduce:ListClusters
+
+  public grantListSpaces(grantee: IGrantable) {
+    this.grant(grantee, {
+      actions: ["sagemaker:ListSpaces"],
+      resource: "space",
+    });
   }
 
   public grantCreateApp(grantee: IGrantable) {

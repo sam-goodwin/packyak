@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "packyak"
-version = "0.1.2"
+version = "0.1.3"
 description = "Infrastructure for AI applications and machine learning pipelines"
 authors = ["sam <sam@eventual.ai>"]
 readme = "README.md"
-
+include = ["py.typed"]
 
 [tool.poetry.dependencies]
 types-aiobotocore = { extras = ["essential"], version = "^2.9.0" }
@@ -17,11 +17,10 @@ boto3-stubs = { extras = ["essential"], version = "^1.34.15" }
 pandas = "^2.1.4"
 pandera = "^0.18.0"
 pydantic = "^2.5.3"
-python = "3.10.13"
+python = "^3.10"
 pandas-stubs = "^2.1.4.231227"
 aiofiles = "^23.2.1"
-dagster = "^1.6.3"
-dagster-aws = "^0.22.3"
+pyspark = { extras = ["pandas-on-spark"], version = "^3.3.0" }
 
 [tool.poetry.group.dev.dependencies]
 matplotlib = "^3.8.2"
