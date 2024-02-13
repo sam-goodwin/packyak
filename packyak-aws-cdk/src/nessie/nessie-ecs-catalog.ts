@@ -1,6 +1,7 @@
 import { IVpc } from "aws-cdk-lib/aws-ec2";
 import { Platform } from "aws-cdk-lib/aws-ecr-assets";
 import {
+  AwsLogDriver,
   Cluster,
   ContainerImage,
   CpuArchitecture,
@@ -46,6 +47,8 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
     const taskRole = new Role(this, "TaskRole", {
       assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
     });
+
+    // TODO: logs
     this.grantPrincipal = taskRole;
 
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
@@ -68,6 +71,9 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
           ...this.getConfigEnvVars(),
           ...props?.taskImageOptions?.environment,
         },
+        // logDriver: AwsLogDriver.awsLogs({
+
+        // }),
         containerPort: props?.taskImageOptions?.containerPort ?? 19120,
         taskRole,
         image:
@@ -75,6 +81,11 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
           ContainerImage.fromRegistry("ghcr.io/projectnessie/nessie"),
       },
     });
+
+    // this.service.loadBalancer.addListener("HTTPS", {
+    //   port: 443,
+    //   protocol: ApplicationProtocol.HTTPS,
+    // });
     this.versionStore.grantReadWriteData(taskRole);
 
     this.service.targetGroup.configureHealthCheck({
@@ -83,6 +94,7 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
       path: "/q/health",
     });
 
-    this.serviceUrl = `https://${this.service.loadBalancer.loadBalancerDnsName}`;
+    // TODO: support HTTPS://
+    this.serviceUrl = `http://${this.service.loadBalancer.loadBalancerDnsName}`;
   }
 }

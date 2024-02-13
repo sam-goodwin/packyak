@@ -3,14 +3,14 @@ import { SparkVersion } from "./spark-version.js";
 
 export class SparkSqlExtension {
   public static readonly Nessie = new SparkSqlExtension(
-    "org.projectnessie",
+    "org.projectnessie.nessie-integrations",
     "nessie-spark-extensions",
     "0.76.6",
     "org.projectnessie.spark.extensions.NessieSparkSessionExtensions",
   );
   public static readonly Iceberg = new SparkSqlExtension(
     "org.apache.iceberg",
-    "iceberg-spark-extensions",
+    "iceberg-spark-runtime",
     "1.4.3",
     "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions",
   );
@@ -23,6 +23,6 @@ export class SparkSqlExtension {
   ) {}
 
   public maven(sparkVersion: SparkVersion, scalaVersion: ScalaVersion): string {
-    return `${this.groupId}:${this.artifactId}-${sparkVersion.majorMinorVersion}_${scalaVersion.majorMinorVersion}@${this.pkgVersion}`;
+    return `${this.groupId}:${this.artifactId}-${sparkVersion.majorMinorVersion}_${scalaVersion.majorMinorVersion}:${this.pkgVersion}`;
   }
 }

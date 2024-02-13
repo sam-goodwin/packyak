@@ -2,8 +2,10 @@ export interface Configuration {
   classification: string;
   configurationProperties: { [key: string]: string };
 }
-
-export function combineConfigurations(...configs: Configuration[]): Configuration[] {
+// TODO: if keys like `"spark.jars.packages"` collide, join by , and dedupe
+export function combineConfigurations(
+  ...configs: Configuration[]
+): Configuration[] {
   const mergedConfigurations = configs.reduce(
     (acc: { [classification: string]: Configuration }, curr: Configuration) => {
       const { classification, configurationProperties } = curr;

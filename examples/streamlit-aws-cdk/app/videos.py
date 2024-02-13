@@ -1,3 +1,4 @@
+from typing import NamedTuple
 from packyak import Bucket
 
 

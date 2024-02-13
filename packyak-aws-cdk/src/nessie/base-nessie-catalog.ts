@@ -8,7 +8,7 @@ import {
   NessieVersionStoreType,
   nessieConfigToEnvironment,
 } from "./nessie-config";
-import { RemovalPolicy } from "aws-cdk-lib/core";
+import { RemovalPolicy, Stack } from "aws-cdk-lib/core";
 import { ICatalog } from "../emr/catalog";
 import { SparkCluster } from "../emr/spark-cluster";
 import { Configuration } from "../emr/configuration";
@@ -48,6 +48,12 @@ export interface INessieCatalog extends ICatalog {
 
 export interface BaseNessieCatalogProps {
   /**
+   * The name of this catalog in the Spark Context.
+   *
+   * @default spark_catalog - i.e. the default catalog
+   */
+  catalogName?: string;
+  /**
    * @default - one is created for you
    */
   warehouseBucket?: IBucket;
@@ -83,6 +89,7 @@ export abstract class BaseNessieCatalog
   extends Construct
   implements INessieCatalog
 {
+  public readonly catalogName: string;
   /**
    * The {@link NessieConfig} for this service.
    *
@@ -132,7 +139,7 @@ export abstract class BaseNessieCatalog
 
   constructor(scope: Construct, id: string, props?: BaseNessieCatalogProps) {
     super(scope, id);
-
+    this.catalogName = props?.catalogName ?? "spark_catalog";
     this.warehouseBucket =
       props?.warehouseBucket ?? new Bucket(this, "Warehouse");
     this.warehousePrefix = props?.warehousePrefix;
@@ -154,6 +161,7 @@ export abstract class BaseNessieCatalog
       "quarkus.dynamodb.async-client.type": "aws-crt",
       "quarkus.dynamodb.sync-client.type": "aws-crt",
       "quarkus.oidc.tenant-enabled": false,
+      "quarkus.dynamodb.aws.region": Stack.of(this).region,
     };
   }
 
@@ -161,7 +169,7 @@ export abstract class BaseNessieCatalog
     return nessieConfigToEnvironment(this.config);
   }
 
-  public bind(cluster: SparkCluster): Configuration[] {
+  public bind(cluster: SparkCluster, catalogName: string): Configuration[] {
     // TODO: should we limit this to the warehouse prefix
     this.warehouseBucket.grantReadWrite(cluster, "*");
     const sparkVersion = cluster.release.sparkVersion;
@@ -176,30 +184,43 @@ export abstract class BaseNessieCatalog
       scalaVersion,
     );
 
+    // see: https://project-nessie.zulipchat.com/#narrow/stream/371187-general/topic/.E2.9C.94.20Merge.20author/near/421208974
+
+    const catalogNamespace = `spark.sql.catalog.${catalogName}`;
+
     return [
       {
         classification: "spark-defaults",
         configurationProperties: {
           // set up Nessie catalog
-          "spark.jar.packages": `${icebergExt},${nessieExt}`,
+          "spark.jars.packages": `${icebergExt},${nessieExt}`,
           "spark.sql.extensions": `${SparkSqlExtension.Iceberg.className},${SparkSqlExtension.Nessie.className}`,
 
           // TODO: is s3a:// right?
-          "spark.sql.catalog.nessie.warehouse": `s3a://${
+          [`${catalogNamespace}.warehouse`]: `s3://${
             this.warehouseBucket.bucketName
           }${
             this.warehousePrefix
               ? `/${this.warehousePrefix.replace(/^[\/]*/g, "")}`
               : ""
           }`,
-          "spark.sql.catalog.nessie.uri": this.apiV2Url,
-          "spark.sql.catalog.nessie.ref": this.defaultMainBranch,
-          "spark.sql.catalog.nessie.authentication.type": "AWS",
-          "spark.sql.catalog.nessie.catalog-impl":
+          // TODO: not sure if Spark uses V1 or V2
+          // see thread: https://project-nessie.zulipchat.com/#narrow/stream/371187-general/topic/.E2.9C.94.20Merge.20author/near/421198168
+
+          // V1
+          // "spark.sql.catalog.nessie.uri": this.apiV1Url,
+          // "spark.sql.catalog.nessie.ref": this.defaultMainBranch,
+
+          // V2
+          // // After Iceberg 1.5.0 release, just configuring v2 URI is enough (version is inferred from URI).
+          [`${catalogNamespace}.uri"`]: this.apiV2Url,
+          [`${catalogNamespace}.client-api-version`]: "2",
+
+          [`${catalogNamespace}.authentication.type`]: "AWS",
+          [`${catalogNamespace}.catalog-impl`]:
             "org.apache.iceberg.nessie.NessieCatalog",
-          "spark.sql.catalog.nessie": "org.apache.iceberg.spark.SparkCatalog",
-          "spark.sql.catalog.nessie.io-impl":
-            "org.apache.iceberg.aws.s3.S3FileIO",
+          [catalogNamespace]: "org.apache.iceberg.spark.SparkCatalog",
+          [`${catalogNamespace}.io-impl`]: "org.apache.iceberg.aws.s3.S3FileIO",
           // "spark.sql.catalog.nessie.cache-enabled": false
         },
       },

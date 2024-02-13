@@ -1,5 +1,5 @@
 import { PythonFunction } from "@aws-cdk/aws-lambda-python-alpha";
-import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
+import { IVpc, SubnetSelection, SubnetType, Vpc } from "aws-cdk-lib/aws-ec2";
 import { Cluster } from "aws-cdk-lib/aws-ecs";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import {
@@ -34,12 +34,6 @@ export interface LakeHouseProps {
    * @default - A new VPC is created.
    */
   vpc?: IVpc;
-  /**
-   * Number of NAT gateways to configure
-   *
-   * @default 1
-   */
-  natGateways?: number;
   /**
    * The removal policy to apply to the Lake House.
    */
@@ -97,10 +91,13 @@ export class LakeHouse extends Construct {
     );
     this.vpc =
       props.vpc ??
+      // TODO: more cost optimized VPC that only has 1 NAT gateway
       new Vpc(this, "Vpc", {
-        natGateways: props.natGateways ?? 1,
+        natGateways: 1,
       });
-    this.cluster = new Cluster(this, "Cluster");
+    this.cluster = new Cluster(this, "Cluster", {
+      vpc: this.vpc,
+    });
     this.catalog = new NessieECSCatalog(this, "Nessie", {
       cluster: this.cluster,
       serviceName: `${props.lakehouseName}-nessie`,

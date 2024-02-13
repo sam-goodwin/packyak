@@ -10,6 +10,7 @@ export interface NessieVersionStoreProps {
    * Nessie supports configuring a "prefix" that will be used to determine the names of these tables.
    *
    * @default - "nessie"
+   * @see https://project-nessie.zulipchat.com/#narrow/stream/371187-general/topic/AWS.20Lambda.20with.20SnapStart/near/420329834
    */
   tablePrefix?: string;
 }
@@ -24,6 +25,7 @@ export class NessieVersionStore extends Construct {
   constructor(scope: Construct, id: string, props?: NessieVersionStoreProps) {
     super(scope, id);
     this.tablePrefix = props?.tablePrefix ?? "nessie";
+
     this.objs = new NessieVersionStoreTable(this, "objs", {
       tableName: `${this.tablePrefix}_objs`,
     });
