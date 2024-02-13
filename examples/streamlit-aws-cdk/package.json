@@ -7,7 +7,7 @@
 		"start:docker": "docker build -t packyak . && docker run -e AWS_DEFAULT_REGION=us-east-2 -p 8501:8501 -t packyak",
 		"synth": "cdk synth --quiet",
 		"dev": "cdk deploy --require-approval never",
-		"deploy": "cdk deploy --require-approval never"
+		"deploy": "cdk deploy --require-approval never --method=direct"
 	},
 	"dependencies": {
 		"@packyak/aws-cdk": "workspace:^"

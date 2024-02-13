@@ -1,11 +1,9 @@
 import { IVpc } from "aws-cdk-lib/aws-ec2";
 import { Platform } from "aws-cdk-lib/aws-ecr-assets";
 import {
-  AwsLogDriverMode,
   Cluster,
   ContainerImage,
   CpuArchitecture,
-  LogDriver,
   OperatingSystemFamily,
 } from "aws-cdk-lib/aws-ecs";
 import {
@@ -20,12 +18,12 @@ import {
 } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import {
-  BaseNessieService,
-  BaseNessieServiceProps,
-} from "./base-nessie-service";
+  BaseNessieCatalog,
+  BaseNessieCatalogProps,
+} from "./base-nessie-catalog";
 
-export interface NessieECSServiceProps
-  extends BaseNessieServiceProps,
+export interface NessieECSCatalogProps
+  extends BaseNessieCatalogProps,
     ApplicationLoadBalancedFargateServiceProps {
   serviceName: string;
   vpc?: IVpc;
@@ -33,14 +31,14 @@ export interface NessieECSServiceProps
   platform?: Platform;
 }
 
-export class NessieECSService extends BaseNessieService implements IGrantable {
+export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
   public readonly service: ApplicationLoadBalancedFargateService;
 
   public override readonly serviceUrl: string;
 
   public readonly grantPrincipal: IPrincipal;
 
-  constructor(scope: Construct, id: string, props?: NessieECSServiceProps) {
+  constructor(scope: Construct, id: string, props?: NessieECSCatalogProps) {
     super(scope, id, props);
 
     const platform = props?.platform ?? Platform.LINUX_AMD64;

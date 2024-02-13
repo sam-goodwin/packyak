@@ -1,5 +1,5 @@
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
-import { LakeHouse, Domain, AuthMode } from "@packyak/aws-cdk";
+import { LakeHouse, Domain, AuthMode, SparkCluster } from "@packyak/aws-cdk";
 
 const app = new App();
 
@@ -17,6 +17,12 @@ const domain = new Domain(stack, "Domain", {
   domainName: `streamlit-example-aws-cdk-${stage}`,
   vpc: lakeHouse.vpc,
   authMode: AuthMode.IAM,
+});
+
+const spark = new SparkCluster(stack, "SparkCluster", {
+  clusterName: "streamlit-example",
+  catalog: lakeHouse.catalog,
+  vpc: lakeHouse.vpc,
 });
 
 domain.addUserProfile("sam");

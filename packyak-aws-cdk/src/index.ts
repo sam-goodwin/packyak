@@ -1,6 +1,7 @@
 export * from "./lakehouse.js";
 export * from "./streamlit-site.js";
 export * from "./sagemaker/domain.js";
+export * from "./emr/spark-cluster.js";
 
 import { CfnOutput, Stack } from "aws-cdk-lib/core";
 
