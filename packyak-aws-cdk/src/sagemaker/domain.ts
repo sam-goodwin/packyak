@@ -1,11 +1,8 @@
 import { Construct } from "constructs";
 
-import {
-  CfnDomain,
-  CfnNotebookInstanceLifecycleConfig,
-} from "aws-cdk-lib/aws-sagemaker";
-import { Arn, CfnMapping, Fn, Resource, Stack } from "aws-cdk-lib/core";
-import { IVpc, SubnetSelection } from "aws-cdk-lib/aws-ec2";
+import { CfnDomain } from "aws-cdk-lib/aws-sagemaker";
+import { Arn, RemovalPolicy, Resource, Stack } from "aws-cdk-lib/core";
+import { IVpc, SecurityGroup, SubnetSelection } from "aws-cdk-lib/aws-ec2";
 import {
   CompositePrincipal,
   Effect,
@@ -17,6 +14,7 @@ import {
 } from "aws-cdk-lib/aws-iam";
 import { UserProfile } from "./user-profile.js";
 import { SageMakerImage } from "./sage-maker-image.js";
+import { AwsCustomResource } from "aws-cdk-lib/custom-resources";
 
 export enum AuthMode {
   SSO = "SSO",
@@ -30,6 +28,19 @@ export enum AuthMode {
 export enum AppNetworkAccessType {
   VpcOnly = "VpcOnly",
   PublicInternetOnly = "PublicInternetOnly",
+}
+
+export interface DefaultUserSettings {
+  /**
+   * The execution role for the user.
+   */
+  executionRole?: IRole;
+  /**
+   * Whether users can access the Studio by default.
+   *
+   * @default true
+   */
+  studioWebPortal?: boolean;
 }
 
 export interface DomainProps {
@@ -58,7 +69,7 @@ export interface DomainProps {
   /**
    * Specifies the VPC used for non-EFS traffic.
    *
-   * @default AppNetworkAccessType.PublicInternetOnly
+   * @default AppNetworkAccessType.VpcOnly
    */
   appNetworkAccessType?: AppNetworkAccessType;
   /**
@@ -71,19 +82,14 @@ export interface DomainProps {
    * @default {@link SageMakerImage.CPU_V1}
    */
   defaultImage?: SageMakerImage;
-}
-
-export interface DefaultUserSettings {
   /**
-   * The execution role for the user.
+   * @default {@link RemovalPolicy.DESTROY}
    */
-  executionRole?: IRole;
+  removalPolicy?: RemovalPolicy;
   /**
-   * Whether users can access the Studio by default.
-   *
-   * @default true
+   * The security group for SageMaker to use.
    */
-  studioWebPortal?: boolean;
+  sageMakerSg?: SecurityGroup;
 }
 
 export class Domain extends Resource {
@@ -98,25 +104,24 @@ export class Domain extends Resource {
 
   private readonly users: Construct;
 
-  private readonly domainExecutionRole: Role;
+  public readonly sageMakerSg: SecurityGroup;
 
   constructor(scope: Construct, id: string, props: DomainProps) {
     super(scope, id);
+
+    const removalPolicy = props.removalPolicy ?? RemovalPolicy.RETAIN;
 
     this.users = new Construct(this, "Users");
 
     const defaultImage = props.defaultImage ?? SageMakerImage.CPU_V1;
 
-    const domainExecutionRole = (this.domainExecutionRole = new Role(
-      this,
-      "ExecutionRole",
-      {
-        assumedBy: new CompositePrincipal(
-          new ServicePrincipal("sagemaker.amazonaws.com"),
-          new ServicePrincipal("glue.amazonaws.com"),
-        ),
-      },
-    ));
+    const domainExecutionRole = new Role(this, "ExecutionRole", {
+      assumedBy: new CompositePrincipal(
+        new ServicePrincipal("sagemaker.amazonaws.com"),
+        new ServicePrincipal("glue.amazonaws.com"),
+      ),
+    });
+    domainExecutionRole.applyRemovalPolicy(removalPolicy);
     // sagemaker needs permission to call GetRole and PassRole on the Role it assumed
     // e.g. arn:aws:iam::123456789012:role/role-name/SageMaker will call GetRole on arn:aws:iam::123456789012:role/role-name
     // When you run `spark` in a Jupyter notebook, it will:
@@ -127,12 +132,6 @@ export class Domain extends Resource {
       new PolicyStatement({
         actions: ["iam:GetRole", "iam:PassRole"],
         resources: [domainExecutionRole.roleArn],
-      }),
-    );
-    domainExecutionRole.addToPrincipalPolicy(
-      new PolicyStatement({
-        actions: ["elasticmapreduce:ListClusters"],
-        resources: ["*"],
       }),
     );
 
@@ -157,6 +156,13 @@ export class Domain extends Resource {
 
     // https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticmapreduce.html
 
+    const sageMakerSg =
+      props.sageMakerSg ??
+      new SecurityGroup(this, "SageMakerSecurityGroup", {
+        vpc: props.vpc,
+      });
+    this.sageMakerSg = sageMakerSg;
+
     this.resource = new CfnDomain(this, "Resource", {
       authMode: props.authMode ?? AuthMode.SSO,
       domainName: props.domainName,
@@ -171,15 +177,18 @@ export class Domain extends Resource {
           props.defaultUserSettings?.studioWebPortal ?? true
             ? "ENABLED"
             : "DISABLED",
+        securityGroups: [sageMakerSg.securityGroupId],
       },
+
       appNetworkAccessType:
-        props.appNetworkAccessType ?? AppNetworkAccessType.PublicInternetOnly,
+        props.appNetworkAccessType ?? AppNetworkAccessType.VpcOnly,
       defaultSpaceSettings: {
         executionRole: domainExecutionRole.roleArn,
         kernelGatewayAppSettings: {
           defaultResourceSpec: {
             instanceType: "system",
             sageMakerImageArn: defaultImage.getArnForStack(Stack.of(this)),
+
             // TODO:
             // lifecycleConfigArn: ??
           },
@@ -191,6 +200,7 @@ export class Domain extends Resource {
         // },
       },
     });
+    this.resource.applyRemovalPolicy(removalPolicy);
 
     this.domainId = this.resource.ref;
     this.domainArn = this.resource.attrDomainArn;
@@ -200,6 +210,12 @@ export class Domain extends Resource {
       this.resource.attrSingleSignOnManagedApplicationInstanceId;
     this.singleSignOnApplicationArn =
       this.resource.attrSingleSignOnApplicationArn;
+
+    if (removalPolicy === RemovalPolicy.DESTROY) {
+      this.enableEFSDeletion();
+    }
+
+    // TODO: CustomResource to spin down Spaces when destroyed
 
     // TODO: should this be configurable?
     this.grantStudioAccess(domainExecutionRole);
@@ -235,6 +251,53 @@ export class Domain extends Resource {
     );
   }
 
+  private deleteHome: AwsCustomResource | undefined;
+
+  /**
+   * Creates a CustomResource to delete the EFS file system when the Domain is deleted.
+   *
+   * CFN does not delete the EFS which bricks the stack.
+   */
+  public enableEFSDeletion() {
+    if (this.deleteHome) {
+      return;
+    }
+    const deleteHomeRole = new Role(this, "DeleteHomeRole", {
+      assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
+    });
+    deleteHomeRole.addToPrincipalPolicy(
+      new PolicyStatement({
+        actions: ["efs:DeleteFileSystem"],
+        resources: [
+          Arn.format(
+            {
+              service: "efs",
+              resource: "file-system",
+              resourceName: this.homeEfsFileSystemId,
+            },
+            Stack.of(this),
+          ),
+        ],
+      }),
+    );
+
+    // got error: Received response status [FAILED] from custom resource. Message returned: User: arn:aws:sts::905418454327:assumed-role/streamlit-example-aws-cdk-DomainDeleteHomeRoleE3678-1bCO3sAxXc8k/streamlit-example-aws-cdk-AWS679f53fac002430cb0da5-fFiSXxnyg3zW is not authorized to perform: elasticfilesystem:DeleteFileSystem on the specified resource (RequestId: 1031beb5-eaa8-4a2c-9514-1d2f2386e479)
+    // when I had already deleted the domain
+    // is it a permission issue or did AWS just not like that I was trying to delete a non-existent resource?
+    this.deleteHome = new AwsCustomResource(this, "DeleteHome", {
+      role: deleteHomeRole,
+      installLatestAwsSdk: false,
+      onDelete: {
+        service: "efs",
+        action: "DeleteFileSystem",
+        parameters: {
+          FileSystemId: this.homeEfsFileSystemId,
+        },
+        // ignoreErrorCodesMatching:
+      },
+    });
+  }
+
   public grantStudioAccess(grantee: IGrantable) {
     this.grantCreateSpace(grantee);
     this.grantCreateApp(grantee);
@@ -250,6 +313,35 @@ export class Domain extends Resource {
     this.grantListSessions(grantee);
     this.grantListTags(grantee);
     this.grantListSpaces(grantee);
+    this.grantEMRClusterAccess(grantee);
+  }
+
+  /**
+   * Grants access to list and describe clusters in the JupyterNotebook.
+   */
+  public grantEMRClusterAccess(grantee: IGrantable) {
+    grantee.grantPrincipal.addToPrincipalPolicy(
+      new PolicyStatement({
+        actions: [
+          "elasticmapreduce:ListClusters",
+          "elasticmapreduce:ListInstances",
+          "elasticmapreduce:ListInstanceFleets",
+          "elasticmapreduce:ListInstanceGroups",
+          "elasticmapreduce:DescribeCluster",
+          // TODO: this should be cluster specific
+          "elasticmapreduce:GetOnClusterAppUIPresignedURL",
+        ],
+        resources: ["*"],
+      }),
+    );
+  }
+
+  // sagemaker:Search
+  public grantSageMakerSearch(grantee: IGrantable) {
+    this.grant(grantee, {
+      actions: ["sagemaker:Search"],
+      resource: "user-profile",
+    });
   }
 
   public grantListApps(grantee: IGrantable) {
@@ -294,8 +386,6 @@ export class Domain extends Resource {
       }),
     );
   }
-
-  // elasticmapreduce:ListClusters
 
   public grantListSpaces(grantee: IGrantable) {
     this.grant(grantee, {

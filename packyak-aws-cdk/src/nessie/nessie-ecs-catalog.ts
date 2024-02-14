@@ -1,11 +1,10 @@
 import { IVpc } from "aws-cdk-lib/aws-ec2";
 import { Platform } from "aws-cdk-lib/aws-ecr-assets";
 import {
-  AwsLogDriverMode,
+  AwsLogDriver,
   Cluster,
   ContainerImage,
   CpuArchitecture,
-  LogDriver,
   OperatingSystemFamily,
 } from "aws-cdk-lib/aws-ecs";
 import {
@@ -20,27 +19,30 @@ import {
 } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import {
-  BaseNessieService,
-  BaseNessieServiceProps,
-} from "./base-nessie-service";
+  BaseNessieCatalog,
+  BaseNessieCatalogProps,
+} from "./base-nessie-catalog.js";
+import type { DNSConfiguration } from "../dns-configuration.js";
+import { ILogGroup, LogGroup } from "aws-cdk-lib/aws-logs";
 
-export interface NessieECSServiceProps
-  extends BaseNessieServiceProps,
+export interface NessieECSCatalogProps
+  extends BaseNessieCatalogProps,
     ApplicationLoadBalancedFargateServiceProps {
-  serviceName: string;
   vpc?: IVpc;
   cluster?: Cluster;
   platform?: Platform;
+  dns?: DNSConfiguration;
 }
 
-export class NessieECSService extends BaseNessieService implements IGrantable {
+export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
   public readonly service: ApplicationLoadBalancedFargateService;
 
-  public override readonly serviceUrl: string;
+  public override readonly endpoint: string;
 
   public readonly grantPrincipal: IPrincipal;
+  public readonly logGroup: ILogGroup;
 
-  constructor(scope: Construct, id: string, props?: NessieECSServiceProps) {
+  constructor(scope: Construct, id: string, props: NessieECSCatalogProps) {
     super(scope, id, props);
 
     const platform = props?.platform ?? Platform.LINUX_AMD64;
@@ -48,7 +50,15 @@ export class NessieECSService extends BaseNessieService implements IGrantable {
     const taskRole = new Role(this, "TaskRole", {
       assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
     });
+
+    // TODO: logs
     this.grantPrincipal = taskRole;
+
+    this.logGroup =
+      props.logGroup ??
+      new LogGroup(this, "LogGroup", {
+        logGroupName: `/nessie/${this.catalogName}`,
+      });
 
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
       cluster: props?.cluster,
@@ -64,12 +74,19 @@ export class NessieECSService extends BaseNessieService implements IGrantable {
       cpu: props?.cpu ?? 256,
       memoryLimitMiB: props?.memoryLimitMiB ?? 512,
       publicLoadBalancer: true,
+      certificate: props?.dns?.certificate,
+      domainName: props?.dns?.domainName,
+      domainZone: props?.dns?.hostedZone,
       taskImageOptions: {
         ...(props?.taskImageOptions ?? {}),
         environment: {
           ...this.getConfigEnvVars(),
           ...props?.taskImageOptions?.environment,
         },
+        logDriver: AwsLogDriver.awsLogs({
+          streamPrefix: "nessie",
+          logGroup: this.logGroup,
+        }),
         containerPort: props?.taskImageOptions?.containerPort ?? 19120,
         taskRole,
         image:
@@ -77,6 +94,11 @@ export class NessieECSService extends BaseNessieService implements IGrantable {
           ContainerImage.fromRegistry("ghcr.io/projectnessie/nessie"),
       },
     });
+
+    // this.service.loadBalancer.addListener("HTTPS", {
+    //   port: 443,
+    //   protocol: ApplicationProtocol.HTTPS,
+    // });
     this.versionStore.grantReadWriteData(taskRole);
 
     this.service.targetGroup.configureHealthCheck({
@@ -85,6 +107,10 @@ export class NessieECSService extends BaseNessieService implements IGrantable {
       path: "/q/health",
     });
 
-    this.serviceUrl = `https://${this.service.loadBalancer.loadBalancerDnsName}`;
+    if (props?.dns) {
+      this.endpoint = `https://${props.dns.domainName}`;
+    } else {
+      this.endpoint = `http://${this.service.loadBalancer.loadBalancerDnsName}`;
+    }
   }
 }

@@ -1,4 +1,3 @@
-import { Database } from "@aws-cdk/aws-glue-alpha";
 import { PythonFunction } from "@aws-cdk/aws-lambda-python-alpha";
 import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
 import { Cluster } from "aws-cdk-lib/aws-ecs";
@@ -17,8 +16,9 @@ import path from "path";
 import { FunctionSpec, ModuleSpec, PackyakSpec } from "./generated/spec.js";
 import { Bindable } from "./bind.js";
 import { exportRequirementsSync } from "./export-requirements.js";
-import { INessieService } from "./nessie/base-nessie-service.js";
-import { NessieECSService } from "./nessie/nessie-ecs-service.js";
+import { INessieCatalog } from "./nessie/base-nessie-catalog.js";
+import { NessieECSCatalog } from "./nessie/nessie-ecs-catalog.js";
+import type { DNSConfiguration } from "./dns-configuration.js";
 
 export interface LakeHouseProps {
   /**
@@ -36,23 +36,22 @@ export interface LakeHouseProps {
    */
   vpc?: IVpc;
   /**
-   * Number of NAT gateways to configure
-   *
-   * @default 1
-   */
-  natGateways?: number;
-  /**
    * The removal policy to apply to the Lake House.
    */
   removalPolicy?: RemovalPolicy;
+  /**
+   * The certificate to use for HTTPS.
+   *
+   * @default - Catalog is HTTP (insecure) only
+   */
+  dns?: DNSConfiguration;
 }
 
 export class LakeHouse extends Construct {
   public readonly spec: PackyakSpec;
   public readonly vpc: IVpc;
   public readonly cluster: Cluster;
-  public readonly database: Database;
-  public readonly nessie: INessieService;
+  public readonly catalog: INessieCatalog;
   public readonly buckets: Bucket[];
   public readonly queues: Queue[];
   public readonly bucketIndex: {
@@ -99,21 +98,18 @@ export class LakeHouse extends Construct {
     );
     this.vpc =
       props.vpc ??
+      // TODO: more cost optimized VPC that only has 1 NAT gateway
       new Vpc(this, "Vpc", {
-        natGateways: props.natGateways ?? 1,
+        natGateways: 1,
       });
-    this.cluster = new Cluster(this, "Cluster");
-    this.database = new Database(this, "Database", {
-      databaseName: props.lakehouseName,
+    this.cluster = new Cluster(this, "Cluster", {
+      vpc: this.vpc,
     });
-    this.database.applyRemovalPolicy(
-      props.removalPolicy ?? RemovalPolicy.DESTROY,
-    );
-    this.nessie = new NessieECSService(this, "Nessie", {
+    this.catalog = new NessieECSCatalog(this, "Nessie", {
       cluster: this.cluster,
       serviceName: `${props.lakehouseName}-nessie`,
-      logGroupName: `/${props.lakehouseName}/nessie`,
       removalPolicy,
+      dns: props.dns,
     });
     this.functions = this.spec.functions.map((funcSpec) => {
       const indexFolder = path.join(".packyak", funcSpec.function_id);

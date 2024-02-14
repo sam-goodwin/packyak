@@ -10,19 +10,19 @@ import {
 import { Construct } from "constructs";
 import path from "path";
 import {
-  BaseNessieService,
-  BaseNessieServiceProps,
-} from "./base-nessie-service";
+  BaseNessieCatalog,
+  BaseNessieCatalogProps,
+} from "./base-nessie-catalog.js";
 
-export interface NessieLambdaServiceProps extends BaseNessieServiceProps {}
+export interface NessieLambdaCatalogProps extends BaseNessieCatalogProps {}
 
-export class NessieLambdaService extends BaseNessieService {
+export class NessieLambdaCatalog extends BaseNessieCatalog {
   public readonly function: Function;
   public readonly functionUrl: FunctionUrl;
 
-  public override readonly serviceUrl: string;
+  public override readonly endpoint: string;
 
-  constructor(scope: Construct, id: string, props?: NessieLambdaServiceProps) {
+  constructor(scope: Construct, id: string, props: NessieLambdaCatalogProps) {
     super(scope, id, props);
 
     // TODO: none of this is right
@@ -39,6 +39,6 @@ export class NessieLambdaService extends BaseNessieService {
       // TODO: what's right here? Maybe streaming?
       invokeMode: InvokeMode.BUFFERED,
     });
-    this.serviceUrl = this.functionUrl.url;
+    this.endpoint = this.functionUrl.url;
   }
 }

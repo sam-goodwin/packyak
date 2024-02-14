@@ -1,22 +1,53 @@
+import {
+  AuthMode,
+  Domain,
+  DynamoDBNessieVersionStore,
+  NessieECSCatalog,
+  SparkCluster,
+} from "@packyak/aws-cdk";
+import { Vpc } from "aws-cdk-lib/aws-ec2";
+import { Bucket } from "aws-cdk-lib/aws-s3";
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
-import { LakeHouse, Domain, AuthMode } from "@packyak/aws-cdk";
-
-const app = new App();
-
-const stack = new Stack(app, "streamlit-example-aws-cdk");
 
 const stage = process.env.STAGE ?? "personal";
 
-const lakeHouse = new LakeHouse(stack, "DataLake", {
-  lakehouseName: `streamlit-example-aws-cdk-${stage}`,
-  module: "app",
+const lakeHouseName = `packyak-example-${stage}`;
+
+const app = new App();
+
+const stack = new Stack(app, lakeHouseName);
+const vpc = new Vpc(stack, "Vpc");
+
+const versionStore = new DynamoDBNessieVersionStore(stack, "VersionStore", {
+  versionStoreName: `${lakeHouseName}-version-store`,
+});
+
+const myRepoBucket = new Bucket(stack, "MyCatalogBucket", {
   removalPolicy: RemovalPolicy.DESTROY,
 });
 
+const myCatalog = new NessieECSCatalog(stack, "MyCatalog", {
+  vpc,
+  warehouseBucket: myRepoBucket,
+  catalogName: lakeHouseName,
+  removalPolicy: RemovalPolicy.DESTROY,
+  versionStore,
+});
+
 const domain = new Domain(stack, "Domain", {
+  removalPolicy: RemovalPolicy.DESTROY,
   domainName: `streamlit-example-aws-cdk-${stage}`,
-  vpc: lakeHouse.vpc,
+  vpc,
   authMode: AuthMode.IAM,
+});
+
+const spark = new SparkCluster(stack, "SparkCluster", {
+  clusterName: "streamlit-example",
+  catalogs: {
+    spark_catalog: myCatalog,
+  },
+  vpc,
+  sageMakerSg: domain.sageMakerSg,
 });
 
 domain.addUserProfile("sam");
