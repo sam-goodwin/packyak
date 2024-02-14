@@ -1,6 +1,7 @@
 {
 	"name": "examples-streamlit-aws-cdk",
 	"version": "0.1.0",
+	"type": "module",
 	"description": "A Streamlit app deployed to AWS with Packyak for AWS CDK",
 	"scripts": {
 		"start": "poetry run streamlit run ./app/home.py",

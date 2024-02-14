@@ -37,7 +37,7 @@ export class IcebergGlueCatalog extends Construct implements ICatalog {
     return new IcebergGlueCatalog(scope, id, {
       warehouseBucket: Bucket.fromBucketName(
         scope,
-        id,
+        `${id}WarehouseBucket`,
         props.warehouseBucketName,
       ),
       warehousePrefix: props.warehousePrefix,

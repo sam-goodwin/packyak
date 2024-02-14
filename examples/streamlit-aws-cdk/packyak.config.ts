@@ -1,67 +1,52 @@
-import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
 import {
-  LakeHouse,
-  Domain,
   AuthMode,
+  Domain,
+  DynamoDBNessieVersionStore,
+  NessieECSCatalog,
   SparkCluster,
-  IcebergGlueCatalog,
 } from "@packyak/aws-cdk";
-import { HostedZone } from "aws-cdk-lib/aws-route53";
-import {
-  Certificate,
-  CertificateValidation,
-} from "aws-cdk-lib/aws-certificatemanager";
+import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
-
-const app = new App();
-
-const stack = new Stack(app, "streamlit-example-aws-cdk-2");
-
-const hostedZone = HostedZone.fromHostedZoneAttributes(stack, "HostedZone", {
-  hostedZoneId: "Z0142778163AZ8IIPALSQ",
-  zoneName: "samgoodwin.noetikdev.com",
-});
-
-const noetikLegacy = IcebergGlueCatalog.fromBucketName(
-  stack,
-  "IcebergGlueCatalog",
-  {
-    warehouseBucketName: "noetik-data-lake-poc",
-  },
-);
-
-const certificate = new Certificate(stack, "Certificate", {
-  domainName: "nessie.samgoodwin.noetikdev.com",
-  validation: CertificateValidation.fromDns(hostedZone),
-});
+import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
 
 const stage = process.env.STAGE ?? "personal";
 
-const lakeHouse = new LakeHouse(stack, "DataLake", {
+const lakeHouseName = `packyak-example-${stage}`;
+
+const app = new App();
+
+const stack = new Stack(app, lakeHouseName);
+const vpc = new Vpc(stack, "Vpc");
+
+const versionStore = new DynamoDBNessieVersionStore(stack, "VersionStore", {
+  versionStoreName: `${lakeHouseName}-version-store`,
+});
+
+const myRepoBucket = new Bucket(stack, "MyCatalogBucket", {
   removalPolicy: RemovalPolicy.DESTROY,
-  lakehouseName: `streamlit-example-aws-cdk-${stage}`,
-  module: "app",
-  dns: {
-    domainName: "nessie.samgoodwin.noetikdev.com",
-    certificate,
-    hostedZone,
-  },
+});
+
+const myCatalog = new NessieECSCatalog(stack, "MyCatalog", {
+  vpc,
+  warehouseBucket: myRepoBucket,
+  catalogName: lakeHouseName,
+  removalPolicy: RemovalPolicy.DESTROY,
+  versionStore,
 });
 
 const domain = new Domain(stack, "Domain", {
   removalPolicy: RemovalPolicy.DESTROY,
   domainName: `streamlit-example-aws-cdk-${stage}`,
-  vpc: lakeHouse.vpc,
+  vpc,
   authMode: AuthMode.IAM,
 });
 
 const spark = new SparkCluster(stack, "SparkCluster", {
   clusterName: "streamlit-example",
   catalogs: {
-    spark_catalog: lakeHouse.catalog,
-    noetik_athena: noetikLegacy,
+    spark_catalog: myCatalog,
   },
-  vpc: lakeHouse.vpc,
+  vpc,
   sageMakerSg: domain.sageMakerSg,
 });
 

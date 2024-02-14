@@ -1,17 +1,7 @@
 import { Construct } from "constructs";
 
-import {
-  CfnDomain,
-  CfnNotebookInstanceLifecycleConfig,
-} from "aws-cdk-lib/aws-sagemaker";
-import {
-  Arn,
-  CfnMapping,
-  Fn,
-  RemovalPolicy,
-  Resource,
-  Stack,
-} from "aws-cdk-lib/core";
+import { CfnDomain } from "aws-cdk-lib/aws-sagemaker";
+import { Arn, RemovalPolicy, Resource, Stack } from "aws-cdk-lib/core";
 import { IVpc, SecurityGroup, SubnetSelection } from "aws-cdk-lib/aws-ec2";
 import {
   CompositePrincipal,
@@ -291,6 +281,9 @@ export class Domain extends Resource {
       }),
     );
 
+    // got error: Received response status [FAILED] from custom resource. Message returned: User: arn:aws:sts::905418454327:assumed-role/streamlit-example-aws-cdk-DomainDeleteHomeRoleE3678-1bCO3sAxXc8k/streamlit-example-aws-cdk-AWS679f53fac002430cb0da5-fFiSXxnyg3zW is not authorized to perform: elasticfilesystem:DeleteFileSystem on the specified resource (RequestId: 1031beb5-eaa8-4a2c-9514-1d2f2386e479)
+    // when I had already deleted the domain
+    // is it a permission issue or did AWS just not like that I was trying to delete a non-existent resource?
     this.deleteHome = new AwsCustomResource(this, "DeleteHome", {
       role: deleteHomeRole,
       installLatestAwsSdk: false,
@@ -300,6 +293,7 @@ export class Domain extends Resource {
         parameters: {
           FileSystemId: this.homeEfsFileSystemId,
         },
+        // ignoreErrorCodesMatching:
       },
     });
   }

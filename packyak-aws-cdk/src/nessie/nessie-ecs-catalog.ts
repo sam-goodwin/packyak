@@ -21,13 +21,13 @@ import { Construct } from "constructs";
 import {
   BaseNessieCatalog,
   BaseNessieCatalogProps,
-} from "./base-nessie-catalog";
-import type { DNSConfiguration } from "../dns-configuration";
+} from "./base-nessie-catalog.js";
+import type { DNSConfiguration } from "../dns-configuration.js";
+import { ILogGroup, LogGroup } from "aws-cdk-lib/aws-logs";
 
 export interface NessieECSCatalogProps
   extends BaseNessieCatalogProps,
     ApplicationLoadBalancedFargateServiceProps {
-  serviceName: string;
   vpc?: IVpc;
   cluster?: Cluster;
   platform?: Platform;
@@ -40,8 +40,9 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
   public override readonly endpoint: string;
 
   public readonly grantPrincipal: IPrincipal;
+  public readonly logGroup: ILogGroup;
 
-  constructor(scope: Construct, id: string, props?: NessieECSCatalogProps) {
+  constructor(scope: Construct, id: string, props: NessieECSCatalogProps) {
     super(scope, id, props);
 
     const platform = props?.platform ?? Platform.LINUX_AMD64;
@@ -52,6 +53,12 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
 
     // TODO: logs
     this.grantPrincipal = taskRole;
+
+    this.logGroup =
+      props.logGroup ??
+      new LogGroup(this, "LogGroup", {
+        logGroupName: `/nessie/${this.catalogName}`,
+      });
 
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
       cluster: props?.cluster,
@@ -76,9 +83,10 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
           ...this.getConfigEnvVars(),
           ...props?.taskImageOptions?.environment,
         },
-        // logDriver: AwsLogDriver.awsLogs({
-
-        // }),
+        logDriver: AwsLogDriver.awsLogs({
+          streamPrefix: "nessie",
+          logGroup: this.logGroup,
+        }),
         containerPort: props?.taskImageOptions?.containerPort ?? 19120,
         taskRole,
         image:

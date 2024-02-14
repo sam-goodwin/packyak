@@ -1,19 +1,17 @@
 import { Construct } from "constructs";
-import {
-  NessieVersionStoreProps,
-  NessieVersionStore,
-} from "./nessie-version-store";
+import { DynamoDBNessieVersionStore } from "./nessie-version-store.js";
 import {
   NessieConfig,
   NessieVersionStoreType,
   nessieConfigToEnvironment,
-} from "./nessie-config";
+} from "./nessie-config.js";
 import { RemovalPolicy, Stack } from "aws-cdk-lib/core";
-import { ICatalog } from "../emr/catalog";
-import { SparkCluster } from "../emr/spark-cluster";
-import { Configuration } from "../emr/configuration";
-import { SparkSqlExtension } from "../emr/spark-sql-extension";
+import { ICatalog } from "../emr/catalog.js";
+import { SparkCluster } from "../emr/spark-cluster.js";
+import { Configuration } from "../emr/configuration.js";
+import { SparkSqlExtension } from "../emr/spark-sql-extension.js";
 import { Bucket, IBucket } from "aws-cdk-lib/aws-s3";
+import { ILogGroup } from "aws-cdk-lib/aws-logs";
 
 export interface INessieCatalog extends ICatalog {
   /**
@@ -64,19 +62,21 @@ export interface BaseNessieCatalogProps {
    */
   warehousePrefix?: string;
   /**
-   * The name of the log group that will be created for the Nessie server.
-   */
-  logGroupName?: string;
-  /**
    * The default main branch of a Nessie repository.
    *
    * @default main
    */
   defaultMainBranch?: string;
   /**
-   * Properties for configuring the {@link NessieVersionStore}
+   * Properties for configuring the {@link DynamoDBNessieVersionStore}
    */
-  versionStore?: NessieVersionStoreProps;
+  versionStore?: DynamoDBNessieVersionStore;
+  /**
+   * The log group to use for the Nessie service.
+   *
+   * @default - a new log group is created for you
+   */
+  logGroup?: ILogGroup;
   /**
    * The removal policy to apply to the Nessie service.
    *
@@ -89,6 +89,9 @@ export abstract class BaseNessieCatalog
   extends Construct
   implements INessieCatalog
 {
+  /**
+   *
+   */
   public readonly catalogName: string;
   /**
    * The {@link NessieConfig} for this service.
@@ -103,7 +106,7 @@ export abstract class BaseNessieCatalog
    *
    * @see https://projectnessie.org/develop/kernel/#high-level-abstract
    */
-  public readonly versionStore: NessieVersionStore;
+  public readonly versionStore: DynamoDBNessieVersionStore;
   /**
    * The default main branch of a Nessie repository created in this service.
    */
@@ -134,11 +137,10 @@ export abstract class BaseNessieCatalog
    * Note: Nessie CLI is not compatible with V1. For CLI use {@link apiV2Url}
    */
   public get apiV2Url() {
-    debugger;
     return `${this.endpoint}/api/v2`;
   }
 
-  constructor(scope: Construct, id: string, props?: BaseNessieCatalogProps) {
+  constructor(scope: Construct, id: string, props: BaseNessieCatalogProps) {
     super(scope, id);
     this.catalogName = props?.catalogName ?? "spark_catalog";
     this.warehouseBucket =
@@ -148,11 +150,12 @@ export abstract class BaseNessieCatalog
     this.defaultMainBranch = props?.defaultMainBranch ?? "main";
 
     // @see https://github.com/projectnessie/nessie/blob/09762d2b80ca448782c2f4326e3e41f1447ae6e0/versioned/storage/dynamodb/src/main/java/org/projectnessie/versioned/storage/dynamodb/DynamoDBConstants.java#L37
-    this.versionStore = new NessieVersionStore(
-      this,
-      "VersionStore",
-      props?.versionStore,
-    );
+    this.versionStore =
+      props.versionStore ??
+      new DynamoDBNessieVersionStore(this, "VersionStore", {
+        versionStoreName: `${props.catalogName}-nessie`,
+        ...(props?.versionStore ?? {}),
+      });
 
     this.config = {
       "nessie.version.store.type": NessieVersionStoreType.DYNAMODB,
@@ -189,7 +192,6 @@ export abstract class BaseNessieCatalog
 
     const catalogNamespace = `spark.sql.catalog.${catalogName}`;
 
-    debugger;
     return [
       {
         classification: "spark-defaults",

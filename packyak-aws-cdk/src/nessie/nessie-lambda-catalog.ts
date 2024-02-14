@@ -12,7 +12,7 @@ import path from "path";
 import {
   BaseNessieCatalog,
   BaseNessieCatalogProps,
-} from "./base-nessie-catalog";
+} from "./base-nessie-catalog.js";
 
 export interface NessieLambdaCatalogProps extends BaseNessieCatalogProps {}
 
@@ -22,7 +22,7 @@ export class NessieLambdaCatalog extends BaseNessieCatalog {
 
   public override readonly endpoint: string;
 
-  constructor(scope: Construct, id: string, props?: NessieLambdaCatalogProps) {
+  constructor(scope: Construct, id: string, props: NessieLambdaCatalogProps) {
     super(scope, id, props);
 
     // TODO: none of this is right

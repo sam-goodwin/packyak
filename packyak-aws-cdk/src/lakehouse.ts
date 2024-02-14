@@ -108,10 +108,6 @@ export class LakeHouse extends Construct {
     this.catalog = new NessieECSCatalog(this, "Nessie", {
       cluster: this.cluster,
       serviceName: `${props.lakehouseName}-nessie`,
-      logGroupName: `/${props.lakehouseName}/nessie`,
-      versionStore: {
-        tablePrefix: `${props.lakehouseName}-nessie`,
-      },
       removalPolicy,
       dns: props.dns,
     });

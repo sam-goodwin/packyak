@@ -33,6 +33,7 @@
     "selectbox",
     "streamlit",
     "transactionally",
+    "Unversioned",
     "VCPU",
     "virtualenv",
     "Weaviate",

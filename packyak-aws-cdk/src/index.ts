@@ -3,6 +3,10 @@ export * from "./streamlit-site.js";
 export * from "./sagemaker/domain.js";
 export * from "./emr/spark-cluster.js";
 export * from "./emr/glue-catalog.js";
+export * from "./nessie/base-nessie-catalog.js";
+export * from "./nessie/nessie-ecs-catalog.js";
+export * from "./nessie/nessie-lambda-catalog.js";
+export * from "./nessie/nessie-version-store.js";
 
 import { CfnOutput, Stack } from "aws-cdk-lib/core";
 
