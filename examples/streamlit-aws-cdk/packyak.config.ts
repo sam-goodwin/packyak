@@ -1,10 +1,17 @@
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
-import { LakeHouse, Domain, AuthMode, SparkCluster } from "@packyak/aws-cdk";
+import {
+  LakeHouse,
+  Domain,
+  AuthMode,
+  SparkCluster,
+  IcebergGlueCatalog,
+} from "@packyak/aws-cdk";
 import { HostedZone } from "aws-cdk-lib/aws-route53";
 import {
   Certificate,
   CertificateValidation,
 } from "aws-cdk-lib/aws-certificatemanager";
+import { Bucket } from "aws-cdk-lib/aws-s3";
 
 const app = new App();
 
@@ -14,6 +21,14 @@ const hostedZone = HostedZone.fromHostedZoneAttributes(stack, "HostedZone", {
   hostedZoneId: "Z0142778163AZ8IIPALSQ",
   zoneName: "samgoodwin.noetikdev.com",
 });
+
+const noetikLegacy = IcebergGlueCatalog.fromBucketName(
+  stack,
+  "IcebergGlueCatalog",
+  {
+    warehouseBucketName: "noetik-data-lake-poc",
+  },
+);
 
 const certificate = new Certificate(stack, "Certificate", {
   domainName: "nessie.samgoodwin.noetikdev.com",
@@ -44,6 +59,7 @@ const spark = new SparkCluster(stack, "SparkCluster", {
   clusterName: "streamlit-example",
   catalogs: {
     spark_catalog: lakeHouse.catalog,
+    noetik_athena: noetikLegacy,
   },
   vpc: lakeHouse.vpc,
   sageMakerSg: domain.sageMakerSg,
