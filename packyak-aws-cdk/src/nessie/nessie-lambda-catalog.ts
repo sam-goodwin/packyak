@@ -20,7 +20,7 @@ export class NessieLambdaCatalog extends BaseNessieCatalog {
   public readonly function: Function;
   public readonly functionUrl: FunctionUrl;
 
-  public override readonly serviceUrl: string;
+  public override readonly endpoint: string;
 
   constructor(scope: Construct, id: string, props?: NessieLambdaCatalogProps) {
     super(scope, id, props);
@@ -39,6 +39,6 @@ export class NessieLambdaCatalog extends BaseNessieCatalog {
       // TODO: what's right here? Maybe streaming?
       invokeMode: InvokeMode.BUFFERED,
     });
-    this.serviceUrl = this.functionUrl.url;
+    this.endpoint = this.functionUrl.url;
   }
 }

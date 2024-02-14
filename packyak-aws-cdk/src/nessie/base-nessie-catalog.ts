@@ -17,9 +17,9 @@ import { Bucket, IBucket } from "aws-cdk-lib/aws-s3";
 
 export interface INessieCatalog extends ICatalog {
   /**
-   * The URL to this Nessie service.
+   * The Nessie service endpoint.
    */
-  readonly serviceUrl: string;
+  readonly endpoint: string;
   /**
    * Endpoint for the Nessie API v1.
    *
@@ -111,7 +111,7 @@ export abstract class BaseNessieCatalog
   /**
    * The URL to this Nessie service.
    */
-  public abstract readonly serviceUrl: string;
+  public abstract readonly endpoint: string;
   /**
    * The S3 bucket used as the warehouse for Nessie.
    */
@@ -126,7 +126,7 @@ export abstract class BaseNessieCatalog
    * @deprecated use {@link apiV2Url} instead
    */
   public get apiV1Url() {
-    return `${this.serviceUrl}/api/v1`;
+    return `${this.endpoint}/api/v1`;
   }
   /**
    * Endpoint for the Nessie API v2.
@@ -134,7 +134,8 @@ export abstract class BaseNessieCatalog
    * Note: Nessie CLI is not compatible with V1. For CLI use {@link apiV2Url}
    */
   public get apiV2Url() {
-    return `${this.serviceUrl}/api/v2`;
+    debugger;
+    return `${this.endpoint}/api/v2`;
   }
 
   constructor(scope: Construct, id: string, props?: BaseNessieCatalogProps) {
@@ -188,6 +189,7 @@ export abstract class BaseNessieCatalog
 
     const catalogNamespace = `spark.sql.catalog.${catalogName}`;
 
+    debugger;
     return [
       {
         classification: "spark-defaults",
@@ -209,11 +211,11 @@ export abstract class BaseNessieCatalog
 
           // V1
           // "spark.sql.catalog.nessie.uri": this.apiV1Url,
-          // "spark.sql.catalog.nessie.ref": this.defaultMainBranch,
 
           // V2
           // // After Iceberg 1.5.0 release, just configuring v2 URI is enough (version is inferred from URI).
-          [`${catalogNamespace}.uri"`]: this.apiV2Url,
+          [`${catalogNamespace}.uri`]: this.apiV2Url,
+          [`${catalogNamespace}.ref`]: this.defaultMainBranch,
           [`${catalogNamespace}.client-api-version`]: "2",
 
           [`${catalogNamespace}.authentication.type`]: "AWS",

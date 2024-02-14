@@ -1,5 +1,5 @@
 import { PythonFunction } from "@aws-cdk/aws-lambda-python-alpha";
-import { IVpc, SubnetSelection, SubnetType, Vpc } from "aws-cdk-lib/aws-ec2";
+import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
 import { Cluster } from "aws-cdk-lib/aws-ecs";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import {
@@ -18,6 +18,7 @@ import { Bindable } from "./bind.js";
 import { exportRequirementsSync } from "./export-requirements.js";
 import { INessieCatalog } from "./nessie/base-nessie-catalog.js";
 import { NessieECSCatalog } from "./nessie/nessie-ecs-catalog.js";
+import type { DNSConfiguration } from "./dns-configuration.js";
 
 export interface LakeHouseProps {
   /**
@@ -38,6 +39,12 @@ export interface LakeHouseProps {
    * The removal policy to apply to the Lake House.
    */
   removalPolicy?: RemovalPolicy;
+  /**
+   * The certificate to use for HTTPS.
+   *
+   * @default - Catalog is HTTP (insecure) only
+   */
+  dns?: DNSConfiguration;
 }
 
 export class LakeHouse extends Construct {
@@ -106,6 +113,7 @@ export class LakeHouse extends Construct {
         tablePrefix: `${props.lakehouseName}-nessie`,
       },
       removalPolicy,
+      dns: props.dns,
     });
     this.functions = this.spec.functions.map((funcSpec) => {
       const indexFolder = path.join(".packyak", funcSpec.function_id);

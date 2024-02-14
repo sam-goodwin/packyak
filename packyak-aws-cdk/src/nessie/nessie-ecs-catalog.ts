@@ -22,6 +22,7 @@ import {
   BaseNessieCatalog,
   BaseNessieCatalogProps,
 } from "./base-nessie-catalog";
+import type { DNSConfiguration } from "../dns-configuration";
 
 export interface NessieECSCatalogProps
   extends BaseNessieCatalogProps,
@@ -30,12 +31,13 @@ export interface NessieECSCatalogProps
   vpc?: IVpc;
   cluster?: Cluster;
   platform?: Platform;
+  dns?: DNSConfiguration;
 }
 
 export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
   public readonly service: ApplicationLoadBalancedFargateService;
 
-  public override readonly serviceUrl: string;
+  public override readonly endpoint: string;
 
   public readonly grantPrincipal: IPrincipal;
 
@@ -65,6 +67,9 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
       cpu: props?.cpu ?? 256,
       memoryLimitMiB: props?.memoryLimitMiB ?? 512,
       publicLoadBalancer: true,
+      certificate: props?.dns?.certificate,
+      domainName: props?.dns?.domainName,
+      domainZone: props?.dns?.hostedZone,
       taskImageOptions: {
         ...(props?.taskImageOptions ?? {}),
         environment: {
@@ -94,7 +99,10 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
       path: "/q/health",
     });
 
-    // TODO: support HTTPS://
-    this.serviceUrl = `http://${this.service.loadBalancer.loadBalancerDnsName}`;
+    if (props?.dns) {
+      this.endpoint = `https://${props.dns.domainName}`;
+    } else {
+      this.endpoint = `http://${this.service.loadBalancer.loadBalancerDnsName}`;
+    }
   }
 }

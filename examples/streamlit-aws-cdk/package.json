@@ -13,8 +13,9 @@
 		"@packyak/aws-cdk": "workspace:^"
 	},
 	"devDependencies": {
-		"aws-cdk": "2.118.0",
-		"aws-cdk-lib": "2.118.0",
+		"aws-cdk": "2.126.0",
+		"aws-cdk-lib": "2.126.0",
+		"ts-node": "^10.9.2",
 		"tsx": "^4.7.0",
 		"typescript": "^5"
 	}
