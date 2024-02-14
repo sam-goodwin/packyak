@@ -6,8 +6,6 @@ import {
 } from "aws-cdk-lib/aws-certificatemanager";
 import { HostedZone } from "aws-cdk-lib/aws-route53";
 import { App, Stack } from "aws-cdk-lib/core";
-import { Construct } from "constructs";
-import { StaticSite } from "sst/constructs";
 
 async function Dns(this: Stack) {
   const hostedZone = new HostedZone(this, "hostedZone", {
@@ -23,6 +21,8 @@ async function Dns(this: Stack) {
     certificate,
   };
 }
+
+// https://spark.apache.org/docs/latest/sql-data-sources-binaryFile.html
 
 // CDK App start here
 

@@ -13,6 +13,7 @@ export interface NessieVersionStoreProps {
    * @see https://project-nessie.zulipchat.com/#narrow/stream/371187-general/topic/AWS.20Lambda.20with.20SnapStart/near/420329834
    */
   versionStoreName?: string;
+  removalPolicy?: RemovalPolicy;
 }
 
 /**
@@ -28,9 +29,11 @@ export class DynamoDBNessieVersionStore extends Construct {
 
     this.objs = new NessieVersionStoreTable(this, "objs", {
       tableName: `${this.tablePrefix}_objs`,
+      removalPolicy: props?.removalPolicy,
     });
     this.refs = new NessieVersionStoreTable(this, "refs", {
       tableName: `${this.tablePrefix}_refs`,
+      removalPolicy: props?.removalPolicy,
     });
   }
 

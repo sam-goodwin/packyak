@@ -62,8 +62,8 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
 
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
       cluster: props?.cluster,
-      vpc: props?.vpc,
-      serviceName: props?.serviceName,
+      vpc: props.vpc,
+      serviceName: props.serviceName,
       runtimePlatform: {
         cpuArchitecture:
           platform === Platform.LINUX_AMD64

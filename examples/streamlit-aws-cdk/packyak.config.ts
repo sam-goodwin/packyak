@@ -5,7 +5,7 @@ import {
   NessieECSCatalog,
   SparkCluster,
 } from "@packyak/aws-cdk";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
+import { Port, Vpc } from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
 
@@ -34,21 +34,22 @@ const myCatalog = new NessieECSCatalog(stack, "MyCatalog", {
   versionStore,
 });
 
-const domain = new Domain(stack, "Domain", {
-  removalPolicy: RemovalPolicy.DESTROY,
-  domainName: `streamlit-example-aws-cdk-${stage}`,
-  vpc,
-  authMode: AuthMode.IAM,
-});
-
 const spark = new SparkCluster(stack, "SparkCluster", {
   clusterName: "streamlit-example",
   catalogs: {
     spark_catalog: myCatalog,
   },
   vpc,
-  sageMakerSg: domain.sageMakerSg,
 });
+
+const domain = new Domain(stack, "Domain", {
+  removalPolicy: RemovalPolicy.DESTROY,
+  domainName: `streamlit-example-aws-cdk-${stage}`,
+  vpc,
+  authMode: AuthMode.IAM,
+  // spark: spark
+});
+spark.connections.allowFrom(domain.sageMakerSg, Port.tcp(443));
 
 domain.addUserProfile("sam");
 

@@ -7,16 +7,27 @@ export function combineConfigurations(
   ...configs: Configuration[]
 ): Configuration[] {
   const mergedConfigurations = configs.reduce(
-    (acc: { [classification: string]: Configuration }, curr: Configuration) => {
-      const { classification, configurationProperties } = curr;
-      if (!acc[classification]) {
-        acc[classification] = { classification, configurationProperties: {} };
+    (finalConfig: { [classification: string]: Configuration }, next: Configuration) => {
+      const { classification, configurationProperties } = next;
+      if (!finalConfig[classification]) {
+        finalConfig[classification] = { classification, configurationProperties: {} };
       }
-      acc[classification].configurationProperties = {
-        ...acc[classification].configurationProperties,
-        ...configurationProperties,
+      const csvProperties = new Set([
+        "spark.jars.packages",
+        "spark.sql.extensions",
+      ]);
+      for (const [key, value] of Object.entries(configurationProperties)) {
+        if (csvProperties.has(key)) {
+          const existing = finalConfig[classification].configurationProperties[key] ? finalConfig[classification].configurationProperties[key].split(',') : [];
+          const newValues = value.split(',');
+          const merged = [...new Set([...existing, ...newValues])].join(',');
+          finalConfig[classification].configurationProperties[key] = merged;
+        } else {
+          finalConfig[classification].configurationProperties[key] = value;
+        }
       };
-      return acc;
+
+      return finalConfig;
     },
     {},
   );

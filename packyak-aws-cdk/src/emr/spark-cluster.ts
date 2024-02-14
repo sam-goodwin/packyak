@@ -8,12 +8,12 @@ import {
 import { CfnCluster } from "aws-cdk-lib/aws-emr";
 import { Construct } from "constructs";
 import {
-  ISecurityGroup,
+  Connections,
+  IConnectable,
   IVpc,
   InstanceClass,
   InstanceSize,
   InstanceType,
-  Peer,
   Port,
   SecurityGroup,
 } from "aws-cdk-lib/aws-ec2";
@@ -120,20 +120,16 @@ export interface SparkClusterProps {
    * @default {@link RemovalPolicy.DESTROY}
    */
   removalPolicy?: RemovalPolicy;
-  /**
-   * A reference to the SageMaker Security Group that needs access to the Master Node.
-   *
-   * @default - No additional security groups
-   */
-  sageMakerSg?: ISecurityGroup;
 }
 
-export class SparkCluster extends Resource implements IGrantable {
+export class SparkCluster extends Resource implements IGrantable, IConnectable {
   protected readonly resource: CfnCluster;
 
   public readonly release: ReleaseLabel;
 
   public readonly grantPrincipal: IPrincipal;
+
+  public readonly connections: Connections;
 
   constructor(scope: Construct, id: string, props: SparkClusterProps) {
     super(scope, id);
@@ -210,12 +206,11 @@ export class SparkCluster extends Resource implements IGrantable {
     //   masterSg.connections.allowFrom(props.sageMakerSg, Port.tcp(8998));
     // }
 
-    const livyAccessSg = new SecurityGroup(this, "LivyAccessSg", {
+    const masterAccessSg = new SecurityGroup(this, "MasterAccessSg", {
       vpc: props.vpc,
     });
-    if (props.sageMakerSg) {
-      livyAccessSg.connections.allowFrom(props.sageMakerSg, Port.tcp(8998));
-    }
+
+    this.connections = masterAccessSg.connections;
 
     const cluster = new CfnCluster(this, "Resource", {
       name: props.clusterName,
@@ -235,7 +230,7 @@ export class SparkCluster extends Resource implements IGrantable {
         { name: Application.SPARK },
       ],
       instances: {
-        additionalMasterSecurityGroups: [livyAccessSg.securityGroupId],
+        additionalMasterSecurityGroups: [masterAccessSg.securityGroupId],
         // TODO: is 1 subnet OK?
         ec2SubnetId: props.vpc.privateSubnets[0].subnetId,
         // emrManagedMasterSecurityGroup: masterSg.securityGroupId,
