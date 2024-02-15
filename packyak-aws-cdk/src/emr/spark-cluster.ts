@@ -120,6 +120,10 @@ export interface SparkClusterProps {
    * @default {@link RemovalPolicy.DESTROY}
    */
   removalPolicy?: RemovalPolicy;
+  /**
+   * @default - No bootstrap actions
+   */
+  bootstrapActions?: CfnCluster.BootstrapActionConfigProperty[];
 }
 
 export class SparkCluster extends Resource implements IGrantable, IConnectable {
@@ -127,9 +131,9 @@ export class SparkCluster extends Resource implements IGrantable, IConnectable {
 
   public readonly release: ReleaseLabel;
 
-  public readonly grantPrincipal: IPrincipal;
-
   public readonly connections: Connections;
+
+  public readonly grantPrincipal: IPrincipal;
 
   constructor(scope: Construct, id: string, props: SparkClusterProps) {
     super(scope, id);
@@ -229,6 +233,7 @@ export class SparkCluster extends Resource implements IGrantable, IConnectable {
         { name: Application.LIVY },
         { name: Application.SPARK },
       ],
+      bootstrapActions: props.bootstrapActions,
       instances: {
         additionalMasterSecurityGroups: [masterAccessSg.securityGroupId],
         // TODO: is 1 subnet OK?
