@@ -124,6 +124,18 @@ export interface SparkClusterProps {
    * @default - No bootstrap actions
    */
   bootstrapActions?: CfnCluster.BootstrapActionConfigProperty[];
+  /**
+   * The EMR Steps to submit to the cluster.
+   *
+   * @see https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-submit-step.html
+   */
+  steps?: CfnCluster.StepConfigProperty[];
+  /**
+   * The concurrency level of the cluster.
+   *
+   * @default 1
+   */
+  stepConcurrencyLevel?: number;
 }
 
 export class SparkCluster extends Resource implements IGrantable, IConnectable {
@@ -233,6 +245,8 @@ export class SparkCluster extends Resource implements IGrantable, IConnectable {
         { name: Application.LIVY },
         { name: Application.SPARK },
       ],
+      steps: props.steps,
+      stepConcurrencyLevel: props.stepConcurrencyLevel,
       bootstrapActions: props.bootstrapActions,
       instances: {
         additionalMasterSecurityGroups: [masterAccessSg.securityGroupId],
