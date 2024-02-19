@@ -1,3 +1,5 @@
+import { mergeSparkExtraJars, toCLIArgs } from "./spark-config";
+
 export interface Configuration {
   classification: string;
   configurationProperties: { [key: string]: string };
@@ -7,10 +9,16 @@ export function combineConfigurations(
   ...configs: Configuration[]
 ): Configuration[] {
   const mergedConfigurations = configs.reduce(
-    (finalConfig: { [classification: string]: Configuration }, next: Configuration) => {
+    (
+      finalConfig: { [classification: string]: Configuration },
+      next: Configuration,
+    ) => {
       const { classification, configurationProperties } = next;
       if (!finalConfig[classification]) {
-        finalConfig[classification] = { classification, configurationProperties: {} };
+        finalConfig[classification] = {
+          classification,
+          configurationProperties: {},
+        };
       }
       const csvProperties = new Set([
         "spark.jars.packages",
@@ -18,14 +26,26 @@ export function combineConfigurations(
       ]);
       for (const [key, value] of Object.entries(configurationProperties)) {
         if (csvProperties.has(key)) {
-          const existing = finalConfig[classification].configurationProperties[key] ? finalConfig[classification].configurationProperties[key].split(',') : [];
-          const newValues = value.split(',');
-          const merged = [...new Set([...existing, ...newValues])].join(',');
+          const existing = finalConfig[classification].configurationProperties[
+            key
+          ]
+            ? finalConfig[classification].configurationProperties[key].split(
+                ",",
+              )
+            : [];
+          const newValues = value.split(",");
+          const merged = [...new Set([...existing, ...newValues])].join(",");
           finalConfig[classification].configurationProperties[key] = merged;
+        } else if (key == "spark.driver.extraJavaOptions") {
+          finalConfig[classification].configurationProperties[key] =
+            mergeSparkExtraJars(
+              finalConfig[classification].configurationProperties[key],
+              value,
+            );
         } else {
           finalConfig[classification].configurationProperties[key] = value;
         }
-      };
+      }
 
       return finalConfig;
     },

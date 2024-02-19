@@ -7,7 +7,7 @@ import {
 } from "./nessie-config.js";
 import { RemovalPolicy, Stack } from "aws-cdk-lib/core";
 import { ICatalog } from "../emr/catalog.js";
-import { SparkCluster } from "../emr/spark-cluster.js";
+import { Cluster } from "../emr/cluster.js";
 import { Configuration } from "../emr/configuration.js";
 import { SparkSqlExtension } from "../emr/spark-sql-extension.js";
 import { Bucket, IBucket } from "aws-cdk-lib/aws-s3";
@@ -173,7 +173,7 @@ export abstract class BaseNessieCatalog
     return nessieConfigToEnvironment(this.config);
   }
 
-  public bind(cluster: SparkCluster, catalogName: string): Configuration[] {
+  public bind(cluster: Cluster, catalogName: string): Configuration[] {
     // TODO: should we limit this to the warehouse prefix
     this.warehouseBucket.grantReadWrite(cluster, "*");
     const sparkVersion = cluster.release.sparkVersion;

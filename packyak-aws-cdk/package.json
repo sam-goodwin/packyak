@@ -14,16 +14,22 @@
 			"types": "./lib/index.d.ts"
 		}
 	},
-	"files": ["bin", "lib"],
+	"files": [
+		"bin",
+		"lib"
+	],
 	"keywords": [],
 	"author": "Sam Goodwin",
 	"license": "Apache-2.0",
 	"devDependencies": {
 		"@aws-cdk/aws-glue-alpha": "2.126.0-alpha.0",
-		"@aws-cdk/aws-sagemaker-alpha": "2.126.0-alpha.0",
 		"@aws-cdk/aws-lambda-python-alpha": "2.126.0-alpha.0",
+		"@aws-cdk/aws-sagemaker-alpha": "2.126.0-alpha.0",
+		"@aws-sdk/client-efs": "^3.515.0",
+		"@aws-sdk/client-sagemaker": "^3.515.0",
 		"@biomejs/biome": "^1.5.3",
 		"@tsconfig/node20": "^20.1.2",
+		"@types/aws-lambda": "^8.10.134",
 		"@types/node": "^20.10.8",
 		"aws-cdk": "2.126.0",
 		"aws-cdk-lib": "2.126.0",

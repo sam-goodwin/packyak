@@ -3,13 +3,14 @@ import {
   Domain,
   DynamoDBNessieVersionStore,
   NessieECSCatalog,
-  SparkCluster,
+  Cluster,
 } from "@packyak/aws-cdk";
 import { Port, Vpc } from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
 
 const stage = process.env.STAGE ?? "personal";
+const removalPolicy = RemovalPolicy.DESTROY;
 
 const lakeHouseName = `packyak-example-${stage}`;
 
@@ -23,35 +24,46 @@ const versionStore = new DynamoDBNessieVersionStore(stack, "VersionStore", {
 });
 
 const myRepoBucket = new Bucket(stack, "MyCatalogBucket", {
-  removalPolicy: RemovalPolicy.DESTROY,
+  removalPolicy,
 });
 
 const myCatalog = new NessieECSCatalog(stack, "MyCatalog", {
   vpc,
   warehouseBucket: myRepoBucket,
   catalogName: lakeHouseName,
-  removalPolicy: RemovalPolicy.DESTROY,
+  removalPolicy,
   versionStore,
 });
 
-const spark = new SparkCluster(stack, "SparkCluster", {
+const spark = new Cluster(stack, "SparkCluster", {
   clusterName: "streamlit-example",
+  vpc,
   catalogs: {
     spark_catalog: myCatalog,
   },
-  vpc,
+  extraJavaOptions: {
+    "-Djdk.httpclient.allowRestrictedHeaders": "host",
+  },
+});
+
+const sparkSQL = spark.jdbc({
+  port: 10000,
 });
 
 const domain = new Domain(stack, "Domain", {
-  removalPolicy: RemovalPolicy.DESTROY,
   domainName: `streamlit-example-aws-cdk-${stage}`,
   vpc,
   authMode: AuthMode.IAM,
-  // spark: spark
+  removalPolicy,
 });
-spark.connections.allowFrom(domain.sageMakerSg, Port.tcp(443));
 
 domain.addUserProfile("sam");
+
+sparkSQL.allowFrom(domain);
+
+spark.connections.allowFrom(domain.sageMakerSg, Port.tcp(443));
+
+// spark.allowHttpsFrom(domain.sageMakerSg);
 
 // const site = new StreamlitSite(stack, "StreamlitSite", {
 //   lakeHouse,

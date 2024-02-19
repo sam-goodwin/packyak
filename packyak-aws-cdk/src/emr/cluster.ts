@@ -1,6 +1,7 @@
 import {
   Arn,
   Duration,
+  Lazy,
   RemovalPolicy,
   Resource,
   Stack,
@@ -14,6 +15,7 @@ import {
   InstanceClass,
   InstanceSize,
   InstanceType,
+  Peer,
   Port,
   SecurityGroup,
 } from "aws-cdk-lib/aws-ec2";
@@ -32,6 +34,9 @@ import { Application } from "./application.js";
 import { ReleaseLabel } from "./release-label.js";
 import { ICatalog } from "./catalog.js";
 import { Configuration, combineConfigurations } from "./configuration.js";
+import { Step } from "./step.js";
+import { JDBC, JDBCProps } from "./jdbc.js";
+import { toCLIArgs } from "./spark-config.js";
 
 export interface InstanceGroup {
   /**
@@ -67,7 +72,7 @@ export interface ManagedScalingPolicy {
   };
 }
 
-export interface SparkClusterProps {
+export interface ClusterProps {
   /**
    * Name of the EMR Cluster.
    */
@@ -129,26 +134,39 @@ export interface SparkClusterProps {
    *
    * @see https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-submit-step.html
    */
-  steps?: CfnCluster.StepConfigProperty[];
+  steps?: Step[];
   /**
    * The concurrency level of the cluster.
    *
    * @default 1
    */
   stepConcurrencyLevel?: number;
+  /**
+   * Extra java options to include in the Spark context by default.
+   */
+  extraJavaOptions?: Record<string, string>;
 }
 
-export class SparkCluster extends Resource implements IGrantable, IConnectable {
-  protected readonly resource: CfnCluster;
-
+export class Cluster extends Resource implements IGrantable, IConnectable {
   public readonly release: ReleaseLabel;
-
+  public readonly primarySg: SecurityGroup;
+  public readonly coreSg: SecurityGroup;
+  public readonly serviceAccessSg: SecurityGroup;
   public readonly connections: Connections;
-
   public readonly grantPrincipal: IPrincipal;
 
-  constructor(scope: Construct, id: string, props: SparkClusterProps) {
+  private readonly steps: Step[];
+  private readonly configurations: Configuration[];
+  private readonly extraJavaOptions: Record<string, string>;
+
+  protected readonly resource: CfnCluster;
+
+  constructor(scope: Construct, id: string, props: ClusterProps) {
     super(scope, id);
+
+    this.extraJavaOptions = props.extraJavaOptions ?? {};
+    this.steps = [];
+    this.configurations = [];
 
     this.release = props.releaseLabel ?? ReleaseLabel.EMR_7_0_0;
 
@@ -203,30 +221,22 @@ export class SparkCluster extends Resource implements IGrantable, IConnectable {
       }),
     );
 
-    // const masterSg = new SecurityGroup(this, "MasterSG", {
-    //   vpc: props.vpc,
-    // });
-    // const executorSg = new SecurityGroup(this, "ExecutorSG", {
-    //   vpc: props.vpc,
-    // });
-    // // TODO: fine-grained access
-    // masterSg.connections.allowFrom(executorSg, Port.allTraffic());
-
-    // // see: https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-man-sec-groups.html#emr-sg-elasticmapreduce-sa-private
-    // const serviceAccessSg = new SecurityGroup(this, "ServiceAccessSG", {
-    //   vpc: props.vpc,
-    // });
-    // serviceAccessSg.connections.allowFrom(Port.allTraffic());
-
-    // if (props.sageMakerSg) {
-    //   masterSg.connections.allowFrom(props.sageMakerSg, Port.tcp(8998));
-    // }
-
-    const masterAccessSg = new SecurityGroup(this, "MasterAccessSg", {
+    this.primarySg = new SecurityGroup(this, "PrimarySG", {
+      vpc: props.vpc,
+      description:
+        "The security group for the primary instance (private subnets). See: https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-man-sec-groups.html#emr-sg-elasticmapreduce-master-private",
+    });
+    this.connections = this.primarySg.connections;
+    this.coreSg = new SecurityGroup(this, "CoreSG", {
+      vpc: props.vpc,
+      description:
+        "Security group for core and task instances (private subnets). See: https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-man-sec-groups.html#emr-sg-elasticmapreduce-slave-private",
+    });
+    this.serviceAccessSg = new SecurityGroup(this, "ServiceAccessSG", {
       vpc: props.vpc,
     });
 
-    this.connections = masterAccessSg.connections;
+    this.configureSecurityGroups();
 
     const cluster = new CfnCluster(this, "Resource", {
       name: props.clusterName,
@@ -248,15 +258,15 @@ export class SparkCluster extends Resource implements IGrantable, IConnectable {
       steps: props.steps,
       stepConcurrencyLevel: props.stepConcurrencyLevel,
       bootstrapActions: props.bootstrapActions,
+
       instances: {
-        additionalMasterSecurityGroups: [masterAccessSg.securityGroupId],
         // TODO: is 1 subnet OK?
-        ec2SubnetId: props.vpc.privateSubnets[0].subnetId,
-        // emrManagedMasterSecurityGroup: masterSg.securityGroupId,
-        // emrManagedSlaveSecurityGroup: executorSg.securityGroupId,
-        // serviceAccessSecurityGroup: serviceAccessSg.securityGroupId,
         // TODO: required for instance fleets
-        // ec2SubnetIds: {}
+        ec2SubnetId: props.vpc.privateSubnets[0].subnetId,
+
+        emrManagedMasterSecurityGroup: this.primarySg.securityGroupId,
+        emrManagedSlaveSecurityGroup: this.coreSg.securityGroupId,
+        serviceAccessSecurityGroup: this.serviceAccessSg.securityGroupId,
 
         // TODO: add advanced options
         // masterInstanceFleet: {},
@@ -281,21 +291,25 @@ export class SparkCluster extends Resource implements IGrantable, IConnectable {
             idleTimeout: props.idleTimeout.toSeconds(),
           }
         : undefined,
-      configurations: combineConfigurations(
-        {
-          classification: "spark-defaults",
-          configurationProperties: {
-            // configure spark to use the virtual environment
-            "spark.pyspark.python": "python3",
-            "spark.pyspark.virtualenv.enabled": "true",
-            "spark.pyspark.virtualenv.type": "native",
-            "spark.pyspark.virtualenv.bin.path": "/usr/bin/virtualenv",
-          },
-        },
-        ...(Object.entries(props.catalogs).flatMap(([catalogName, catalog]) =>
-          catalog.bind(this, catalogName),
-        ) ?? []),
-      ),
+      configurations: Lazy.any({
+        produce: () =>
+          combineConfigurations(
+            {
+              classification: "spark-defaults",
+              configurationProperties: {
+                // configure spark to use the virtual environment
+                "spark.pyspark.python": "python3",
+                "spark.pyspark.virtualenv.enabled": "true",
+                "spark.pyspark.virtualenv.type": "native",
+                "spark.pyspark.virtualenv.bin.path": "/usr/bin/virtualenv",
+                "spark.driver.extraJavaOptions": toCLIArgs(
+                  this.extraJavaOptions,
+                ),
+              },
+            },
+            ...this.configurations,
+          ),
+      }),
       scaleDownBehavior:
         props.scaleDownBehavior ??
         ScaleDownBehavior.TERMINATE_AT_TASK_COMPLETION,
@@ -303,7 +317,99 @@ export class SparkCluster extends Resource implements IGrantable, IConnectable {
       // TODO: configure specific Role
       // autoScalingRole: "EMR_AutoScaling_DefaultRole",
     });
+    Object.entries(props.catalogs).forEach(([catalogName, catalog]) =>
+      catalog.bind(this, catalogName),
+    );
     this.resource = cluster;
     cluster.applyRemovalPolicy(props.removalPolicy ?? RemovalPolicy.DESTROY);
+  }
+
+  public addStep(step: Step): void {
+    this.steps.push(step);
+  }
+
+  public addConfig(...configurations: Configuration[]): void {
+    this.configurations.push(...configurations);
+  }
+
+  public jdbc(options: JDBCProps): JDBC {
+    return new JDBC(this, options);
+  }
+
+  /**
+   * Configure the rules for the Primary, Core, and Service Access security groups.
+   */
+  private configureSecurityGroups() {
+    this.configureMasterSecurityGroup();
+    this.configureCoreSecurityGroup();
+    this.configureServiceAccessSecurityGroup();
+  }
+
+  /**
+   * Configure security group for Primary instance (master)
+   *
+   * All traffic to/from the Primary and Core/Task security groups.
+   * All outbound traffic to any IPv4 address.
+   *
+   * @see https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-man-sec-groups.html#emr-sg-elasticmapreduce-master-private
+   */
+  private configureMasterSecurityGroup() {
+    this.primarySg.connections.allowFrom(
+      this.primarySg,
+      Port.allTraffic(),
+      "Allows the primary (aka. master) node(s) to communicate with each other over ICMP or any TCP or UDP port.",
+    );
+    this.primarySg.connections.allowFrom(
+      this.coreSg,
+      Port.allTraffic(),
+      "Allows the primary (aka. master) node(s) to communicate with the core and task nodes over ICMP or any TCP or UDP port.",
+    );
+    this.primarySg.connections.allowFrom(
+      this.serviceAccessSg,
+      Port.tcp(8443),
+      "This rule allows the cluster manager to communicate with the primary node.",
+    );
+    this.primarySg.connections.allowToAnyIpv4(Port.allTraffic());
+  }
+
+  /**
+   * Configure security group for Core & Task nodes
+   *
+   * All traffic to/from the Primary and Core/Task security groups.
+   * All outbound traffic to any IPv4 address.
+   *
+   * @see https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-man-sec-groups.html#emr-sg-elasticmapreduce-slave-private
+   */
+  private configureCoreSecurityGroup() {
+    this.coreSg.connections.allowFrom(
+      this.primarySg,
+      Port.allTraffic(),
+      "Allows the primary (aka. master) node(s) to communicate with the core and task nodes over ICMP or any TCP or UDP port.",
+    );
+    this.coreSg.connections.allowFrom(
+      this.coreSg,
+      Port.allTraffic(),
+      "Allows core and task node(s) to communicate with each other over ICMP or any TCP or UDP port.",
+    );
+    this.coreSg.connections.allowFrom(
+      this.serviceAccessSg,
+      Port.tcp(8443),
+      "This rule allows the cluster manager to communicate with core and task nodes.",
+    );
+    this.coreSg.connections.allowToAnyIpv4(Port.allTraffic());
+  }
+
+  /**
+   * Configure security group for Service Access.
+   *
+   * It allows inbound traffic on 8443 from the primary security group.
+   * It allows outbound traffic on 8443 to the primary and core security groups.
+   *
+   * @see https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-man-sec-groups.html#emr-sg-elasticmapreduce-sa-private
+   */
+  private configureServiceAccessSecurityGroup() {
+    this.serviceAccessSg.connections.allowFrom(this.primarySg, Port.tcp(9443));
+    this.serviceAccessSg.connections.allowTo(this.primarySg, Port.tcp(8443));
+    this.serviceAccessSg.connections.allowTo(this.coreSg, Port.tcp(8443));
   }
 }

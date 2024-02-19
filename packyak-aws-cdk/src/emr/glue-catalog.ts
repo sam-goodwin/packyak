@@ -2,7 +2,7 @@ import { Stack } from "aws-cdk-lib";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import type { ICatalog } from "./catalog.js";
 import type { Configuration } from "./configuration.js";
-import type { SparkCluster } from "./spark-cluster.js";
+import type { Cluster } from "./cluster.js";
 import { Bucket, IBucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
 import { SparkSqlExtension } from "./spark-sql-extension.js";
@@ -51,7 +51,7 @@ export class IcebergGlueCatalog extends Construct implements ICatalog {
     this.warehousePrefix = props.warehousePrefix;
   }
 
-  public bind(cluster: SparkCluster, catalogName: string): Configuration[] {
+  public bind(cluster: Cluster, catalogName: string): Configuration[] {
     // TODO: should we limit this to the warehouse prefix
     this.warehouseBucket.grantReadWrite(cluster, "*");
     const { partition, region, account } = Stack.of(cluster);

@@ -1,8 +1,12 @@
-import { Construct } from "constructs";
+import path from "path";
 
-import { CfnDomain } from "aws-cdk-lib/aws-sagemaker";
-import { Arn, RemovalPolicy, Resource, Stack } from "aws-cdk-lib/core";
-import { IVpc, SecurityGroup, SubnetSelection } from "aws-cdk-lib/aws-ec2";
+import {
+  Connections,
+  IConnectable,
+  IVpc,
+  SecurityGroup,
+  SubnetSelection,
+} from "aws-cdk-lib/aws-ec2";
 import {
   CompositePrincipal,
   Effect,
@@ -12,9 +16,19 @@ import {
   Role,
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
-import { UserProfile } from "./user-profile.js";
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { CfnDomain } from "aws-cdk-lib/aws-sagemaker";
+import {
+  Arn,
+  CustomResource,
+  RemovalPolicy,
+  Resource,
+  Stack,
+} from "aws-cdk-lib/core";
+import { Provider } from "aws-cdk-lib/custom-resources";
+import { Construct } from "constructs";
 import { SageMakerImage } from "./sage-maker-image.js";
-import { AwsCustomResource } from "aws-cdk-lib/custom-resources";
+import { UserProfile } from "./user-profile.js";
 
 export enum AuthMode {
   SSO = "SSO",
@@ -92,7 +106,7 @@ export interface DomainProps {
   sageMakerSg?: SecurityGroup;
 }
 
-export class Domain extends Resource {
+export class Domain extends Resource implements IConnectable {
   public readonly domainId: string;
   public readonly domainArn: string;
   public readonly domainUrl: string;
@@ -105,6 +119,8 @@ export class Domain extends Resource {
   private readonly users: Construct;
 
   public readonly sageMakerSg: SecurityGroup;
+
+  public readonly connections: Connections;
 
   constructor(scope: Construct, id: string, props: DomainProps) {
     super(scope, id);
@@ -162,6 +178,7 @@ export class Domain extends Resource {
         vpc: props.vpc,
       });
     this.sageMakerSg = sageMakerSg;
+    this.connections = sageMakerSg.connections;
 
     this.resource = new CfnDomain(this, "Resource", {
       authMode: props.authMode ?? AuthMode.SSO,
@@ -211,9 +228,7 @@ export class Domain extends Resource {
     this.singleSignOnApplicationArn =
       this.resource.attrSingleSignOnApplicationArn;
 
-    if (removalPolicy === RemovalPolicy.DESTROY) {
-      this.enableEFSDeletion();
-    }
+    this.enableCleanup(removalPolicy);
 
     // TODO: CustomResource to spin down Spaces when destroyed
 
@@ -251,23 +266,24 @@ export class Domain extends Resource {
     );
   }
 
-  private deleteHome: AwsCustomResource | undefined;
+  private cleanup: CustomResource | undefined;
 
   /**
-   * Creates a CustomResource to delete the EFS file system when the Domain is deleted.
-   *
-   * CFN does not delete the EFS which bricks the stack.
+   * Creates a CustomResource that will clean up the domain prior to it being destroyed:
+   * 1. Delete any running Apps (i.e. instances of a Space)
+   * 2. Delete the Domain's spaces.
+   * 2. Delete the Domain's EFS file system.
    */
-  public enableEFSDeletion() {
-    if (this.deleteHome) {
+  public enableCleanup(removalPolicy: RemovalPolicy) {
+    if (this.cleanup) {
       return;
     }
-    const deleteHomeRole = new Role(this, "DeleteHomeRole", {
+    const cleanupRole = new Role(this, "DeleteHomeRole", {
       assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
     });
-    deleteHomeRole.addToPrincipalPolicy(
+    cleanupRole.addToPrincipalPolicy(
       new PolicyStatement({
-        actions: ["efs:DeleteFileSystem"],
+        actions: ["efs:DeleteFileSystem", "efs:DescribeFileSystems"],
         resources: [
           Arn.format(
             {
@@ -281,20 +297,37 @@ export class Domain extends Resource {
       }),
     );
 
-    // got error: Received response status [FAILED] from custom resource. Message returned: User: arn:aws:sts::905418454327:assumed-role/streamlit-example-aws-cdk-DomainDeleteHomeRoleE3678-1bCO3sAxXc8k/streamlit-example-aws-cdk-AWS679f53fac002430cb0da5-fFiSXxnyg3zW is not authorized to perform: elasticfilesystem:DeleteFileSystem on the specified resource (RequestId: 1031beb5-eaa8-4a2c-9514-1d2f2386e479)
-    // when I had already deleted the domain
-    // is it a permission issue or did AWS just not like that I was trying to delete a non-existent resource?
-    this.deleteHome = new AwsCustomResource(this, "DeleteHome", {
-      role: deleteHomeRole,
-      installLatestAwsSdk: false,
-      onDelete: {
-        service: "efs",
-        action: "DeleteFileSystem",
-        parameters: {
-          FileSystemId: this.homeEfsFileSystemId,
-        },
-        // ignoreErrorCodesMatching:
+    this.grantDeleteApp(cleanupRole);
+    this.grantDeleteSpace(cleanupRole);
+    this.grantDescribeApp(cleanupRole);
+    this.grantDescribeSpace(cleanupRole);
+    this.grantListApps(cleanupRole);
+    this.grantListSpaces(cleanupRole);
+
+    const cleanupFunction = new NodejsFunction(this, "DeleteHomeFunction", {
+      entry: path.join(__dirname, "delete-domain.ts"),
+      handler: "handler",
+      role: cleanupRole,
+      environment: {
+        FileSystemId: this.homeEfsFileSystemId,
+        DomainId: this.domainId,
+        RemovalPolicy: removalPolicy,
       },
+    });
+
+    const cleanupProvider = new Provider(this, "Provider", {
+      onEventHandler: cleanupFunction,
+    });
+
+    this.cleanup = new CustomResource(this, "DeleteHome", {
+      resourceType: "Custom::PackYakDeleteDomain",
+      serviceToken: cleanupProvider.serviceToken,
+      properties: {
+        FileSystemId: this.homeEfsFileSystemId,
+        DomainId: this.domainId,
+        RemovalPolicy: removalPolicy,
+      },
+      removalPolicy,
     });
   }
 
