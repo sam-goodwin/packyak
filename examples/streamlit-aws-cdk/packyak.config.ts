@@ -50,17 +50,17 @@ const sparkSQL = spark.jdbc({
   port: 10000,
 });
 
-// const domain = new Domain(stack, "Domain", {
-//   domainName: `streamlit-example-aws-cdk-${stage}`,
-//   vpc,
-//   authMode: AuthMode.IAM,
-//   removalPolicy,
-// });
+const domain = new Domain(stack, "Domain", {
+  domainName: `streamlit-example-aws-cdk-${stage}`,
+  vpc,
+  authMode: AuthMode.IAM,
+  removalPolicy,
+});
 
-// domain.addUserProfile("sam");
+domain.addUserProfile("sam");
 
-// sparkSQL.allowFrom(domain);
-// spark.allowLivyFrom(domain);
+sparkSQL.allowFrom(domain);
+spark.allowLivyFrom(domain);
 
 // spark.connections.allowFrom(domain.sageMakerSg, Port.tcp(443));
 

@@ -205,7 +205,6 @@ export class Domain extends Resource implements IConnectable {
             : "DISABLED",
         securityGroups: [sageMakerSg.securityGroupId],
       },
-
       appNetworkAccessType:
         props.appNetworkAccessType ?? AppNetworkAccessType.VpcOnly,
       defaultSpaceSettings: {
@@ -289,7 +288,7 @@ export class Domain extends Resource implements IConnectable {
    * Creates a CustomResource that will clean up the domain prior to it being destroyed:
    * 1. Delete any running Apps (i.e. instances of a Space)
    * 2. Delete the Domain's spaces.
-   * 2. Delete the Domain's EFS file system.
+   * 2. Delete the Domain's EFS file system (first, by deleting any mounted access points, then the FS).
    */
   public enableCleanup(removalPolicy: RemovalPolicy) {
     if (this.cleanup) {
@@ -300,7 +299,7 @@ export class Domain extends Resource implements IConnectable {
 
     const code = path.join(dirname, "delete-domain");
 
-    const cleanupFunction = new LambdaFunction(this, "DeleteHomeFunction", {
+    const cleanupFunction = new LambdaFunction(this, "CleanupDomainFunction", {
       code: Code.fromAsset(code),
       runtime: Runtime.NODEJS_20_X,
       architecture: Architecture.ARM_64,
@@ -347,12 +346,12 @@ export class Domain extends Resource implements IConnectable {
     this.grantListApps(cleanupFunction);
     this.grantListSpaces(cleanupFunction);
 
-    const cleanupProvider = new Provider(this, "Provider", {
+    const cleanupProvider = new Provider(this, "CleanupDomainProvider", {
       onEventHandler: cleanupFunction,
     });
 
-    this.cleanup = new CustomResource(this, "DeleteHome", {
-      resourceType: "Custom::PackYakDeleteDomain",
+    this.cleanup = new CustomResource(this, "CleanupDomain", {
+      resourceType: "Custom::PackYakCleanupDomain",
       serviceToken: cleanupProvider.serviceToken,
       properties: {
         FileSystemId: this.homeEfsFileSystemId,

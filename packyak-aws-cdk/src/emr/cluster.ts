@@ -100,7 +100,7 @@ export interface ClusterProps {
    */
   idleTimeout?: Duration;
   /**
-   * @default {@link ReleaseLabel.LATEST}
+   * @default - {@link ReleaseLabel.LATEST}
    */
   releaseLabel?: ReleaseLabel;
   /**
@@ -108,7 +108,7 @@ export interface ClusterProps {
    */
   catalogs: Record<string, ICatalog>;
   /**
-   * @default {@link ScaleDownBehavior.TERMINATE_AT_TASK_COMPLETION}
+   * @default - {@link ScaleDownBehavior.TERMINATE_AT_TASK_COMPLETION}
    */
   scaleDownBehavior?: ScaleDownBehavior;
   /**
