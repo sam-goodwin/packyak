@@ -1,5 +1,6 @@
 import path from "path";
-
+import fs from "fs";
+import { fileURLToPath } from "url";
 import {
   Connections,
   IConnectable,
@@ -16,11 +17,11 @@ import {
   Role,
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
-import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { CfnDomain } from "aws-cdk-lib/aws-sagemaker";
 import {
   Arn,
   CustomResource,
+  Duration,
   RemovalPolicy,
   Resource,
   Stack,
@@ -29,6 +30,13 @@ import { Provider } from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
 import { SageMakerImage } from "./sage-maker-image.js";
 import { UserProfile } from "./user-profile.js";
+import {
+  Architecture,
+  Code,
+  Function as LambdaFunction,
+  Runtime,
+} from "aws-cdk-lib/aws-lambda";
+import { FileSystem } from "aws-cdk-lib/aws-efs";
 
 export enum AuthMode {
   SSO = "SSO",
@@ -111,6 +119,7 @@ export class Domain extends Resource implements IConnectable {
   public readonly domainArn: string;
   public readonly domainUrl: string;
   public readonly homeEfsFileSystemId: string;
+  public readonly homeEfsFileSystemArn: string;
   public readonly singleSignOnManagedApplicationInstanceId: string;
   public readonly singleSignOnApplicationArn: string;
 
@@ -223,6 +232,14 @@ export class Domain extends Resource implements IConnectable {
     this.domainArn = this.resource.attrDomainArn;
     this.domainUrl = this.resource.attrUrl;
     this.homeEfsFileSystemId = this.resource.attrHomeEfsFileSystemId;
+    this.homeEfsFileSystemArn = Arn.format(
+      {
+        service: "elasticfilesystem",
+        resource: "file-system",
+        resourceName: this.homeEfsFileSystemId,
+      },
+      Stack.of(this),
+    );
     this.singleSignOnManagedApplicationInstanceId =
       this.resource.attrSingleSignOnManagedApplicationInstanceId;
     this.singleSignOnApplicationArn =
@@ -278,18 +295,44 @@ export class Domain extends Resource implements IConnectable {
     if (this.cleanup) {
       return;
     }
-    const cleanupRole = new Role(this, "DeleteHomeRole", {
-      assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
+
+    const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+    const code = path.join(dirname, "delete-domain");
+
+    const cleanupFunction = new LambdaFunction(this, "DeleteHomeFunction", {
+      code: Code.fromAsset(code),
+      runtime: Runtime.NODEJS_20_X,
+      architecture: Architecture.ARM_64,
+      handler: "index.handler",
+      timeout: Duration.minutes(1),
+      environment: {
+        FileSystemId: this.homeEfsFileSystemId,
+        DomainId: this.domainId,
+        RemovalPolicy: removalPolicy,
+        NODE_OPTIONS: "--experimental-modules=true",
+      },
     });
-    cleanupRole.addToPrincipalPolicy(
+    cleanupFunction.grantPrincipal.addToPrincipalPolicy(
       new PolicyStatement({
-        actions: ["efs:DeleteFileSystem", "efs:DescribeFileSystems"],
+        actions: [
+          "elasticfilesystem:DeleteFileSystem",
+          "elasticfilesystem:DescribeMountTargets",
+        ],
+        resources: [this.homeEfsFileSystemArn],
+      }),
+    );
+    cleanupFunction.grantPrincipal.addToPrincipalPolicy(
+      new PolicyStatement({
+        actions: ["elasticfilesystem:DeleteMountTarget"],
         resources: [
+          // See: https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticfilesystem.html#amazonelasticfilesystem-actions-as-permissions
           Arn.format(
             {
-              service: "efs",
+              service: "elasticfilesystem",
               resource: "file-system",
-              resourceName: this.homeEfsFileSystemId,
+              // TODO: can we constrain this more?
+              resourceName: `*`,
             },
             Stack.of(this),
           ),
@@ -297,23 +340,12 @@ export class Domain extends Resource implements IConnectable {
       }),
     );
 
-    this.grantDeleteApp(cleanupRole);
-    this.grantDeleteSpace(cleanupRole);
-    this.grantDescribeApp(cleanupRole);
-    this.grantDescribeSpace(cleanupRole);
-    this.grantListApps(cleanupRole);
-    this.grantListSpaces(cleanupRole);
-
-    const cleanupFunction = new NodejsFunction(this, "DeleteHomeFunction", {
-      entry: path.join(__dirname, "delete-domain.ts"),
-      handler: "handler",
-      role: cleanupRole,
-      environment: {
-        FileSystemId: this.homeEfsFileSystemId,
-        DomainId: this.domainId,
-        RemovalPolicy: removalPolicy,
-      },
-    });
+    this.grantDeleteApp(cleanupFunction);
+    this.grantDeleteSpace(cleanupFunction);
+    this.grantDescribeApp(cleanupFunction);
+    this.grantDescribeSpace(cleanupFunction);
+    this.grantListApps(cleanupFunction);
+    this.grantListSpaces(cleanupFunction);
 
     const cleanupProvider = new Provider(this, "Provider", {
       onEventHandler: cleanupFunction,

@@ -44,7 +44,7 @@ export interface INessieCatalog extends ICatalog {
   readonly defaultMainBranch: string;
 }
 
-export interface BaseNessieCatalogProps {
+export interface BaseNessieRepoProps {
   /**
    * The name of this catalog in the Spark Context.
    *
@@ -140,7 +140,7 @@ export abstract class BaseNessieCatalog
     return `${this.endpoint}/api/v2`;
   }
 
-  constructor(scope: Construct, id: string, props: BaseNessieCatalogProps) {
+  constructor(scope: Construct, id: string, props: BaseNessieRepoProps) {
     super(scope, id);
     this.catalogName = props?.catalogName ?? "spark_catalog";
     this.warehouseBucket =

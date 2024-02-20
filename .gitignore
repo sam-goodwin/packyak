@@ -10,3 +10,4 @@ dist
 lib
 node_modules
 tmp*
+custom

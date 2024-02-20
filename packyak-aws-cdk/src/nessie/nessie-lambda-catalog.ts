@@ -11,10 +11,10 @@ import { Construct } from "constructs";
 import path from "path";
 import {
   BaseNessieCatalog,
-  BaseNessieCatalogProps,
+  BaseNessieRepoProps,
 } from "./base-nessie-catalog.js";
 
-export interface NessieLambdaCatalogProps extends BaseNessieCatalogProps {}
+export interface NessieLambdaCatalogProps extends BaseNessieRepoProps {}
 
 export class NessieLambdaCatalog extends BaseNessieCatalog {
   public readonly function: Function;

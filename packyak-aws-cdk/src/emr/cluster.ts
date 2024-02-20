@@ -157,7 +157,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
 
   private readonly steps: Step[];
   private readonly configurations: Configuration[];
-  private readonly extraJavaOptions: Record<string, string>;
+  public readonly extraJavaOptions: Readonly<Record<string, string>>;
 
   protected readonly resource: CfnCluster;
 
@@ -225,15 +225,18 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       vpc: props.vpc,
       description:
         "The security group for the primary instance (private subnets). See: https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-man-sec-groups.html#emr-sg-elasticmapreduce-master-private",
+      allowAllOutbound: true,
     });
     this.connections = this.primarySg.connections;
     this.coreSg = new SecurityGroup(this, "CoreSG", {
       vpc: props.vpc,
       description:
         "Security group for core and task instances (private subnets). See: https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-man-sec-groups.html#emr-sg-elasticmapreduce-slave-private",
+      allowAllOutbound: true,
     });
     this.serviceAccessSg = new SecurityGroup(this, "ServiceAccessSG", {
       vpc: props.vpc,
+      allowAllOutbound: false,
     });
 
     this.configureSecurityGroups();
@@ -255,10 +258,11 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
         { name: Application.LIVY },
         { name: Application.SPARK },
       ],
-      steps: props.steps,
+      steps: Lazy.any({
+        produce: () => this.steps,
+      }),
       stepConcurrencyLevel: props.stepConcurrencyLevel,
       bootstrapActions: props.bootstrapActions,
-
       instances: {
         // TODO: is 1 subnet OK?
         // TODO: required for instance fleets
@@ -337,6 +341,13 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
   }
 
   /**
+   * Allows connections to the Livy server on port 8998 from the specified {@link other} security group.
+   */
+  public allowLivyFrom(other: IConnectable): void {
+    this.connections.allowFrom(other, Port.tcp(8998));
+  }
+
+  /**
    * Configure the rules for the Primary, Core, and Service Access security groups.
    */
   private configureSecurityGroups() {
@@ -369,7 +380,6 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       Port.tcp(8443),
       "This rule allows the cluster manager to communicate with the primary node.",
     );
-    this.primarySg.connections.allowToAnyIpv4(Port.allTraffic());
   }
 
   /**
@@ -396,7 +406,6 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       Port.tcp(8443),
       "This rule allows the cluster manager to communicate with core and task nodes.",
     );
-    this.coreSg.connections.allowToAnyIpv4(Port.allTraffic());
   }
 
   /**

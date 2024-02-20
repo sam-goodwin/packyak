@@ -20,13 +20,13 @@ import {
 import { Construct } from "constructs";
 import {
   BaseNessieCatalog,
-  BaseNessieCatalogProps,
+  BaseNessieRepoProps,
 } from "./base-nessie-catalog.js";
 import type { DNSConfiguration } from "../dns-configuration.js";
 import { ILogGroup, LogGroup } from "aws-cdk-lib/aws-logs";
 
 export interface NessieECSCatalogProps
-  extends BaseNessieCatalogProps,
+  extends BaseNessieRepoProps,
     ApplicationLoadBalancedFargateServiceProps {
   vpc?: IVpc;
   cluster?: Cluster;

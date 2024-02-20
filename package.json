@@ -21,6 +21,10 @@
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
+		"@aws-sdk/client-efs": "^3.515.0",
+		"@aws-sdk/client-sso": "^3.515.0",
+		"@aws-sdk/credential-provider-ini": "^3.515.0",
+		"@aws-sdk/credential-provider-sso": "^3.515.0",
 		"@biomejs/biome": "^1.5.3",
 		"@tsconfig/node20": "^20.1.2",
 		"@types/node": "^20.10.8",

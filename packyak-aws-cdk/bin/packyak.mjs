@@ -21,8 +21,12 @@ const command = `npx tsx -e 'import("./packyak.config${ext}")'`;
 
 try {
   const { stdout, stderr } = await execAsync(command);
-  console.log("Output:", stdout);
-  console.error("Error:", stderr);
+  if (stdout.trim()) {
+    process.stdout.write(stdout);
+  }
+  if (stderr.trim()) {
+    process.stderr.write(stderr);
+  }
 } catch (error) {
   console.error("Execution error:", error);
   process.exit(1);

@@ -14,10 +14,12 @@ export enum TransportMode {
 export interface HiveConfig {
   "hive.aux.jars.path"?: string;
   "hive.server2.transport.mode"?: TransportMode;
+  [key: string]: any;
 }
 
 export interface SparkConf {
   "spark.driver.extraJavaOptions"?: string;
+  [key: string]: any;
 }
 
 export interface JDBCProps {
@@ -56,13 +58,16 @@ export class JDBC {
       // TODO: ideally not the /root/ user...
       hiveConf["hive.aux.jars.path"] = "/root/.ivy2/jars/";
     }
+    hiveConf["hive.server2.thrift.port"] = options.port.toString(10);
 
     const sparkConf = options.sparkConf ?? {};
-    if (options.extraJavaOptions) {
-      sparkConf["spark.driver.extraJavaOptions"] = mergeSparkExtraJars(
-        options.extraJavaOptions,
-        sparkConf["spark.driver.extraJavaOptions"],
-      );
+    const extraJavaOptions = mergeSparkExtraJars(
+      cluster.extraJavaOptions,
+      sparkConf["spark.driver.extraJavaOptions"],
+      options.extraJavaOptions,
+    );
+    if (extraJavaOptions) {
+      sparkConf["spark.driver.extraJavaOptions"] = `'${extraJavaOptions}'`;
     }
     this.cluster.addStep({
       name: "StartThriftServer",
@@ -77,12 +82,12 @@ export class JDBC {
             //        to write to the log directory.
             "sudo",
             "/lib/spark/sbin/start-thriftserver.sh",
-            Object.keys(hiveConf).length > 0
+            ...(Object.keys(hiveConf).length > 0
               ? ["--hiveconf", toCLIArgs(hiveConf)]
-              : [],
-            Object.keys(hiveConf).length > 0
+              : []),
+            ...(Object.keys(sparkConf).length > 0
               ? ["--conf", toCLIArgs(sparkConf)]
-              : [],
+              : []),
           ].join(" "),
         ],
       },
