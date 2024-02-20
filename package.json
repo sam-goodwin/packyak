@@ -15,7 +15,8 @@
 		"build": "pnpm typecheck && tsc -b",
 		"synth": "poetry run python ./examples/app.py",
 		"synth:website": "cdk synth --app 'tsx ./packyak.config.ts'",
-		"publish:pypi": "poetry build && poetry publish"
+		"publish:pypi": "poetry build && poetry publish",
+		"publish:npm": "cd packyak-aws-cdk && rm -rf lib tsconfig.tsbuildinfo && tsc -b && npm publish"
 	},
 	"keywords": [],
 	"author": "",

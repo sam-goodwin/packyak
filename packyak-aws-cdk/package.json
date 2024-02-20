@@ -1,6 +1,6 @@
 {
 	"name": "@packyak/aws-cdk",
-	"version": "0.1.11",
+	"version": "0.2.0",
 	"type": "module",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
