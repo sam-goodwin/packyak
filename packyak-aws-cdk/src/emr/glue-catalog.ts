@@ -51,7 +51,7 @@ export class IcebergGlueCatalog extends Construct implements ICatalog {
     this.warehousePrefix = props.warehousePrefix;
   }
 
-  public bind(cluster: Cluster, catalogName: string): Configuration[] {
+  public bind(cluster: Cluster, catalogName: string): void {
     // TODO: should we limit this to the warehouse prefix
     this.warehouseBucket.grantReadWrite(cluster, "*");
     const { partition, region, account } = Stack.of(cluster);
@@ -68,7 +68,7 @@ export class IcebergGlueCatalog extends Construct implements ICatalog {
       scalaVersion,
     );
     const catalogNamespace = `spark.sql.catalog.${catalogName}`;
-    return [
+    cluster.addConfig(
       {
         classification: "spark-hive-site",
         configurationProperties: {
@@ -95,7 +95,7 @@ export class IcebergGlueCatalog extends Construct implements ICatalog {
           [`${catalogNamespace}.io-impl`]: "org.apache.iceberg.aws.s3.S3FileIO",
         },
       },
-    ];
+    );
   }
 
   /*

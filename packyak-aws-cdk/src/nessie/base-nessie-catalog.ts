@@ -8,7 +8,6 @@ import {
 import { RemovalPolicy, Stack } from "aws-cdk-lib/core";
 import { ICatalog } from "../emr/catalog.js";
 import { Cluster } from "../emr/cluster.js";
-import { Configuration } from "../emr/configuration.js";
 import { SparkSqlExtension } from "../emr/spark-sql-extension.js";
 import { Bucket, IBucket } from "aws-cdk-lib/aws-s3";
 import { ILogGroup } from "aws-cdk-lib/aws-logs";
@@ -173,7 +172,7 @@ export abstract class BaseNessieCatalog
     return nessieConfigToEnvironment(this.config);
   }
 
-  public bind(cluster: Cluster, catalogName: string): Configuration[] {
+  public bind(cluster: Cluster, catalogName: string): void {
     // TODO: should we limit this to the warehouse prefix
     this.warehouseBucket.grantReadWrite(cluster, "*");
     const sparkVersion = cluster.release.sparkVersion;
@@ -192,42 +191,40 @@ export abstract class BaseNessieCatalog
 
     const catalogNamespace = `spark.sql.catalog.${catalogName}`;
 
-    return [
-      {
-        classification: "spark-defaults",
-        configurationProperties: {
-          // set up Nessie catalog
-          "spark.jars.packages": `${icebergExt},${nessieExt}`,
-          "spark.sql.extensions": `${SparkSqlExtension.Iceberg.className},${SparkSqlExtension.Nessie.className}`,
+    cluster.addConfig({
+      classification: "spark-defaults",
+      configurationProperties: {
+        // set up Nessie catalog
+        "spark.jars.packages": `${icebergExt},${nessieExt}`,
+        "spark.sql.extensions": `${SparkSqlExtension.Iceberg.className},${SparkSqlExtension.Nessie.className}`,
 
-          // TODO: is s3a:// right?
-          [`${catalogNamespace}.warehouse`]: `s3://${
-            this.warehouseBucket.bucketName
-          }${
-            this.warehousePrefix
-              ? `/${this.warehousePrefix.replace(/^[\/]*/g, "")}`
-              : ""
-          }`,
-          // TODO: not sure if Spark uses V1 or V2
-          // see thread: https://project-nessie.zulipchat.com/#narrow/stream/371187-general/topic/.E2.9C.94.20Merge.20author/near/421198168
+        // TODO: is s3a:// right?
+        [`${catalogNamespace}.warehouse`]: `s3://${
+          this.warehouseBucket.bucketName
+        }${
+          this.warehousePrefix
+            ? `/${this.warehousePrefix.replace(/^[\/]*/g, "")}`
+            : ""
+        }`,
+        // TODO: not sure if Spark uses V1 or V2
+        // see thread: https://project-nessie.zulipchat.com/#narrow/stream/371187-general/topic/.E2.9C.94.20Merge.20author/near/421198168
 
-          // V1
-          // "spark.sql.catalog.nessie.uri": this.apiV1Url,
+        // V1
+        // "spark.sql.catalog.nessie.uri": this.apiV1Url,
 
-          // V2
-          // // After Iceberg 1.5.0 release, just configuring v2 URI is enough (version is inferred from URI).
-          [`${catalogNamespace}.uri`]: this.apiV2Url,
-          [`${catalogNamespace}.ref`]: this.defaultMainBranch,
-          [`${catalogNamespace}.client-api-version`]: "2",
+        // V2
+        // // After Iceberg 1.5.0 release, just configuring v2 URI is enough (version is inferred from URI).
+        [`${catalogNamespace}.uri`]: this.apiV2Url,
+        [`${catalogNamespace}.ref`]: this.defaultMainBranch,
+        [`${catalogNamespace}.client-api-version`]: "2",
 
-          [`${catalogNamespace}.authentication.type`]: "AWS",
-          [`${catalogNamespace}.catalog-impl`]:
-            "org.apache.iceberg.nessie.NessieCatalog",
-          [catalogNamespace]: "org.apache.iceberg.spark.SparkCatalog",
-          [`${catalogNamespace}.io-impl`]: "org.apache.iceberg.aws.s3.S3FileIO",
-          // "spark.sql.catalog.nessie.cache-enabled": false
-        },
+        [`${catalogNamespace}.authentication.type`]: "AWS",
+        [`${catalogNamespace}.catalog-impl`]:
+          "org.apache.iceberg.nessie.NessieCatalog",
+        [catalogNamespace]: "org.apache.iceberg.spark.SparkCatalog",
+        [`${catalogNamespace}.io-impl`]: "org.apache.iceberg.aws.s3.S3FileIO",
+        // "spark.sql.catalog.nessie.cache-enabled": false
       },
-    ];
+    });
   }
 }
