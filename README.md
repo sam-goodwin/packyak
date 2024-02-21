@@ -18,22 +18,22 @@ Packyak makes it easy to build Lakehouses, Data Pipelines and and AI application
 - [ ] `@train` - capture the inputs and outputs of a function for ML training and human feedback
 - [ ] Generate audit reports for HIPAA and GDPR compliance policies
 
-# Installation
+# Setup
 
-```ts
+1. 
 
-```
 
 ## Pre-requisites
 
-1. Docker (for bundling Python applications for the target runtime, e.g. in an Amazon Linux Lambda Function)
-2. Python Poetry
+1. Install [Session Manager plugin for the AWS CLI](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) for connecting to your AWS resources from your local machine.
+2. Docker (for bundling Python applications for the target runtime, e.g. in an Amazon Linux Lambda Function)
+3. Python Poetry
 
 ```sh
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-3. `poetry-plugin-export` - see https://python-poetry.org/docs/plugins/#using-plugins
+4. `poetry-plugin-export` - see https://python-poetry.org/docs/plugins/#using-plugins
 
 ```sh
 poetry self add poetry-plugin-export

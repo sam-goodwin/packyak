@@ -1,24 +1,14 @@
 import {
-  Arn,
-  Duration,
-  Lazy,
-  RemovalPolicy,
-  Resource,
-  Stack,
-} from "aws-cdk-lib/core";
-import { CfnCluster } from "aws-cdk-lib/aws-emr";
-import { Construct } from "constructs";
-import {
   Connections,
   IConnectable,
   IVpc,
   InstanceClass,
   InstanceSize,
   InstanceType,
-  Peer,
   Port,
   SecurityGroup,
 } from "aws-cdk-lib/aws-ec2";
+import { CfnCluster } from "aws-cdk-lib/aws-emr";
 import {
   Effect,
   IGrantable,
@@ -29,14 +19,28 @@ import {
   Role,
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
-import { Market } from "./market.js";
+import { Asset } from "aws-cdk-lib/aws-s3-assets";
+import {
+  Arn,
+  Aws,
+  Duration,
+  Lazy,
+  RemovalPolicy,
+  Resource,
+  Stack,
+} from "aws-cdk-lib/core";
+import { Construct } from "constructs";
+import path from "path";
 import { Application } from "./application.js";
-import { ReleaseLabel } from "./release-label.js";
+import { BootstrapAction } from "./bootstrap-action.js";
 import { ICatalog } from "./catalog.js";
 import { Configuration, combineConfigurations } from "./configuration.js";
-import { Step } from "./step.js";
 import { JDBC, JDBCProps } from "./jdbc.js";
+import { Market } from "./market.js";
+import { ReleaseLabel } from "./release-label.js";
 import { toCLIArgs } from "./spark-config.js";
+import { Step } from "./step.js";
+import { CfnDocument } from "aws-cdk-lib/aws-ssm";
 
 export interface InstanceGroup {
   /**
@@ -128,7 +132,7 @@ export interface ClusterProps {
   /**
    * @default - No bootstrap actions
    */
-  bootstrapActions?: CfnCluster.BootstrapActionConfigProperty[];
+  bootstrapActions?: BootstrapAction[];
   /**
    * The EMR Steps to submit to the cluster.
    *
@@ -145,6 +149,12 @@ export interface ClusterProps {
    * Extra java options to include in the Spark context by default.
    */
   extraJavaOptions?: Record<string, string>;
+  /**
+   * Installs and configures the SSM agent to run on all Primary, Core and Task nodes.
+   *
+   * @default false
+   */
+  installSSMAgent?: boolean;
 }
 
 export class Cluster extends Resource implements IGrantable, IConnectable {
@@ -154,19 +164,25 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
   public readonly serviceAccessSg: SecurityGroup;
   public readonly connections: Connections;
   public readonly grantPrincipal: IPrincipal;
+  public readonly extraJavaOptions: Readonly<Record<string, string>>;
+  public readonly jobFlowRole: Role;
+  public readonly instanceProfile: InstanceProfile;
+  public readonly serviceRole: Role;
 
   private readonly steps: Step[];
+  private readonly bootstrapActions: BootstrapAction[];
   private readonly configurations: Configuration[];
-  public readonly extraJavaOptions: Readonly<Record<string, string>>;
+  private readonly clusterID: string;
 
   protected readonly resource: CfnCluster;
 
   constructor(scope: Construct, id: string, props: ClusterProps) {
     super(scope, id);
 
-    this.extraJavaOptions = props.extraJavaOptions ?? {};
-    this.steps = [];
-    this.configurations = [];
+    this.extraJavaOptions = { ...(props.extraJavaOptions ?? {}) };
+    this.steps = [...(props.steps ?? [])];
+    this.configurations = [...(props.configurations ?? [])];
+    this.bootstrapActions = [...(props.bootstrapActions ?? [])];
 
     this.release = props.releaseLabel ?? ReleaseLabel.EMR_7_0_0;
 
@@ -179,18 +195,17 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
 
     // for least privileges, see:
     // https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-role-for-ec2.html#emr-ec2-role-least-privilege
-    const jobFlowRole = new Role(this, "JobFlowRole", {
+    this.jobFlowRole = new Role(this, "JobFlowRole", {
       assumedBy: new ServicePrincipal("ec2.amazonaws.com"),
     });
 
     // see: https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-iam-role-for-ec2.html
-
-    const instanceProfile = new InstanceProfile(this, "InstanceProfile", {
-      role: jobFlowRole,
+    this.instanceProfile = new InstanceProfile(this, "InstanceProfile", {
+      role: this.jobFlowRole,
     });
-    this.grantPrincipal = jobFlowRole;
+    this.grantPrincipal = this.jobFlowRole;
 
-    const serviceRole = new Role(this, "ServiceRole", {
+    this.serviceRole = new Role(this, "ServiceRole", {
       assumedBy: new ServicePrincipal("elasticmapreduce.amazonaws.com"),
       managedPolicies: [
         // TODO: fine-grained policies
@@ -203,7 +218,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
         ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess"),
       ],
     });
-    serviceRole.addToPrincipalPolicy(
+    this.serviceRole.addToPrincipalPolicy(
       new PolicyStatement({
         actions: ["ec2:CreateSecurityGroup"],
         effect: Effect.ALLOW,
@@ -241,6 +256,10 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
 
     this.configureSecurityGroups();
 
+    // this constructs a globally unique identifier for the cluster for use in ResourceTag IAM policies
+    // should work when clusters are deployed via CDK or Service Catalog
+    this.clusterID = `${Aws.ACCOUNT_ID}/${Aws.REGION}/${Aws.STACK_NAME}/${props.clusterName}`;
+
     const cluster = new CfnCluster(this, "Resource", {
       name: props.clusterName,
       // see: https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-managed-policy-fullaccess-v2.html
@@ -249,9 +268,13 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
           key: "for-use-with-amazon-emr-managed-policies",
           value: "true",
         },
+        {
+          key: "ClusterID",
+          value: this.clusterID,
+        },
       ],
-      jobFlowRole: instanceProfile.instanceProfileArn,
-      serviceRole: serviceRole.roleArn,
+      jobFlowRole: this.instanceProfile.instanceProfileArn,
+      serviceRole: this.serviceRole.roleArn,
       releaseLabel: props.releaseLabel?.label ?? ReleaseLabel.LATEST.label,
       applications: [
         { name: Application.AMAZON_CLOUDWATCH_AGENT },
@@ -262,7 +285,9 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
         produce: () => this.steps,
       }),
       stepConcurrencyLevel: props.stepConcurrencyLevel,
-      bootstrapActions: props.bootstrapActions,
+      bootstrapActions: Lazy.any({
+        produce: () => this.bootstrapActions,
+      }),
       instances: {
         // TODO: is 1 subnet OK?
         // TODO: required for instance fleets
@@ -326,18 +351,152 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     );
     this.resource = cluster;
     cluster.applyRemovalPolicy(props.removalPolicy ?? RemovalPolicy.DESTROY);
+
+    if (props.installSSMAgent) {
+      this.installSSMAgent();
+    }
   }
 
+  /**
+   * Configure the EMR cluster start the Thrift Server and serve JDBC requests on the specified port.
+   *
+   * @param options to set when running the JDBC server
+   * @returns a reference to the JDBC server
+   * @example
+   * ```ts
+   * const sparkSQL = cluster.jdbc({
+   *  port: 10000,
+   * });
+   * sparkSQL.allowFrom(sageMakerDomain);
+   * ```
+   */
+  public jdbc(options: JDBCProps): JDBC {
+    return new JDBC(this, options);
+  }
+
+  /**
+   * Add an EMR Step to the cluster.
+   *
+   * This step will run when the cluster is started.
+   *
+   * @param step the step to add
+   */
   public addStep(step: Step): void {
     this.steps.push(step);
   }
 
+  /**
+   * Add EMR Configurations to the cluster.
+   *
+   * E.g. spark or hive configurations.
+   *
+   * @param configurations additional configurations to add
+   */
   public addConfig(...configurations: Configuration[]): void {
     this.configurations.push(...configurations);
   }
 
-  public jdbc(options: JDBCProps): JDBC {
-    return new JDBC(this, options);
+  /**
+   * Add a Bootstrap Action to the cluster.
+   *
+   * Bootstrap actions are scripts that run on the cluster before Hadoop starts.
+   *
+   * @param action the bootstrap action to add
+   * @see https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-bootstrap.html
+   */
+  public addBootstrapAction(action: BootstrapAction): void {
+    this.bootstrapActions.push(action);
+  }
+
+  /**
+   * private flag to make {@link installSSMAgent} idempotent
+   */
+  private isSSMAgentInstalled: boolean | undefined;
+
+  /**
+   * Installs the SSM Agent on Primary, Core, and Task nodes.
+   *
+   * Authorizes the EC2 instances to communicate with the SSM service.
+   *
+   * @see https://aws.amazon.com/blogs/big-data/securing-access-to-emr-clusters-using-aws-systems-manager/
+   */
+  public installSSMAgent() {
+    if (this.isSSMAgentInstalled) {
+      return;
+    }
+    this.isSSMAgentInstalled = true;
+    const __dirname = path.dirname(new URL(import.meta.url).pathname);
+    const singletonId = "packyak::emr::install-ssm-agent";
+    const stack = Stack.of(this);
+    const bootstrapScript =
+      (stack.node.tryFindChild(singletonId) as Asset) ??
+      new Asset(stack, singletonId, {
+        path: path.join(
+          __dirname,
+          "..",
+          "..",
+          "scripts",
+          "install-ssm-agent.sh",
+        ),
+      });
+    bootstrapScript.grantRead(this.jobFlowRole);
+    this.addBootstrapAction({
+      name: "Install SSM Agent",
+      scriptBootstrapAction: {
+        path: bootstrapScript.s3ObjectUrl,
+      },
+    });
+    // this allows the SSM agent to communicate with the SSM service
+    this.jobFlowRole.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"),
+    );
+  }
+
+  /**
+   * Grant an permission to start an SSM Session on the EMR cluster.
+   *
+   * @param grantee the principal to grant the permission to
+   *
+   * // TODO: figure out how to use SSM Session Documents to:
+   * //       1. customize where state is store and encrypt it
+   * //       2. customize other session properties
+   * //       3. constrain access with IAM Condition: ssm:SessionDocumentAccessCheck
+   * @see https://docs.aws.amazon.com/systems-manager/latest/userguide/getting-started-specify-session-document.html
+   */
+  public grantStartSSMSession(grantee: IGrantable) {
+    grantee.grantPrincipal.addToPrincipalPolicy(
+      new PolicyStatement({
+        actions: [
+          "ssm:DescribeInstanceProperties",
+          "ssm:DescribeSessions",
+          "ec2:describeInstances",
+          "ssm:GetConnectionStatus",
+        ],
+        // TODO: not sure if this can be constrained
+        resources: ["*"],
+      }),
+    );
+    grantee.grantPrincipal.addToPrincipalPolicy(
+      new PolicyStatement({
+        actions: ["ssm:StartSession"],
+        resources: [
+          Arn.format(
+            {
+              service: "ec2",
+              resource: "instance",
+              resourceName: "*",
+            },
+            Stack.of(this),
+          ),
+        ],
+        conditions: {
+          StringEquals: {
+            // restrict access to only this cluster, as identified by AccountID, Region, StackName and ClusterName
+            "ssm:resourceTag/ClusterID": this.clusterID,
+          },
+        },
+      }),
+    );
   }
 
   /**

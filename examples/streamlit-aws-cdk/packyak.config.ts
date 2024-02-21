@@ -5,7 +5,7 @@ import {
   NessieECSCatalog,
   Cluster,
 } from "@packyak/aws-cdk";
-import { Port, Vpc } from "aws-cdk-lib/aws-ec2";
+import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
 
@@ -44,6 +44,7 @@ const spark = new Cluster(stack, "SparkCluster", {
   extraJavaOptions: {
     "-Djdk.httpclient.allowRestrictedHeaders": "host",
   },
+  installSSMAgent: true,
 });
 
 const sparkSQL = spark.jdbc({
@@ -59,8 +60,14 @@ const domain = new Domain(stack, "Domain", {
 
 domain.addUserProfile("sam");
 
+// allow the SageMaker domain to connect to the Spark's JDBC Hive service
 sparkSQL.allowFrom(domain);
+
+// allow the SageMaker domain to connect to the Spark's Ivy service
 spark.allowLivyFrom(domain);
+
+// allow the SageMaker domain to start a session on the Spark cluster
+spark.grantStartSSMSession(domain);
 
 // spark.connections.allowFrom(domain.sageMakerSg, Port.tcp(443));
 

@@ -1,6 +1,6 @@
 {
 	"name": "@packyak/aws-cdk",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"type": "module",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
@@ -14,7 +14,7 @@
 			"types": "./lib/index.d.ts"
 		}
 	},
-	"files": ["bin", "custom", "lib"],
+	"files": ["bin", "lib", "scripts"],
 	"keywords": [],
 	"author": "Sam Goodwin",
 	"license": "Apache-2.0",

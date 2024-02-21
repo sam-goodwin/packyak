@@ -12,6 +12,7 @@ import {
   CompositePrincipal,
   Effect,
   IGrantable,
+  IPrincipal,
   IRole,
   PolicyStatement,
   Role,
@@ -114,7 +115,7 @@ export interface DomainProps {
   sageMakerSg?: SecurityGroup;
 }
 
-export class Domain extends Resource implements IConnectable {
+export class Domain extends Resource implements IConnectable, IGrantable {
   public readonly domainId: string;
   public readonly domainArn: string;
   public readonly domainUrl: string;
@@ -131,6 +132,8 @@ export class Domain extends Resource implements IConnectable {
 
   public readonly connections: Connections;
 
+  public readonly grantPrincipal: IPrincipal;
+
   constructor(scope: Construct, id: string, props: DomainProps) {
     super(scope, id);
 
@@ -146,6 +149,7 @@ export class Domain extends Resource implements IConnectable {
         new ServicePrincipal("glue.amazonaws.com"),
       ),
     });
+    this.grantPrincipal = domainExecutionRole;
     domainExecutionRole.applyRemovalPolicy(removalPolicy);
     // sagemaker needs permission to call GetRole and PassRole on the Role it assumed
     // e.g. arn:aws:iam::123456789012:role/role-name/SageMaker will call GetRole on arn:aws:iam::123456789012:role/role-name
@@ -299,7 +303,7 @@ export class Domain extends Resource implements IConnectable {
 
     const code = path.join(dirname, "delete-domain");
 
-    const cleanupFunction = new LambdaFunction(this, "CleanupDomainFunction", {
+    const cleanupFunction = new LambdaFunction(this, "CleanupFunction", {
       code: Code.fromAsset(code),
       runtime: Runtime.NODEJS_20_X,
       architecture: Architecture.ARM_64,
@@ -331,7 +335,7 @@ export class Domain extends Resource implements IConnectable {
               service: "elasticfilesystem",
               resource: "file-system",
               // TODO: can we constrain this more?
-              resourceName: `*`,
+              resourceName: this.homeEfsFileSystemId,
             },
             Stack.of(this),
           ),
@@ -346,11 +350,11 @@ export class Domain extends Resource implements IConnectable {
     this.grantListApps(cleanupFunction);
     this.grantListSpaces(cleanupFunction);
 
-    const cleanupProvider = new Provider(this, "CleanupDomainProvider", {
+    const cleanupProvider = new Provider(this, "CleanupProvider", {
       onEventHandler: cleanupFunction,
     });
 
-    this.cleanup = new CustomResource(this, "CleanupDomain", {
+    this.cleanup = new CustomResource(this, "Cleanup", {
       resourceType: "Custom::PackYakCleanupDomain",
       serviceToken: cleanupProvider.serviceToken,
       properties: {
