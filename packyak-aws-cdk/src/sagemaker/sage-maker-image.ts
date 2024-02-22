@@ -84,12 +84,12 @@ export class SageMakerImage {
 
   constructor(
     private readonly resourceId: string,
-    private readonly type: SageMakerImageType,
+    private readonly imageType: SageMakerImageType,
   ) {}
 
   public getArnForStack(stack: Stack) {
     const [singletonId, mappings] =
-      this.type === SageMakerImageType.IMAGE
+      this.imageType === SageMakerImageType.IMAGE
         ? [SageMakerImageSingletonID, imageArnAccounts]
         : [SageMakerDistributionImageSingletonID, distributionImageArnAccounts];
 

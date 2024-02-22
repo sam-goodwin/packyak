@@ -6,48 +6,37 @@ import { toCLIArgs, mergeSparkExtraJars } from "./spark-config.js";
  * https://mr3docs.datamonad.com/docs/k8s/advanced/transport/
  */
 export enum TransportMode {
-  Binary = "binary",
+  BINARY = "binary",
   HTTP = "http",
-  All = "all",
+  ALL = "all",
 }
 
-export interface HiveConfig {
-  "hive.aux.jars.path"?: string;
-  "hive.server2.transport.mode"?: TransportMode;
-  [key: string]: any;
-}
-
-export interface SparkConf {
-  "spark.driver.extraJavaOptions"?: string;
-  [key: string]: any;
-}
-
-export interface JDBCProps {
+export interface JdbcProps {
   /**
    * @see https://spark.apache.org/docs/latest/sql-distributed-sql-engine.html
    */
-  port: number;
+  readonly port: number;
   /**
    * Include tje .ivy2/jars directory so that the server will pick up extra extensions
    *
    * @default true
    */
-  includeExtensions?: boolean;
+  readonly includeExtensions?: boolean;
   /**
    * @default
    */
-  hiveConf?: Record<string, string>;
-  sparkConf?: Record<string, string>;
-  extraJavaOptions?: Record<string, string>;
+  readonly hiveConf?: Record<string, string>;
+  readonly sparkConf?: Record<string, string>;
+  readonly extraJavaOptions?: Record<string, string>;
 }
 
 /**
  * Configures an EMR Cluster to start a Thrift Server daemon.
  */
-export class JDBC {
+export class Jdbc {
   constructor(
     private readonly cluster: Cluster,
-    private readonly options: JDBCProps,
+    private readonly options: JdbcProps,
   ) {
     const hiveConf = options.hiveConf ?? {};
     if (

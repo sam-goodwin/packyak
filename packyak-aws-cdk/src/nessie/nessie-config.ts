@@ -3,7 +3,7 @@ export function nessieConfigToEnvironment(config: NessieConfig): {
 } {
   return Object.fromEntries(
     Object.entries(config).map(([k, v]) => [
-      k.toUpperCase().replaceAll(/[\._-]/g, "_"),
+      k.toUpperCase().replace(/[\._-]/g, "_"),
       v.toString(),
     ]),
   );

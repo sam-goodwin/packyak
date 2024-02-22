@@ -12,8 +12,11 @@ export interface NessieVersionStoreProps {
    * @default - "nessie"
    * @see https://project-nessie.zulipchat.com/#narrow/stream/371187-general/topic/AWS.20Lambda.20with.20SnapStart/near/420329834
    */
-  versionStoreName?: string;
-  removalPolicy?: RemovalPolicy;
+  readonly versionStoreName?: string;
+  /**
+   * @default - RemovalPolicy.DESTROY
+   */
+  readonly removalPolicy?: RemovalPolicy;
 }
 
 /**

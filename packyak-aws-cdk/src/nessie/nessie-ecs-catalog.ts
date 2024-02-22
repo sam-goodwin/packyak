@@ -1,8 +1,6 @@
-import { IVpc } from "aws-cdk-lib/aws-ec2";
 import { Platform } from "aws-cdk-lib/aws-ecr-assets";
 import {
   AwsLogDriver,
-  Cluster,
   ContainerImage,
   CpuArchitecture,
   OperatingSystemFamily,
@@ -28,10 +26,8 @@ import { ILogGroup, LogGroup } from "aws-cdk-lib/aws-logs";
 export interface NessieECSCatalogProps
   extends BaseNessieRepoProps,
     ApplicationLoadBalancedFargateServiceProps {
-  vpc?: IVpc;
-  cluster?: Cluster;
-  platform?: Platform;
-  dns?: DNSConfiguration;
+  readonly platform?: Platform;
+  readonly dns?: DNSConfiguration;
 }
 
 export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
@@ -80,7 +76,7 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
       taskImageOptions: {
         ...(props?.taskImageOptions ?? {}),
         environment: {
-          ...this.getConfigEnvVars(),
+          ...this.configAsEnvVars(),
           ...props?.taskImageOptions?.environment,
         },
         logDriver: AwsLogDriver.awsLogs({

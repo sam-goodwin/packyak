@@ -1,6 +1,3 @@
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
 import {
   Connections,
   IConnectable,
@@ -18,6 +15,12 @@ import {
   Role,
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
+import {
+  Architecture,
+  Code,
+  Function as LambdaFunction,
+  Runtime,
+} from "aws-cdk-lib/aws-lambda";
 import { CfnDomain } from "aws-cdk-lib/aws-sagemaker";
 import {
   Arn,
@@ -29,15 +32,9 @@ import {
 } from "aws-cdk-lib/core";
 import { Provider } from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
+import * as path from "path";
 import { SageMakerImage } from "./sage-maker-image.js";
 import { UserProfile } from "./user-profile.js";
-import {
-  Architecture,
-  Code,
-  Function as LambdaFunction,
-  Runtime,
-} from "aws-cdk-lib/aws-lambda";
-import { FileSystem } from "aws-cdk-lib/aws-efs";
 
 export enum AuthMode {
   SSO = "SSO",
@@ -49,21 +46,21 @@ export enum AuthMode {
 // }
 
 export enum AppNetworkAccessType {
-  VpcOnly = "VpcOnly",
-  PublicInternetOnly = "PublicInternetOnly",
+  VPC_ONLY = "VpcOnly",
+  PUBLIC_INTERNET_ONLY = "PublicInternetOnly",
 }
 
 export interface DefaultUserSettings {
   /**
    * The execution role for the user.
    */
-  executionRole?: IRole;
+  readonly executionRole?: IRole;
   /**
    * Whether users can access the Studio by default.
    *
    * @default true
    */
-  studioWebPortal?: boolean;
+  readonly studioWebPortal?: boolean;
 }
 
 export interface DomainProps {
@@ -72,47 +69,47 @@ export interface DomainProps {
    *
    * @default AuthMode.SSO
    */
-  authMode?: AuthMode;
+  readonly authMode?: AuthMode;
   /**
    * The name of the domain to create.
    *
    * @see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sagemaker-domain.html#cfn-sagemaker-domain-domainname
    */
-  domainName: string;
+  readonly domainName: string;
   /**
    * The VPC where the Domain (and its resources) will be deployed to.
    */
-  vpc: IVpc;
+  readonly vpc: IVpc;
   /**
    * The subnets to deploy the Domain to.
    *
    * @default SubnetSelection.PrimaryContainer
    */
-  subnetSelection?: SubnetSelection;
+  readonly subnetSelection?: SubnetSelection;
   /**
    * Specifies the VPC used for non-EFS traffic.
    *
    * @default AppNetworkAccessType.VpcOnly
    */
-  appNetworkAccessType?: AppNetworkAccessType;
+  readonly appNetworkAccessType?: AppNetworkAccessType;
   /**
    * The default settings for user profiles in the domain.
    */
-  defaultUserSettings?: DefaultUserSettings;
+  readonly defaultUserSettings?: DefaultUserSettings;
   /**
    * The default image for user profiles in the domain.
    *
    * @default {@link SageMakerImage.CPU_V1}
    */
-  defaultImage?: SageMakerImage;
+  readonly defaultImage?: SageMakerImage;
   /**
    * @default {@link RemovalPolicy.DESTROY}
    */
-  removalPolicy?: RemovalPolicy;
+  readonly removalPolicy?: RemovalPolicy;
   /**
    * The security group for SageMaker to use.
    */
-  sageMakerSg?: SecurityGroup;
+  readonly sageMakerSg?: SecurityGroup;
 }
 
 export class Domain extends Resource implements IConnectable, IGrantable {
@@ -210,7 +207,7 @@ export class Domain extends Resource implements IConnectable, IGrantable {
         securityGroups: [sageMakerSg.securityGroupId],
       },
       appNetworkAccessType:
-        props.appNetworkAccessType ?? AppNetworkAccessType.VpcOnly,
+        props.appNetworkAccessType ?? AppNetworkAccessType.VPC_ONLY,
       defaultSpaceSettings: {
         executionRole: domainExecutionRole.roleArn,
         kernelGatewayAppSettings: {
@@ -299,7 +296,8 @@ export class Domain extends Resource implements IConnectable, IGrantable {
       return;
     }
 
-    const dirname = path.dirname(fileURLToPath(import.meta.url));
+    // const dirname = path.dirname(fileURLToPath(import.meta.url));
+    const dirname = __dirname;
 
     const code = path.join(dirname, "delete-domain");
 
@@ -562,9 +560,7 @@ export class Domain extends Resource implements IConnectable, IGrantable {
 
   public addUserProfile(
     username: string,
-    props?: {
-      executionRole?: IRole;
-    },
+    props?: AddUserProfileProps,
   ): UserProfile {
     return new UserProfile(this.users, username, {
       domain: this,
@@ -572,4 +568,8 @@ export class Domain extends Resource implements IConnectable, IGrantable {
       executionRole: props?.executionRole,
     });
   }
+}
+
+export interface AddUserProfileProps {
+  readonly executionRole?: IRole;
 }

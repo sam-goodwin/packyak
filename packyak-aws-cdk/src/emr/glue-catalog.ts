@@ -1,7 +1,6 @@
 import { Stack } from "aws-cdk-lib";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import type { ICatalog } from "./catalog.js";
-import type { Configuration } from "./configuration.js";
 import type { Cluster } from "./cluster.js";
 import { Bucket, IBucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
@@ -22,6 +21,11 @@ export interface IcebergGlueCatalogProps {
   readonly warehousePrefix?: string;
 }
 
+export interface FromBucketProps {
+  readonly warehouseBucketName: string;
+  readonly warehousePrefix?: string;
+}
+
 export class IcebergGlueCatalog extends Construct implements ICatalog {
   private readonly warehouseBucket: IBucket;
   private readonly warehousePrefix: string | undefined;
@@ -29,10 +33,7 @@ export class IcebergGlueCatalog extends Construct implements ICatalog {
   public static fromBucketName(
     scope: Construct,
     id: string,
-    props: {
-      warehouseBucketName: string;
-      warehousePrefix?: string;
-    },
+    props: FromBucketProps,
   ) {
     return new IcebergGlueCatalog(scope, id, {
       warehouseBucket: Bucket.fromBucketName(

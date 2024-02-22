@@ -11,18 +11,17 @@ import {
 } from "aws-cdk-lib/aws-ecs-patterns";
 import { HealthCheck } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Construct } from "constructs";
-import type { PythonPoetryArgs } from "./generated/spec.js";
 import { exportRequirementsSync } from "./export-requirements.js";
-import type { LakeHouse } from "./lakehouse.js";
-import path from "path";
+import * as path from "path";
 import { Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import type { PythonPoetryArgs } from "./python-poetry.js";
 
 export interface StreamlitSiteProps
   extends ApplicationLoadBalancedFargateServiceProps {
   /**
    * The {@link LakeHouse} that this Streamlit application will source and contribute data to.
    */
-  readonly lakeHouse: LakeHouse;
+  // readonly lakeHouse: LakeHouse;
   /**
    * Entrypoint to the streamlit application.
    *
@@ -69,15 +68,15 @@ export class StreamlitSite extends Construct {
     );
 
     // enumerate over the module specs to discover what the home and pages/*.py depend on
-    const homeFilePath = path.resolve(props.home);
-    const pagesDirPath = path.join(path.dirname(homeFilePath), "pages");
+    // const homeFilePath = path.resolve(props.home);
+    // const pagesDirPath = path.join(path.dirname(homeFilePath), "pages");
 
-    const homeAndPagesModules = props.lakeHouse.spec.modules.flatMap((module) =>
-      module.file_name === homeFilePath ||
-      module.file_name.startsWith(path.join(pagesDirPath, ""))
-        ? [module]
-        : [],
-    );
+    // const homeAndPagesModules = props.lakeHouse.spec.modules.flatMap((module) =>
+    //   module.file_name === homeFilePath ||
+    //   module.file_name.startsWith(path.join(pagesDirPath, ""))
+    //     ? [module]
+    //     : [],
+    // );
 
     const platform = props.platform ?? Platform.LINUX_AMD64;
 
@@ -89,19 +88,21 @@ export class StreamlitSite extends Construct {
     const environment: Record<string, string> = {
       ...props.taskImageOptions?.environment,
     };
-    props.lakeHouse.bind(
-      {
-        grantPrincipal: taskRole,
-        addEnvironment: (key, value) => {
-          environment[key] = value;
-        },
-      },
-      homeAndPagesModules,
-    );
+    // props.lakeHouse.bind(
+    //   {
+    //     grantPrincipal: taskRole,
+    //     addEnvironment: (key, value) => {
+    //       environment[key] = value;
+    //     },
+    //   },
+    //   homeAndPagesModules,
+    // );
 
     this.service = new ApplicationLoadBalancedFargateService(this, "Service", {
       ...props,
-      cluster: props.lakeHouse.cluster,
+      cluster: props.cluster,
+      vpc: props.vpc,
+      // cluster: props.lakeHouse.cluster,
       runtimePlatform: {
         cpuArchitecture:
           platform === Platform.LINUX_AMD64

@@ -30,31 +30,30 @@ import {
   Stack,
 } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
-import path from "path";
+import * as path from "path";
 import { Application } from "./application.js";
 import { BootstrapAction } from "./bootstrap-action.js";
 import { ICatalog } from "./catalog.js";
 import { Configuration, combineConfigurations } from "./configuration.js";
-import { JDBC, JDBCProps } from "./jdbc.js";
+import { Jdbc, JdbcProps } from "./jdbc.js";
 import { Market } from "./market.js";
 import { ReleaseLabel } from "./release-label.js";
 import { toCLIArgs } from "./spark-config.js";
 import { Step } from "./step.js";
-import { CfnDocument } from "aws-cdk-lib/aws-ssm";
 
 export interface InstanceGroup {
   /**
    * @default 1
    */
-  instanceCount?: number;
+  readonly instanceCount?: number;
   /**
    * @default m5.xlarge
    */
-  instanceType?: InstanceType;
+  readonly instanceType?: InstanceType;
   /**
    * @default SPOT
    */
-  market?: Market;
+  readonly market?: Market;
 }
 
 export enum ScaleDownBehavior {
@@ -69,92 +68,94 @@ export enum ScalingUnit {
 }
 
 export interface ManagedScalingPolicy {
-  computeLimits: {
-    unitType: ScalingUnit;
-    minimumCapacityUnits: number;
-    maximumCapacityUnits: number;
-  };
+  readonly computeLimits: ComputeLimits;
+}
+
+export interface ComputeLimits {
+  readonly unitType: ScalingUnit;
+  readonly minimumCapacityUnits: number;
+  readonly maximumCapacityUnits: number;
 }
 
 export interface ClusterProps {
   /**
    * Name of the EMR Cluster.
    */
-  clusterName: string;
+  readonly clusterName: string;
   /**
    * The VPC to deploy the EMR cluster into.
    */
-  vpc: IVpc;
+  readonly vpc: IVpc;
   /**
    * @default - 1 m5.xlarge from SPOT market
    */
-  masterInstanceGroup?: InstanceGroup;
+  readonly masterInstanceGroup?: InstanceGroup;
   /**
    * @default - 1 m5.xlarge from SPOT market
    */
-  coreInstanceGroup?: InstanceGroup;
+  readonly coreInstanceGroup?: InstanceGroup;
   /**
    * TODO: support tasks
    *
    * @default - 1 m5.xlarge from SPOT market
    */
-  // taskInstanceGroup?: InstanceGroup;
+  // readonly taskInstanceGroup?: InstanceGroup;
   /**
    * @default None
    */
-  idleTimeout?: Duration;
+  readonly idleTimeout?: Duration;
   /**
    * @default - {@link ReleaseLabel.LATEST}
    */
-  releaseLabel?: ReleaseLabel;
+  readonly releaseLabel?: ReleaseLabel;
   /**
    * The catalogs to use for the EMR cluster.
    */
-  catalogs: Record<string, ICatalog>;
+  readonly catalogs: Record<string, ICatalog>;
   /**
    * @default - {@link ScaleDownBehavior.TERMINATE_AT_TASK_COMPLETION}
    */
-  scaleDownBehavior?: ScaleDownBehavior;
+  readonly scaleDownBehavior?: ScaleDownBehavior;
   /**
    * @default - No managed scaling policy
    */
-  managedScalingPolicy?: ManagedScalingPolicy;
+  readonly managedScalingPolicy?: ManagedScalingPolicy;
   /**
    * Override EMR Configurations.
    *
    * @default - the {@link catalog}'s configurations + .venv for the user code.
    */
-  configurations?: Configuration[];
+  readonly configurations?: Configuration[];
   /**
    * @default {@link RemovalPolicy.DESTROY}
    */
-  removalPolicy?: RemovalPolicy;
+  readonly removalPolicy?: RemovalPolicy;
   /**
    * @default - No bootstrap actions
    */
-  bootstrapActions?: BootstrapAction[];
+  readonly bootstrapActions?: BootstrapAction[];
   /**
    * The EMR Steps to submit to the cluster.
    *
    * @see https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-submit-step.html
    */
-  steps?: Step[];
+  readonly steps?: Step[];
   /**
    * The concurrency level of the cluster.
    *
    * @default 1
    */
-  stepConcurrencyLevel?: number;
+  readonly stepConcurrencyLevel?: number;
   /**
    * Extra java options to include in the Spark context by default.
    */
-  extraJavaOptions?: Record<string, string>;
+  readonly extraJavaOptions?: Record<string, string>;
   /**
    * Installs and configures the SSM agent to run on all Primary, Core and Task nodes.
    *
-   * @default false
+   * @default - `true` if {@link enableSSMTunnelOverSSH} is also `true`, otherwise `false`
    */
-  installSSMAgent?: boolean;
+  readonly installSSMAgent?: boolean;
 }
 
 export class Cluster extends Resource implements IGrantable, IConnectable {
@@ -363,15 +364,13 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
    * @param options to set when running the JDBC server
    * @returns a reference to the JDBC server
    * @example
-   * ```ts
    * const sparkSQL = cluster.jdbc({
    *  port: 10000,
    * });
    * sparkSQL.allowFrom(sageMakerDomain);
-   * ```
    */
-  public jdbc(options: JDBCProps): JDBC {
-    return new JDBC(this, options);
+  public jdbc(options: JdbcProps): Jdbc {
+    return new Jdbc(this, options);
   }
 
   /**
@@ -425,7 +424,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       return;
     }
     this.isSSMAgentInstalled = true;
-    const __dirname = path.dirname(new URL(import.meta.url).pathname);
+    // const __dirname = path.dirname(new URL(import.meta.url).pathname);
     const singletonId = "packyak::emr::install-ssm-agent";
     const stack = Stack.of(this);
     const bootstrapScript =

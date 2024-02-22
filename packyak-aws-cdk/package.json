@@ -1,9 +1,25 @@
 {
 	"name": "@packyak/aws-cdk",
+	"description": "AWS CDK Constructs for the PackYak Lakehouse Platform",
 	"version": "0.3.1",
+	"author": "Sam Goodwin",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sam-goodwin/packyak"
+	},
+	"keywords": ["packyak", "aws-cdk", "lakehouse"],
 	"type": "module",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
+	"typesVersions": {
+		"<=3.9": {
+			"lib/*": [
+				"lib/.types-compat/ts3.9/*",
+				"lib/.types-compat/ts3.9/*/index.d.ts"
+			]
+		}
+	},
 	"bin": {
 		"packyak": "./bin/packyak.mjs"
 	},
@@ -15,9 +31,13 @@
 		}
 	},
 	"files": ["bin", "lib", "scripts"],
-	"keywords": [],
-	"author": "Sam Goodwin",
-	"license": "Apache-2.0",
+	"scripts": {
+		"build": "jsii --generate-tsconfig=tsconfig.jsii.json",
+		"publish:pypi": ". .env && TWINE_USERNAME=$TWINE_USERNAME TWINE_PASSWORD=$TWINE_PASSWORD pnpm publib-pypi lib.jsii/python",
+		"build:watch": "jsii --watch",
+		"package": "jsii-pacmak",
+		"clean-src": "find ./src -name '*.d.ts' -exec rm {} \\; && find ./src -name '*.js' -exec rm {} \\;"
+	},
 	"devDependencies": {
 		"@aws-cdk/aws-glue-alpha": "2.126.0-alpha.0",
 		"@aws-cdk/aws-lambda-python-alpha": "2.126.0-alpha.0",
@@ -33,6 +53,10 @@
 		"bun": "^1.0.22",
 		"constructs": "10.3.0",
 		"esbuild": "^0.20.1",
+		"jsii": "^5.3.20",
+		"jsii-config": "^1.94.0",
+		"jsii-pacmak": "^1.94.0",
+		"publib": "^0.2.795",
 		"sst": "^2.39.5",
 		"tsx": "^4.7.0",
 		"typescript": "^5.3.3"
@@ -63,5 +87,21 @@
 	},
 	"publishConfig": {
 		"access": "public"
+	},
+	"stability": "experimental",
+	"jsii": {
+		"targets": {
+			"python": {
+				"module": "packyak_aws_cdk",
+				"distName": "packyak-aws-cdk",
+				"classifiers": ["Framework :: AWS CDK", "Framework :: AWS CDK :: 1"]
+			}
+		},
+		"outdir": "lib.jsii",
+		"versionFormat": "full",
+		"tsc": {
+			"outDir": "lib",
+			"rootDir": "src"
+		}
 	}
 }

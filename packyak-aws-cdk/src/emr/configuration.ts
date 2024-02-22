@@ -1,8 +1,8 @@
-import { mergeSparkExtraJars, toCLIArgs } from "./spark-config";
+import { mergeSparkExtraJars } from "./spark-config";
 
 export interface Configuration {
-  classification: string;
-  configurationProperties: { [key: string]: string };
+  readonly classification: string;
+  readonly configurationProperties: Record<string, string>;
 }
 // TODO: if keys like `"spark.jars.packages"` collide, join by , and dedupe
 export function combineConfigurations(

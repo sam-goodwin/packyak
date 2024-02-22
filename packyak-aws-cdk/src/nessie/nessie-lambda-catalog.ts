@@ -8,7 +8,7 @@ import {
   SnapStartConf,
 } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
-import path from "path";
+import * as path from "path";
 import {
   BaseNessieCatalog,
   BaseNessieRepoProps,

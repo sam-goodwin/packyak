@@ -5,9 +5,9 @@ import { Construct } from "constructs";
 import { Domain } from "./domain.js";
 
 export interface UserProfileProps {
-  domain: Domain;
-  userProfileName: string;
-  executionRole?: IRole;
+  readonly domain: Domain;
+  readonly userProfileName: string;
+  readonly executionRole?: IRole;
 }
 
 export class UserProfile extends Resource {

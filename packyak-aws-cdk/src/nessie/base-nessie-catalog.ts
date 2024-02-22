@@ -49,39 +49,39 @@ export interface BaseNessieRepoProps {
    *
    * @default spark_catalog - i.e. the default catalog
    */
-  catalogName?: string;
+  readonly catalogName?: string;
   /**
    * @default - one is created for you
    */
-  warehouseBucket?: IBucket;
+  readonly warehouseBucket?: IBucket;
   /**
    * The prefix to use for the warehouse path.
    *
    * @default - no prefix (e.g. use the root: `s3://bucket/`)
    */
-  warehousePrefix?: string;
+  readonly warehousePrefix?: string;
   /**
    * The default main branch of a Nessie repository.
    *
    * @default main
    */
-  defaultMainBranch?: string;
+  readonly defaultMainBranch?: string;
   /**
    * Properties for configuring the {@link DynamoDBNessieVersionStore}
    */
-  versionStore?: DynamoDBNessieVersionStore;
+  readonly versionStore?: DynamoDBNessieVersionStore;
   /**
    * The log group to use for the Nessie service.
    *
    * @default - a new log group is created for you
    */
-  logGroup?: ILogGroup;
+  readonly logGroup?: ILogGroup;
   /**
    * The removal policy to apply to the Nessie service.
    *
    * @default RemovalPolicy.DESTROY - dynamodb tables will be destroyed.
    */
-  removalPolicy?: RemovalPolicy;
+  readonly removalPolicy?: RemovalPolicy;
 }
 
 export abstract class BaseNessieCatalog
@@ -99,7 +99,7 @@ export abstract class BaseNessieCatalog
    *
    * @see https://projectnessie.org/try/configuration/#configuration
    */
-  protected readonly config: NessieConfig;
+  protected readonly config: Record<string, any>;
   /**
    * The DynamoDB Table storing all
    *
@@ -168,7 +168,8 @@ export abstract class BaseNessieCatalog
     };
   }
 
-  protected getConfigEnvVars() {
+  protected configAsEnvVars() {
+    // @ts-ignore
     return nessieConfigToEnvironment(this.config);
   }
 
