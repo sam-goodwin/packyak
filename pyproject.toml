@@ -6,10 +6,13 @@ authors = ["sam <sam@eventual.ai>"]
 readme = "README.md"
 include = ["py.typed"]
 
+[tool.poetry.scripts]
+yak = "packyak.cli:cli"
+packyak = "packyak.cli:cli"
+
 [tool.poetry.dependencies]
 types-aiobotocore = { extras = ["essential"], version = "^2.9.0" }
 types-boto3 = "^1.0.2"
-
 aioboto3 = "^12.1.0"
 aiobotocore = { version = "2.8.0", extras = ["boto3"] }
 aws-lambda-typing = "^2.18.0"
@@ -21,6 +24,7 @@ python = "^3.10"
 pandas-stubs = "^2.1.4.231227"
 aiofiles = "^23.2.1"
 pyspark = { extras = ["pandas-on-spark"], version = "^3.3.0" }
+click = "^8.1.7"
 
 [tool.poetry.group.dev.dependencies]
 matplotlib = "^3.8.2"

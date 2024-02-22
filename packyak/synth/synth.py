@@ -12,7 +12,6 @@ from packyak.queue import Queue
 from packyak.registry import find_all_functions, find_all_resources
 from packyak.resource import Resource
 from packyak.spec import (
-    BindingSpec,
     BucketSpec,
     BucketSubscriptionSpec,
     FunctionSpec,

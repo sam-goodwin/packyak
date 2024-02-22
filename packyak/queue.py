@@ -2,42 +2,26 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Callable, Generic, Type, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Callable, Generic, Type, TypeVar, cast
 
-import aioboto3
-import boto3
 from pydantic import BaseModel
+
+from .function import LambdaFunction, function
+from .integration import integration
+from .registry import QUEUES
+from .resource import Resource
+from .spec import DependencyGroup
+from .util.memoize import memoize
+from .util.typed_resource import TypedResource
+
+import boto3
 from types_aiobotocore_sqs import SQSClient
 from types_aiobotocore_sqs.type_defs import ReceiveMessageResultTypeDef
 
-from packyak.function import LambdaFunction, function
-from packyak.integration import integration
-from packyak.registry import QUEUES
-from packyak.resource import Resource
-from packyak.spec import DependencyGroup
-from packyak.util.typed_resource import TypedResource
 
-_sqs = None
-
-
-def sqs():
-    global _sqs
-    if not _sqs:
-        # TODO: use a Session and make it configurable, not a global client
-        _sqs = boto3.client("sqs")
-    return _sqs
-
-
-_aio_sqs = None
-
-
-def aio_sqs():
-    global _aio_sqs
-    if not _aio_sqs:
-        session: aioboto3.Session = aioboto3.Session()
-        _aio_sqs = TypedResource[SQSClient](session.client("sqs"))  # type: ignore
-
-    return _aio_sqs
+sqs = memoize(lambda: boto3.client("sqs"))
+session = memoize(lambda: boto3.Session())
+aio_sqs = memoize(lambda: TypedResource[SQSClient](session().client("sqs")))  # type: ignore
 
 
 Body = str | BaseModel

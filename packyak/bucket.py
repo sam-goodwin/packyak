@@ -1,28 +1,36 @@
 import os
 from datetime import datetime
-from typing import IO, Any, Callable, Generic, Optional, TypeVar, cast, List
+from typing import (
+    IO,
+    Any,
+    Callable,
+    Generic,
+    Optional,
+    TypeVar,
+    cast,
+    List,
+)
+
+from pydantic import BaseModel
+from .util.memoize import memoize
+from .util.typed_resource import TypedResource
+from .folder import Folder
+from .function import LambdaFunction, function
+from .registry import BUCKETS
+from .integration import integration
+from .spec import BucketSubscriptionScope, DependencyGroup
+from .resource import Resource
 
 import aioboto3
 import boto3
 from botocore.response import StreamingBody
-from pydantic import BaseModel
 from types_aiobotocore_s3.client import S3Client
 from types_aiobotocore_s3.type_defs import ListObjectsV2OutputTypeDef
 
-from packyak.util.typed_resource import TypedResource
 
-from packyak.folder import Folder
-from packyak.function import LambdaFunction, function
-from packyak.registry import BUCKETS
-from packyak.integration import integration
-from packyak.spec import BucketSubscriptionScope, DependencyGroup
-from packyak.resource import Resource
-
-s3 = boto3.client("s3")
-session: aioboto3.Session = aioboto3.Session()
-
-
-aio_s3 = TypedResource[S3Client](session.client("s3"))  # type: ignore
+s3 = memoize(lambda: boto3.client("s3"))
+session = memoize(lambda: aioboto3.Session())
+aio_s3 = memoize(lambda: TypedResource[S3Client](session().client("s3")))  # type: ignore
 
 
 class ObjectRef:
@@ -119,16 +127,16 @@ class Bucket(Resource):
         return bucket_name
 
     def put_sync(self, key: str, body: Blob):
-        return s3.put_object(Bucket=self.bucket_name, Key=key, Body=body)
+        return s3().put_object(Bucket=self.bucket_name, Key=key, Body=body)
 
     @integration("put")
     async def put(self, key: str, body: Blob):
-        async with aio_s3 as s3:
-            await s3.put_object(Bucket=self.bucket_name, Key=key, Body=body)  # type: ignore
+        async with aio_s3() as s3:
+            await s3().put_object(Bucket=self.bucket_name, Key=key, Body=body)  # type: ignore
 
     @integration("get")
     def get_sync(self, key: str) -> Object[StreamingBody]:
-        response = s3.get_object(Bucket=self.bucket_name, Key=key)
+        response = s3().get_object(Bucket=self.bucket_name, Key=key)
         return Object(
             bucket=self,
             key=key,
@@ -138,7 +146,7 @@ class Bucket(Resource):
 
     @integration("get")
     async def get(self, key: str) -> Object[StreamingBody]:
-        async with aio_s3 as s3:
+        async with aio_s3() as s3:
             response = await s3.get_object(Bucket=self.bucket_name, Key=key)
             return Object(
                 bucket=self,
@@ -149,18 +157,18 @@ class Bucket(Resource):
 
     @integration("delete")
     def delete_sync(self, key: str):
-        s3.delete_object(Bucket=self.bucket_name, Key=key)
+        s3().delete_object(Bucket=self.bucket_name, Key=key)
 
     @integration("delete")
     async def delete(self, key: str):
-        async with aio_s3 as s3:
+        async with aio_s3() as s3:
             await s3.delete_object(Bucket=self.bucket_name, Key=key)
 
     @integration("list")
     def list_sync(
         self, prefix: str, *, limit: int | None, next_token: str | None = None
     ):
-        response = s3.list_objects_v2(
+        response = s3().list_objects_v2(
             Bucket=self.bucket_name,
             MaxKeys=limit or 100,
             ContinuationToken=cast(str, next_token or None),
@@ -172,7 +180,7 @@ class Bucket(Resource):
     async def list(
         self, prefix: str, *, limit: int | None, next_token: str | None = None
     ):
-        async with aio_s3 as client:
+        async with aio_s3() as client:
             response = await client.list_objects_v2(
                 Bucket=self.bucket_name,
                 MaxKeys=limit or 100,

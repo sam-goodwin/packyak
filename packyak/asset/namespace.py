@@ -1,10 +1,10 @@
-from typing import Callable
-
-import pyspark.sql as sql
-import pyspark.pandas as ps
-
-from .asset import AssetNode, TInput, TOutput, TableAssetNode
+from typing import TYPE_CHECKING, Callable
 from enum import Enum
+from .asset import AssetNode, TInput, TOutput, TableAssetNode
+
+if TYPE_CHECKING:
+    import pyspark.sql as sql
+    import pyspark.pandas as ps
 
 
 class TableFormat(Enum):
