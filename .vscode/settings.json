@@ -4,6 +4,31 @@
     ".pycache": true,
     ".ruff_cache": true
   },
+  
+  
+  "editor.formatOnSave": true,
+  "prettier.resolveGlobalModules": false,
+  "editor.indentSize": 2,
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.indentSize": 4
+  },
+  "python.languageServer": "Default",
+  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.autoImportCompletions": true,
+  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.pyright.enabled": true,
+  "python.pyright.autoImportCompletions": true,
+  "python.pyright.typeCheckingMode": "strict",
   "cSpell.words": [
     "aioboto",
     "aiobotocore",
@@ -41,27 +66,4 @@
     "Weaviate",
     "xlarge"
   ],
-  "editor.formatOnSave": true,
-  "prettier.resolveGlobalModules": false,
-  "editor.indentSize": 2,
-  "[json]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.indentSize": 4
-  },
-  "python.languageServer": "Default",
-  "python.analysis.typeCheckingMode": "strict",
-  "python.analysis.autoImportCompletions": true,
-  "python.defaultInterpreterPath": ".venv/bin/python",
-  "python.pyright.enabled": true,
-  "python.pyright.autoImportCompletions": true,
-  "python.pyright.typeCheckingMode": "strict"
 }
