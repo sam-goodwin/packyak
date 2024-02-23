@@ -4285,15 +4285,44 @@
         "stability": "experimental"
       },
       "fqn": "@packyak/aws-cdk.BootstrapAction",
-      "interfaces": [
-        "aws-cdk-lib.aws_emr.CfnCluster.BootstrapActionConfigProperty"
-      ],
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/bootstrap-action.ts",
         "line": 3
       },
       "name": "BootstrapAction",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/bootstrap-action.ts",
+            "line": 4
+          },
+          "name": "name",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/bootstrap-action.ts",
+            "line": 5
+          },
+          "name": "script",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_s3_assets.Asset"
+          }
+        }
+      ],
       "symbolId": "src/emr/bootstrap-action:BootstrapAction"
     },
     "@packyak/aws-cdk.Cluster": {
@@ -4309,7 +4338,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/cluster.ts",
-          "line": 180
+          "line": 186
         },
         "parameters": [
           {
@@ -4339,7 +4368,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 161
+        "line": 167
       },
       "methods": [
         {
@@ -4351,7 +4380,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 406
+            "line": 424
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -4374,7 +4403,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 394
+            "line": 412
           },
           "name": "addConfig",
           "parameters": [
@@ -4399,7 +4428,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 383
+            "line": 401
           },
           "name": "addStep",
           "parameters": [
@@ -4421,7 +4450,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 504
+            "line": 530
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -4441,7 +4470,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 465
+            "line": 491
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -4459,6 +4488,16 @@
         },
         {
           "docs": {
+            "stability": "experimental"
+          },
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 458
+          },
+          "name": "installGitHubCLI"
+        },
+        {
+          "docs": {
             "remarks": "Authorizes the EC2 instances to communicate with the SSM service.",
             "see": "https://aws.amazon.com/blogs/big-data/securing-access-to-emr-clusters-using-aws-systems-manager/",
             "stability": "experimental",
@@ -4466,7 +4505,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 422
+            "line": 441
           },
           "name": "installSSMAgent"
         },
@@ -4479,7 +4518,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 372
+            "line": 390
           },
           "name": "jdbc",
           "parameters": [
@@ -4510,7 +4549,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 166
+            "line": 172
           },
           "name": "connections",
           "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
@@ -4525,7 +4564,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 164
+            "line": 170
           },
           "name": "coreSg",
           "type": {
@@ -4539,7 +4578,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 168
+            "line": 174
           },
           "name": "extraJavaOptions",
           "type": {
@@ -4559,7 +4598,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 167
+            "line": 173
           },
           "name": "grantPrincipal",
           "overrides": "aws-cdk-lib.aws_iam.IGrantable",
@@ -4574,7 +4613,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 170
+            "line": 176
           },
           "name": "instanceProfile",
           "type": {
@@ -4588,7 +4627,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 169
+            "line": 175
           },
           "name": "jobFlowRole",
           "type": {
@@ -4602,7 +4641,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 163
+            "line": 169
           },
           "name": "primarySg",
           "type": {
@@ -4616,7 +4655,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 162
+            "line": 168
           },
           "name": "release",
           "type": {
@@ -4630,7 +4669,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 178
+            "line": 184
           },
           "name": "resource",
           "protected": true,
@@ -4645,7 +4684,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 165
+            "line": 171
           },
           "name": "serviceAccessSg",
           "type": {
@@ -4659,7 +4698,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 171
+            "line": 177
           },
           "name": "serviceRole",
           "type": {
@@ -4835,6 +4874,24 @@
           "optional": true,
           "type": {
             "fqn": "aws-cdk-lib.Duration"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "false",
+            "stability": "experimental",
+            "summary": "Install the GitHub CLI on the EMR cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 164
+          },
+          "name": "installGitHubCLI",
+          "optional": true,
+          "type": {
+            "primitive": "boolean"
           }
         },
         {
@@ -8284,6 +8341,6 @@
       "symbolId": "src/version:Version"
     }
   },
-  "version": "0.3.3",
-  "fingerprint": "4OGnqAOrteB2AFHyfPnjrewIyqlwUwZwTAX17ofdXys="
+  "version": "0.4.0",
+  "fingerprint": "rnv/rvXqXj9Fo9wDDAe8fw9QgDemN/JUmdtwVqP5myY="
 }

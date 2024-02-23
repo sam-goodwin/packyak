@@ -1,7 +1,7 @@
 {
   "name": "@packyak/aws-cdk",
   "description": "AWS CDK Constructs for the PackYak Lakehouse Platform",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "author": "Sam Goodwin",
   "license": "Apache-2.0",
   "repository": {
@@ -13,7 +13,6 @@
     "aws-cdk",
     "lakehouse"
   ],
-  "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "typesVersions": {
@@ -37,7 +36,8 @@
   "files": [
     "bin",
     "lib",
-    "scripts"
+    "scripts",
+    ".jsii"
   ],
   "scripts": {
     "build": "jsii --generate-tsconfig=tsconfig.jsii.json",

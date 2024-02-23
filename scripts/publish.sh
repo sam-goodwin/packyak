@@ -11,7 +11,11 @@ pnpm run build
 script_dir=$(dirname -- "${BASH_SOURCE[0]}")
 echo "Script directory: $script_dir"
 
-node $script_dir/bump.mjs ${extra_args}
+if [[ " $extra_args " =~ " --no-bump " ]]; then
+    echo "Skipping version bump due to --no-bump flag"
+else
+    node $script_dir/bump.mjs ${extra_args}
+fi
 
 poetry build && poetry publish
 cd packyak-aws-cdk

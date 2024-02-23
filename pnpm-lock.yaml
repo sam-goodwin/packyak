@@ -23,9 +23,6 @@ importers:
       '@biomejs/biome':
         specifier: ^1.5.3
         version: 1.5.3
-      '@iarna/toml':
-        specifier: ^2.2.5
-        version: 2.2.5
       '@tsconfig/node20':
         specifier: ^20.1.2
         version: 20.1.2
@@ -5112,10 +5109,6 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
-    dev: true
-
-  /@iarna/toml@2.2.5:
-    resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
     dev: true
 
   /@isaacs/cliui@8.0.2:

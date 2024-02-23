@@ -156,6 +156,12 @@ export interface ClusterProps {
    * @default - `true` if {@link enableSSMTunnelOverSSH} is also `true`, otherwise `false`
    */
   readonly installSSMAgent?: boolean;
+  /**
+   * Install the GitHub CLI on the EMR cluster.
+   *
+   * @default false
+   */
+  readonly installGitHubCLI?: boolean;
 }
 
 export class Cluster extends Resource implements IGrantable, IConnectable {
@@ -287,7 +293,16 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       }),
       stepConcurrencyLevel: props.stepConcurrencyLevel,
       bootstrapActions: Lazy.any({
-        produce: () => this.bootstrapActions,
+        produce: () =>
+          this.bootstrapActions.map(
+            (action) =>
+              ({
+                name: action.name,
+                scriptBootstrapAction: {
+                  path: action.script.s3ObjectUrl,
+                },
+              }) as CfnCluster.BootstrapActionConfigProperty,
+          ),
       }),
       instances: {
         // TODO: is 1 subnet OK?
@@ -356,6 +371,9 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     if (props.installSSMAgent) {
       this.installSSMAgent();
     }
+    if (props.installGitHubCLI) {
+      this.installGitHubCLI();
+    }
   }
 
   /**
@@ -404,6 +422,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
    * @see https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-bootstrap.html
    */
   public addBootstrapAction(action: BootstrapAction): void {
+    action.script.grantRead(this.jobFlowRole);
     this.bootstrapActions.push(action);
   }
 
@@ -424,31 +443,38 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       return;
     }
     this.isSSMAgentInstalled = true;
-    // const __dirname = path.dirname(new URL(import.meta.url).pathname);
-    const singletonId = "packyak::emr::install-ssm-agent";
-    const stack = Stack.of(this);
-    const bootstrapScript =
-      (stack.node.tryFindChild(singletonId) as Asset) ??
-      new Asset(stack, singletonId, {
-        path: path.join(
-          __dirname,
-          "..",
-          "..",
-          "scripts",
-          "install-ssm-agent.sh",
-        ),
-      });
-    bootstrapScript.grantRead(this.jobFlowRole);
     this.addBootstrapAction({
       name: "Install SSM Agent",
-      scriptBootstrapAction: {
-        path: bootstrapScript.s3ObjectUrl,
-      },
+      script: this.getScript("install-ssm-agent.sh"),
     });
     // this allows the SSM agent to communicate with the SSM service
     this.jobFlowRole.addManagedPolicy(
       ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"),
     );
+  }
+
+  private isGitHubCLIInstalled: boolean | undefined;
+
+  public installGitHubCLI() {
+    if (this.isGitHubCLIInstalled) {
+      return;
+    }
+    this.isGitHubCLIInstalled = false;
+    this.addBootstrapAction({
+      name: "Install GitHub CLI",
+      script: this.getScript("install-github-cli.sh"),
+    });
+  }
+
+  private getScript(name: string) {
+    const singletonId = `packyak::emr::${name}`;
+    const stack = Stack.of(this);
+    const bootstrapScript =
+      (stack.node.tryFindChild(singletonId) as Asset) ??
+      new Asset(stack, singletonId, {
+        path: path.join(__dirname, "..", "..", "scripts", name),
+      });
+    return bootstrapScript;
   }
 
   /**

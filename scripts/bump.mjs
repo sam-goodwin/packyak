@@ -2,7 +2,6 @@
 
 import fs from "fs/promises";
 import path from "path";
-import toml from "@iarna/toml";
 import semver from "semver";
 import { argv } from "process";
 
