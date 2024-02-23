@@ -112,9 +112,14 @@ proxy_command="aws ssm start-session\
  --parameters portNumber=%p"
 
 # shellcheck disable=SC2086
-ssh -4 -o User=root -o IdentityFile="${SSH_KEY}" -o IdentitiesOnly=yes \
+ssh -4 \
+  -o User=root \
+  -o IdentityFile="${SSH_KEY}" \
+  -o IdentitiesOnly=yes \
   -o ProxyCommand="$proxy_command" \
-  -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
+  -o ServerAliveInterval=15 \
+  -o ServerAliveCountMax=3 \
   -o PasswordAuthentication=no \
-  -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
   $PORT_FWD_ARGS "$INSTANCE_ID"

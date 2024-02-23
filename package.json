@@ -1,7 +1,7 @@
 {
   "name": "@packyak/packyak",
   "private": true,
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "module",
   "exports": {
     ".": {
@@ -17,9 +17,9 @@
     "build": "tsc -b",
     "synth": "poetry run python ./examples/app.py",
     "synth:website": "cdk synth --app 'tsx ./packyak.config.ts'",
-    "publish:all": "./scripts/publish.sh",
-    "publish:pypi": "poetry build && poetry publish",
-    "publish:npm": "cd packyak-aws-cdk && rm -rf lib tsconfig.tsbuildinfo && tsc -b && npm publish"
+    "publish:all": "BUMP_ROOT=true BUMP_CDK=true ./scripts/publish.sh",
+    "publish:packyak": "BUMP_ROOT=true ./scripts/publish.sh",
+    "publish:packyak-aws-cdk": "BUMP_ROOT=true ./scripts/publish.sh"
   },
   "keywords": [],
   "author": "",

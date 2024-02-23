@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
 
-set -e
-
 extra_args=$*
 version=$(node -p "require('./package.json').version")
 
@@ -14,12 +12,19 @@ echo "Script directory: $script_dir"
 if [[ " $extra_args " =~ " --no-bump " ]]; then
     echo "Skipping version bump due to --no-bump flag"
 else
-    node $script_dir/bump.mjs ${extra_args}
+    env node $script_dir/bump.mjs ${extra_args}
 fi
 
-poetry build && poetry publish
-cd packyak-aws-cdk
-pnpm run build
-pnpm run package
-pnpm run publish:pypi
-npm publish
+if [ "$BUMP_ROOT" == "true" ]; then
+    poetry build && poetry publish
+fi
+
+if [ "$BUMP_CDK" == "true" ]; then
+    cd packyak-aws-cdk
+    pnpm run build
+    pnpm run package
+    pnpm run publish:pypi
+    npm publish
+fi
+
+
