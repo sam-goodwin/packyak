@@ -23,17 +23,21 @@ from .cli import cli
 @click.option(
     "-L",
     "port_forwards",
-    type=list[str],
+    # type=(str | list[str]),
     multiple=True,
     help="Ports to forward. Default: 9000:localhost:22",
 )
-@click.option("-v", "--verbose", is_flag=True)
+@click.option("-v", "--verbose", type=str, is_flag=True)
+@click.option(
+    "--profile", type=str, help="AWS CLI profile to use when authenticating to SSM"
+)
 def ssh(
     instance_id: str,
     ssh_key: str = "~/.ssh/id_rsa",
     # todo: what port forwarding to i need for VS Code Remote SSH
     port_forwards: list[str] = ["9001:localhost:22"],
     verbose: bool = False,
+    profile: str | None = None,
 ):
     """
     Establishes a secure tunnel to an EC2 instance.
@@ -44,6 +48,9 @@ def ssh(
 
     -L: Ports to forward. Default: 9001:localhost:22
     """
+
+    if profile is not None:
+        os.environ["AWS_PROFILE"] = profile
 
     def log(message: str):
         if verbose:
@@ -108,7 +115,7 @@ def ssh(
                 break
         except ssm_client.exceptions.InvocationDoesNotExist:
             pass
-        time.sleep(1)
+        time.sleep(0.1)
 
     if output["Status"] != "Success":
         log("Error: Command didn't finish successfully in time")
@@ -118,7 +125,7 @@ def ssh(
 
     proxy_command = (
         "aws ssm start-session "
-        + "--reason 'Local user started PackYak Tunnel' "
+        + "--reason 'PackYak SSH' "
         + f"--region '{current_region}' "
         + f"--target '{instance_id}' "
         + "--document-name AWS-StartSSHSession "
