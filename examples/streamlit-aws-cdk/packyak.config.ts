@@ -4,6 +4,7 @@ import {
   DynamoDBNessieVersionStore,
   NessieECSCatalog,
   Cluster,
+  Home,
 } from "@packyak/aws-cdk";
 import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
@@ -18,6 +19,10 @@ const app = new App();
 
 const stack = new Stack(app, lakeHouseName);
 const vpc = new Vpc(stack, "Vpc");
+
+const home = new Home(stack, "Home", {
+  vpc,
+});
 
 const versionStore = new DynamoDBNessieVersionStore(stack, "VersionStore", {
   versionStoreName: `${lakeHouseName}-version-store`,

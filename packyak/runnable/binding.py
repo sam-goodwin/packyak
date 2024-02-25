@@ -1,15 +1,20 @@
 from typing import Any
 
-from packyak.function import LambdaFunction
+from packyak.runnable.function import LambdaFunction
+from packyak.runnable.job import Job
 from packyak.resource import Resource
+from packyak.runnable.runnable import Runnable
 from packyak.spec import BindingSpec
 from packyak.synth.loaded_module import LoadedModule
+
+
+BindingTarget = Runnable[Any, Any] | LoadedModule
 
 
 class Binding:
     def __init__(
         self,
-        function: LambdaFunction[Any, Any] | LoadedModule,
+        function: BindingTarget,
         resource: Resource,
         scopes: list[str],
         metadata: dict[str, Any] | None = None,

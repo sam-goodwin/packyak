@@ -1,11 +1,10 @@
-from typing import Generator
 import click
 import subprocess
 import time
 import boto3
 import os
 
-from .cli import cli
+from packyak.cli.cli import cli
 
 
 @cli.command()
@@ -117,7 +116,7 @@ def ssh(
             pass
         time.sleep(0.1)
 
-    if output["Status"] != "Success":
+    if output["Status"] != "Success":  # type: ignore
         log("Error: Command didn't finish successfully in time")
         return
 

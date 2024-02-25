@@ -9,23 +9,26 @@ from typing import (
     TypeVar,
     cast,
     List,
+    Tuple,
 )
 
 from pydantic import BaseModel
-from .util.memoize import memoize
-from .util.typed_resource import TypedResource
-from .folder import Folder
-from .function import LambdaFunction, function
-from .registry import BUCKETS
-from .integration import integration
-from .spec import BucketSubscriptionScope, DependencyGroup
-from .resource import Resource
+from packyak.util.memoize import memoize
+from packyak.util.typed_resource import TypedResource
+from packyak.storage.folder import Folder
+from packyak.runnable.function import LambdaFunction, function
+from packyak.registry import BUCKETS
+from packyak.integration import integration
+from packyak.spec import BucketSubscriptionScope, DependencyGroup
+from packyak.resource import Resource
 
 import aioboto3
 import boto3
 from botocore.response import StreamingBody
 from types_aiobotocore_s3.client import S3Client
 from types_aiobotocore_s3.type_defs import ListObjectsV2OutputTypeDef
+
+from pyspark import SparkContext, RDD
 
 
 s3 = memoize(lambda: boto3.client("s3"))
@@ -88,8 +91,10 @@ Blob = str | bytes | IO[Any] | StreamingBody
 class Bucket(Resource):
     subscriptions: list[BucketSubscription]
 
+    sc: SparkContext
+
     def __init__(self, bucket_id: str):
-        super().__init__("bucket", resource_id=bucket_id)
+        super().__init__(bucket_id)
         self.subscriptions = []
         if self.resource_id in BUCKETS:
             raise Exception(f"Bucket {self.resource_id} already exists")
@@ -104,6 +109,9 @@ class Bucket(Resource):
 
     class ObjectDeletedEvent(Event):
         pass
+
+    def __str__(self) -> str:
+        return f"s3://{self.bucket_name}/"
 
     # Overload the '/' operator
     def __truediv__(self, name: str) -> Folder:
@@ -222,7 +230,7 @@ class Bucket(Resource):
             # see https://kevinhakanson.com/2022-04-10-python-typings-for-aws-lambda-function-events/
             @function(
                 file_name=handler.__code__.co_filename,
-                function_id=function_id or handler.__name__,
+                function_id=function_id,
                 with_=with_,
                 without=without,
                 dev=dev,
@@ -253,3 +261,11 @@ class Bucket(Resource):
             return lambda_func
 
         return decorate
+
+    @integration("get", "list")
+    def binaryFiles(
+        self, prefix: str | None = None, *, minPartitions: int | None = None
+    ) -> RDD[Tuple[str, bytes]]:
+        return self.sc.binaryFiles(
+            f"s3://{self.bucket_name}/{prefix or ''}", minPartitions=minPartitions
+        )

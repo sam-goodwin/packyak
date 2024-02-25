@@ -5,22 +5,24 @@ import inspect
 from textwrap import dedent
 from typing import Any, Callable, cast
 
-from packyak.binding import Binding
-from packyak.function import LambdaFunction
+from packyak.runnable.binding import Binding
+from packyak.runnable.function import LambdaFunction
+from packyak.runnable.job import Job
 
 from packyak.integration import Integration, is_integration
 from packyak.resource import Resource
+from packyak.runnable.runnable import Runnable
 from packyak.synth.call import Call
 from packyak.synth.loaded_module import LoadedModule
 
 Func = Callable[..., Any]
 
 
-def bind(func: LambdaFunction[Any, Any] | LoadedModule) -> list[Binding]:
+def bind(func: Runnable[Any, Any] | LoadedModule) -> list[Binding]:
     calls = (
         analyze_loaded_module(func)
         if isinstance(func, LoadedModule)
-        else analyze_function(func)
+        else analyze_function(func.handler)
     )
 
     return [

@@ -23,6 +23,9 @@ export * from "./sagemaker/sage-maker-image.js";
 export * from "./sagemaker/user-profile.js";
 export * from "./streamlit-site.js";
 export * from "./version.js";
+export * from "./home/home.js";
+export * from "./home/user.js";
+export * from "./home/users.js";
 
 import { CfnOutput, Stack } from "aws-cdk-lib/core";
 

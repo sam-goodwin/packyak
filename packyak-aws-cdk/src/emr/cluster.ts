@@ -40,6 +40,7 @@ import { Market } from "./market.js";
 import { ReleaseLabel } from "./release-label.js";
 import { toCLIArgs } from "./spark-config.js";
 import { Step } from "./step.js";
+import { Home } from "../home/home.js";
 
 export interface InstanceGroup {
   /**
@@ -162,6 +163,10 @@ export interface ClusterProps {
    * @default false
    */
   readonly installGitHubCLI?: boolean;
+  /**
+   * Mount a shared filesystem to the EMR cluster
+   */
+  readonly home?: Home;
 }
 
 export class Cluster extends Resource implements IGrantable, IConnectable {
@@ -325,7 +330,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
         coreInstanceGroup: {
           instanceCount: props.coreInstanceGroup?.instanceCount ?? 1,
           instanceType: coreInstanceType.toString(),
-          market: props.coreInstanceGroup?.market ?? Market.SPOT,
+          market: props.coreInstanceGroup?.market ?? Market.ON_DEMAND,
         },
         // TODO: support tasks
         // taskInstanceFleets: {},

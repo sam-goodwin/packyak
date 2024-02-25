@@ -1,18 +1,24 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 from packyak.integration import integration
 
 if TYPE_CHECKING:
-    from packyak.bucket import Bucket
+    from packyak.storage.bucket import Bucket
     from packyak.spec import BucketSubscriptionScope
+    from pyspark import SparkContext, RDD
 
 
 class Folder:
+    sc: SparkContext | None = None
+
     def __init__(self, parent: "Bucket | Folder", name: str):
         self.parent = parent
         self.name = name
+
+    def __str__(self) -> str:
+        return f"{self.bucket}{self.path}/"
 
     @property
     def resource_id(self) -> str:
@@ -24,7 +30,7 @@ class Folder:
 
     @property
     def path(self) -> str:
-        from .bucket import Bucket
+        from packyak.storage.bucket import Bucket
 
         if isinstance(self.parent, Bucket):
             return self.name
@@ -37,7 +43,7 @@ class Folder:
 
     @property
     def bucket(self) -> "Bucket":
-        from .bucket import Bucket
+        from packyak.storage.bucket import Bucket
 
         if isinstance(self.parent, Bucket):
             return self.parent
@@ -73,3 +79,9 @@ class Folder:
         return self.bucket.on(
             scope, prefix=self.path + prefix if prefix else self.path + "/*"
         )
+
+    @integration("get", "list")
+    def binaryFiles(
+        self, prefix: str | None = None, *, minPartitions: int | None = None
+    ) -> RDD[Tuple[str, bytes]]:
+        return self.parent.binaryFiles(prefix, minPartitions=minPartitions)

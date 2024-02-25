@@ -6,20 +6,20 @@ from typing import TYPE_CHECKING, Any, Callable, Generic, Type, TypeVar, cast
 
 from pydantic import BaseModel
 
-from .function import LambdaFunction, function
-from .integration import integration
-from .registry import QUEUES
-from .resource import Resource
-from .spec import DependencyGroup
-from .util.memoize import memoize
-from .util.typed_resource import TypedResource
+from packyak.runnable.function import LambdaFunction, function
+from packyak.integration import integration
+from packyak.registry import QUEUES
+from packyak.resource import Resource
+from packyak.spec import DependencyGroup
+from packyak.util.memoize import memoize
+from packyak.util.typed_resource import TypedResource
 
 import boto3
 from types_aiobotocore_sqs import SQSClient
 from types_aiobotocore_sqs.type_defs import ReceiveMessageResultTypeDef
 
 
-sqs = memoize(lambda: boto3.client("sqs"))
+sqs = memoize(lambda: boto3.client("sqs"))  # type: ignore
 session = memoize(lambda: boto3.Session())
 aio_sqs = memoize(lambda: TypedResource[SQSClient](session().client("sqs")))  # type: ignore
 
@@ -58,7 +58,7 @@ class Queue(Generic[B], Resource):
     subscriptions: list[QueueSubscription]
 
     def __init__(self, resource_id: str, model: Type[B] = str, fifo: bool = False):
-        super().__init__("queue", resource_id)
+        super().__init__(resource_id)
         self.model = model
         self.fifo = fifo
         self.subscriptions = []

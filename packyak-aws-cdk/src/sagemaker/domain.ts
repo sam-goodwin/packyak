@@ -35,6 +35,7 @@ import { Construct } from "constructs";
 import * as path from "path";
 import { SageMakerImage } from "./sage-maker-image.js";
 import { UserProfile } from "./user-profile.js";
+import { PackYakResource } from "../packyak-resource.js";
 
 export enum AuthMode {
   SSO = "SSO",
@@ -296,25 +297,21 @@ export class Domain extends Resource implements IConnectable, IGrantable {
       return;
     }
 
-    // const dirname = path.dirname(fileURLToPath(import.meta.url));
-    const dirname = __dirname;
-
-    const code = path.join(dirname, "delete-domain");
-
-    const cleanupFunction = new LambdaFunction(this, "CleanupFunction", {
-      code: Code.fromAsset(code),
-      runtime: Runtime.NODEJS_20_X,
-      architecture: Architecture.ARM_64,
-      handler: "index.handler",
-      timeout: Duration.minutes(1),
+    const cleanup = new PackYakResource(this, "CleanupDomain", {
+      resourceType: "Custom::PackYakCleanupDomain",
+      properties: {
+        FileSystemId: this.homeEfsFileSystemId,
+        DomainId: this.domainId,
+        RemovalPolicy: removalPolicy,
+      },
       environment: {
         FileSystemId: this.homeEfsFileSystemId,
         DomainId: this.domainId,
         RemovalPolicy: removalPolicy,
-        NODE_OPTIONS: "--experimental-modules=true",
       },
     });
-    cleanupFunction.grantPrincipal.addToPrincipalPolicy(
+
+    cleanup.grantPrincipal.addToPrincipalPolicy(
       new PolicyStatement({
         actions: [
           "elasticfilesystem:DeleteFileSystem",
@@ -323,7 +320,7 @@ export class Domain extends Resource implements IConnectable, IGrantable {
         resources: [this.homeEfsFileSystemArn],
       }),
     );
-    cleanupFunction.grantPrincipal.addToPrincipalPolicy(
+    cleanup.grantPrincipal.addToPrincipalPolicy(
       new PolicyStatement({
         actions: ["elasticfilesystem:DeleteMountTarget"],
         resources: [
@@ -341,27 +338,12 @@ export class Domain extends Resource implements IConnectable, IGrantable {
       }),
     );
 
-    this.grantDeleteApp(cleanupFunction);
-    this.grantDeleteSpace(cleanupFunction);
-    this.grantDescribeApp(cleanupFunction);
-    this.grantDescribeSpace(cleanupFunction);
-    this.grantListApps(cleanupFunction);
-    this.grantListSpaces(cleanupFunction);
-
-    const cleanupProvider = new Provider(this, "CleanupProvider", {
-      onEventHandler: cleanupFunction,
-    });
-
-    this.cleanup = new CustomResource(this, "Cleanup", {
-      resourceType: "Custom::PackYakCleanupDomain",
-      serviceToken: cleanupProvider.serviceToken,
-      properties: {
-        FileSystemId: this.homeEfsFileSystemId,
-        DomainId: this.domainId,
-        RemovalPolicy: removalPolicy,
-      },
-      removalPolicy,
-    });
+    this.grantDeleteApp(cleanup);
+    this.grantDeleteSpace(cleanup);
+    this.grantDescribeApp(cleanup);
+    this.grantDescribeSpace(cleanup);
+    this.grantListApps(cleanup);
+    this.grantListSpaces(cleanup);
   }
 
   public grantStudioAccess(grantee: IGrantable) {

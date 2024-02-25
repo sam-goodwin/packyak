@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Callable
 from enum import Enum
-from .asset import AssetNode, TInput, TOutput, TableAssetNode
+from packyak.asset.asset import AssetNode, TInput, TOutput, TableAssetNode
 
 if TYPE_CHECKING:
     import pyspark.sql as sql
