@@ -13,12 +13,12 @@ from typing import (
 )
 
 from pydantic import BaseModel
+from packyak.util.fqn import get_fully_qualified_name
 from packyak.util.memoize import memoize
 from packyak.util.typed_resource import TypedResource
 from packyak.storage.folder import Folder
-from packyak.runnable.function import LambdaFunction, function
-from packyak.registry import BUCKETS
-from packyak.integration import integration
+from packyak.runtime.function import LambdaFunction, function
+from packyak.runtime.integration import integration
 from packyak.spec import BucketSubscriptionScope, DependencyGroup
 from packyak.resource import Resource
 
@@ -96,9 +96,6 @@ class Bucket(Resource):
     def __init__(self, bucket_id: str):
         super().__init__(bucket_id)
         self.subscriptions = []
-        if self.resource_id in BUCKETS:
-            raise Exception(f"Bucket {self.resource_id} already exists")
-        BUCKETS[self.resource_id] = self
 
     class Event(BaseModel):
         key: str
@@ -230,7 +227,11 @@ class Bucket(Resource):
             # see https://kevinhakanson.com/2022-04-10-python-typings-for-aws-lambda-function-events/
             @function(
                 file_name=handler.__code__.co_filename,
-                function_id=function_id,
+                function_id=(
+                    function_id
+                    if function_id is not None
+                    else get_fully_qualified_name(handler)
+                ),
                 with_=with_,
                 without=without,
                 dev=dev,

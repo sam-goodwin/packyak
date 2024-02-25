@@ -32,6 +32,6 @@ def materialize(
     branch: str = get_git_branch(),
     profile: str | None = None,
 ):
-    spec = synth(root_dir)
+    spec = synth(root)
 
     pass

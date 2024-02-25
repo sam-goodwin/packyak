@@ -5,10 +5,8 @@ from datetime import datetime
 
 spark = Cluster("spark")
 
-if TYPE_CHECKING:
-    from pyspark import SparkContext
-
-    # from pyspark.sql import SparkSession
+from pyspark import SparkContext
+# from pyspark.sql import SparkSession
 
 
 data = Bucket("data")

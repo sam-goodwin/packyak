@@ -15,6 +15,7 @@
     "codegen": "poetry run python ./scripts/codegen.py",
     "typecheck": "poetry run pyright",
     "build": "tsc -b",
+    "build:cdk": "pnpm --filter @packyak/aws-cdk run build && pnpm --filter @packyak/aws-cdk run package",
     "synth": "poetry run python ./examples/app.py",
     "synth:website": "cdk synth --app 'tsx ./packyak.config.ts'",
     "publish:all": "BUMP_ROOT=true BUMP_CDK=true ./scripts/publish.sh",

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Tuple
 
-from packyak.integration import integration
+from packyak.runtime.integration import integration
 
 if TYPE_CHECKING:
     from packyak.storage.bucket import Bucket

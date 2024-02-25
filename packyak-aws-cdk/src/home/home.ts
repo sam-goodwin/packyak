@@ -1,4 +1,3 @@
-import { IVpc } from "aws-cdk-lib/aws-ec2";
 import {
   FileSystem,
   FileSystemProps,
@@ -9,9 +8,7 @@ import { Construct } from "constructs";
 import { Users } from "./users";
 import { UserProps } from "./user";
 
-export interface HomeProps extends FileSystemProps {
-  vpc: IVpc;
-}
+export interface HomeProps extends FileSystemProps {}
 
 /**
  * Represents a "Home" environment in AWS.

@@ -2,18 +2,16 @@ import ast
 from importlib import import_module
 import os
 import types
-from typing import Any
-
+from typing import Any, TypeVar
 import aiofiles
 
 from packyak.storage.bucket import Bucket
-from packyak.runnable.cluster import Cluster
-from packyak.runnable.function import LambdaFunction
-from packyak.runnable.job import Job
-from packyak.messaging.queue import Queue
-from packyak.registry import find_all_functions, find_all_resources
-from packyak.resource import Resource
-from packyak.runnable.runnable import Runnable
+from packyak.runtime.cluster import Cluster
+from packyak.runtime.function import LambdaFunction
+from packyak.runtime.job import Job
+from packyak.streaming.queue import Queue
+from packyak.resource import RESOURCES, Resource
+from packyak.runtime.runnable import Runnable
 from packyak.spec import (
     BucketSpec,
     BucketSubscriptionSpec,
@@ -30,7 +28,7 @@ from packyak.synth.file_utils import file_path_to_module_name
 from packyak.synth.loaded_module import LoadedModule
 
 
-async def synth(root_dir: str) -> PackyakSpec:
+async def synth(root_dir: str | None = None) -> PackyakSpec:
     def visit(resource: Resource):
         if resource in seen:
             return
@@ -107,35 +105,35 @@ async def synth(root_dir: str) -> PackyakSpec:
     jobs: list[JobSpec] = []
     seen = set[Any]()
 
-    for root, _, files in os.walk(root_dir):
-        for file in files:
-            if file.endswith(".py"):
-                print(root_dir, file)
-                file_path = os.path.join(root, file)
-                absolute_file_path = os.path.abspath(file_path)
-                async with aiofiles.open(file_path, mode="r") as f:
-                    module_ast = ast.parse(await f.read())
-                module_name = file_path_to_module_name(file_path)
-                module: types.ModuleType = import_module(module_name)
+    if root_dir is not None:
+        for root, _, files in os.walk(root_dir):
+            for file in files:
+                if file.endswith(".py"):
+                    print(root_dir, file)
+                    file_path = os.path.join(root, file)
+                    absolute_file_path = os.path.abspath(file_path)
+                    async with aiofiles.open(file_path, mode="r") as f:
+                        module_ast = ast.parse(await f.read())
+                    module_name = file_path_to_module_name(file_path)
+                    module: types.ModuleType = import_module(module_name)
 
-                loaded_module = LoadedModule(module, module_ast, module_name, file_path)
-
-                bindings = bind(loaded_module)
-                if len(bindings) > 0:
-                    modules.append(
-                        ModuleSpec(
-                            file_name=absolute_file_path,
-                            bindings=[
-                                binding.to_binding_spec() for binding in bindings
-                            ],
-                        )
+                    loaded_module = LoadedModule(
+                        module, module_ast, module_name, file_path
                     )
+
+                    bindings = bind(loaded_module)
+                    if len(bindings) > 0:
+                        modules.append(
+                            ModuleSpec(
+                                file_name=absolute_file_path,
+                                bindings=[
+                                    binding.to_binding_spec() for binding in bindings
+                                ],
+                            )
+                        )
 
     for resource in find_all_resources():
         visit(resource)
-
-    for function in find_all_functions():
-        visit(function)
 
     packyak_spec = PackyakSpec(
         modules=modules,
@@ -146,3 +144,23 @@ async def synth(root_dir: str) -> PackyakSpec:
         jobs=jobs,
     )
     return packyak_spec
+
+
+def lookup_function(function_id: str) -> LambdaFunction[Any, Any]:
+    if function_id not in RESOURCES:
+        raise Exception(f"Lambda Function {function_id} does not exist")
+    resource = RESOURCES[function_id]
+    if isinstance(resource, LambdaFunction):
+        return resource
+    raise Exception(f"Resource {function_id} is not a Lambda Function")
+
+
+def find_all_resources() -> list[Resource]:
+    return list(RESOURCES.values())
+
+
+T = TypeVar("T", bound=Resource)
+
+
+def find_resource(t: type[T]) -> list[T]:
+    return [resource for resource in RESOURCES.values() if isinstance(resource, t)]

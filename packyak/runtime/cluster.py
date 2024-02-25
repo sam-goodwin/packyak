@@ -1,13 +1,10 @@
 from enum import Enum
 from typing import Callable, TypeVar, TYPE_CHECKING
 
-from packyak.runnable.job import Job
+from packyak.runtime.job import Job
 from packyak.spec import DependencyGroup
 from packyak.resource import Resource
-
-
-if TYPE_CHECKING:
-    from pyspark import SparkContext
+from pyspark import SparkContext
 
 Return = TypeVar("Return")
 

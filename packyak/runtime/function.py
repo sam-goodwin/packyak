@@ -1,10 +1,9 @@
 from typing import Callable, TypeVar, ParamSpec
-from packyak.runnable.runnable import Runnable
+from packyak.runtime.runnable import Runnable
 from packyak.util.fqn import get_fully_qualified_name
 
 
 from packyak.spec import DependencyGroup
-from packyak.registry import FUNCTIONS
 from packyak.duration import Duration
 
 Params = ParamSpec("Params")

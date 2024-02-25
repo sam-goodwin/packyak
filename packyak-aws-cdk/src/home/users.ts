@@ -6,7 +6,7 @@ export interface UsersProps {
   /**
    * The EFS FileSystem that the users will be granted access to.
    */
-  fileSystem: FileSystem;
+  readonly fileSystem: FileSystem;
 }
 
 export class Users extends Construct {

@@ -1,9 +1,9 @@
 from typing import Any
 
-from packyak.runnable.function import LambdaFunction
-from packyak.runnable.job import Job
+from packyak.runtime.function import LambdaFunction
+from packyak.runtime.job import Job
 from packyak.resource import Resource
-from packyak.runnable.runnable import Runnable
+from packyak.runtime.runnable import Runnable
 from packyak.spec import BindingSpec
 from packyak.synth.loaded_module import LoadedModule
 

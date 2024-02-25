@@ -15,24 +15,15 @@ import {
   Role,
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
-import {
-  Architecture,
-  Code,
-  Function as LambdaFunction,
-  Runtime,
-} from "aws-cdk-lib/aws-lambda";
 import { CfnDomain } from "aws-cdk-lib/aws-sagemaker";
 import {
   Arn,
   CustomResource,
-  Duration,
   RemovalPolicy,
   Resource,
   Stack,
 } from "aws-cdk-lib/core";
-import { Provider } from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
-import * as path from "path";
 import { SageMakerImage } from "./sage-maker-image.js";
 import { UserProfile } from "./user-profile.js";
 import { PackYakResource } from "../packyak-resource.js";

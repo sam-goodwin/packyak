@@ -3,7 +3,7 @@ from typing import (
     TypeVar,
     TYPE_CHECKING,
 )
-from packyak.runnable.runnable import Runnable
+from packyak.runtime.runnable import Runnable
 
 from packyak.spec import DependencyGroup
 

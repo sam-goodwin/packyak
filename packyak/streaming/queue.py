@@ -2,15 +2,15 @@ from __future__ import annotations
 
 import json
 import os
-from typing import TYPE_CHECKING, Any, Callable, Generic, Type, TypeVar, cast
+from typing import Any, Callable, Generic, Type, TypeVar, cast
 
 from pydantic import BaseModel
 
-from packyak.runnable.function import LambdaFunction, function
-from packyak.integration import integration
-from packyak.registry import QUEUES
+from packyak.runtime.function import LambdaFunction, function
+from packyak.runtime.integration import integration
 from packyak.resource import Resource
 from packyak.spec import DependencyGroup
+from packyak.util.fqn import get_fully_qualified_name
 from packyak.util.memoize import memoize
 from packyak.util.typed_resource import TypedResource
 
@@ -62,9 +62,6 @@ class Queue(Generic[B], Resource):
         self.model = model
         self.fifo = fifo
         self.subscriptions = []
-        if resource_id in QUEUES:
-            raise Exception(f"Queue {resource_id} already exists")
-        QUEUES[resource_id] = self  # type: ignore
 
     @property
     def queue_url(self):
@@ -138,7 +135,11 @@ class Queue(Generic[B], Resource):
             # see https://kevinhakanson.com/2022-04-10-python-typings-for-aws-lambda-function-events/
             @function(
                 file_name=handler.__code__.co_filename,
-                function_id=function_id or handler.__name__,
+                function_id=(
+                    function_id
+                    if function_id is not None
+                    else get_fully_qualified_name(handler)
+                ),
                 with_=with_,
                 without=without,
                 dev=dev,
