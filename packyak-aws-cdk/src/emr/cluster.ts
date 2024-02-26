@@ -31,15 +31,19 @@ import {
 } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
 import * as path from "path";
-import { Application } from "./application.js";
-import { BootstrapAction } from "./bootstrap-action.js";
-import { ICatalog } from "./catalog.js";
-import { Configuration, combineConfigurations } from "./configuration.js";
-import { Jdbc, JdbcProps } from "./jdbc.js";
-import { Market } from "./market.js";
-import { ReleaseLabel } from "./release-label.js";
-import { toCLIArgs } from "./spark-config.js";
-import { Step } from "./step.js";
+import { Application } from "./application";
+import { BootstrapAction } from "./bootstrap-action";
+import { ICatalog } from "./catalog";
+import { Configuration, combineConfigurations } from "./configuration";
+import { Jdbc, JdbcProps } from "./jdbc";
+import { Market } from "./market";
+import { ReleaseLabel } from "./release-label";
+import { toCLIArgs } from "./spark-config";
+import { Step } from "./step";
+import { Workspace } from "../workspace/workspace";
+import type { IAccessPoint, IFileSystem } from "aws-cdk-lib/aws-efs";
+import { Home } from "../workspace/home";
+import { Bucket } from "aws-cdk-lib/aws-s3";
 
 export interface InstanceGroup {
   /**
@@ -75,6 +79,13 @@ export interface ComputeLimits {
   readonly unitType: ScalingUnit;
   readonly minimumCapacityUnits: number;
   readonly maximumCapacityUnits: number;
+}
+
+export interface MountOptions {
+  readonly mountPoint: string;
+  readonly username: string;
+  readonly uid: number;
+  readonly gid: number;
 }
 
 export interface ClusterProps {
@@ -162,6 +173,10 @@ export interface ClusterProps {
    * @default false
    */
   readonly installGitHubCLI?: boolean;
+  /**
+   * Mount a shared filesystem to the EMR cluster
+   */
+  readonly home?: Workspace;
 }
 
 export class Cluster extends Resource implements IGrantable, IConnectable {
@@ -263,6 +278,10 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
 
     this.configureSecurityGroups();
 
+    const logsBucket = new Bucket(this, "ClusterLogs", {
+      removalPolicy: props.removalPolicy ?? RemovalPolicy.DESTROY,
+    });
+
     // this constructs a globally unique identifier for the cluster for use in ResourceTag IAM policies
     // should work when clusters are deployed via CDK or Service Catalog
     this.clusterID = `${Aws.ACCOUNT_ID}/${Aws.REGION}/${Aws.STACK_NAME}/${props.clusterName}`;
@@ -280,6 +299,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
           value: this.clusterID,
         },
       ],
+      logUri: `s3://${logsBucket.bucketName}/`,
       jobFlowRole: this.instanceProfile.instanceProfileArn,
       serviceRole: this.serviceRole.roleArn,
       releaseLabel: props.releaseLabel?.label ?? ReleaseLabel.LATEST.label,
@@ -300,6 +320,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                 name: action.name,
                 scriptBootstrapAction: {
                   path: action.script.s3ObjectUrl,
+                  args: action.args,
                 },
               }) as CfnCluster.BootstrapActionConfigProperty,
           ),
@@ -325,7 +346,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
         coreInstanceGroup: {
           instanceCount: props.coreInstanceGroup?.instanceCount ?? 1,
           instanceType: coreInstanceType.toString(),
-          market: props.coreInstanceGroup?.market ?? Market.SPOT,
+          market: props.coreInstanceGroup?.market ?? Market.ON_DEMAND,
         },
         // TODO: support tasks
         // taskInstanceFleets: {},
@@ -362,6 +383,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       // TODO: configure specific Role
       // autoScalingRole: "EMR_AutoScaling_DefaultRole",
     });
+    logsBucket.grantReadWrite(this.jobFlowRole);
     Object.entries(props.catalogs).forEach(([catalogName, catalog]) =>
       catalog.bind(this, catalogName),
     );
@@ -463,6 +485,136 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     this.addBootstrapAction({
       name: "Install GitHub CLI",
       script: this.getScript("install-github-cli.sh"),
+    });
+  }
+
+  /**
+   * Mount a {@link Home} directory onto the File System.
+   *
+   * @param home the home directory to mount
+   */
+  public mount(home: Home) {
+    this.resource.node.addDependency(
+      home.accessPoint.fileSystem.mountTargetsAvailable,
+    );
+    home.grantReadWrite(this.jobFlowRole);
+    home.allowFrom(this.primarySg);
+    home.allowFrom(this.coreSg);
+
+    this.addMountBootstrapAction({
+      target: home.accessPoint,
+      mountPoint: home.path,
+      username: home.username,
+      uid: home.uid,
+      gid: home.gid,
+    });
+  }
+
+  /**
+   * Mount an EFS Access Point on the EMR cluster.
+   *
+   * @param accessPoint the EFS Access Point to mount
+   * @param options the options to use when mounting the Access Point
+   */
+  public mountAccessPoint(accessPoint: IAccessPoint, options: MountOptions) {
+    this.grantMountPermissions(accessPoint.fileSystem, accessPoint);
+    this.addMountBootstrapAction({
+      target: accessPoint,
+      mountPoint: options.mountPoint,
+      username: options.username,
+      uid: `${options.uid}`,
+      gid: `${options.gid}`,
+    });
+  }
+
+  /**
+   * Mount an EFS File System on the EMR cluster.
+   *
+   * @param fileSystem the EFS File System to mount
+   * @param options the options to use when mounting the File System
+   */
+  public mountFileSystem(fileSystem: IFileSystem, options: MountOptions) {
+    this.grantMountPermissions(fileSystem);
+    this.addMountBootstrapAction({
+      target: fileSystem,
+      mountPoint: options.mountPoint,
+      username: options.username,
+      uid: `${options.uid}`,
+      gid: `${options.gid}`,
+    });
+  }
+
+  private grantMountPermissions(
+    fileSystem: IFileSystem,
+    accessPoint?: IAccessPoint,
+  ) {
+    this.resource.node.addDependency(fileSystem.mountTargetsAvailable);
+    this.jobFlowRole.addToPolicy(
+      new PolicyStatement({
+        actions: ["elasticfilesystem:DescribeMountTargets"],
+        resources: [
+          accessPoint?.fileSystem?.fileSystemArn,
+          accessPoint?.accessPointArn,
+        ].filter((s): s is string => !!s),
+      }),
+    );
+    this.jobFlowRole.addToPolicy(
+      new PolicyStatement({
+        actions: [
+          "elasticfilesystem:ClientMount",
+          "elasticfilesystem:ClientWrite",
+        ],
+        resources: [fileSystem.fileSystemArn],
+        conditions: {
+          ...(accessPoint
+            ? {
+                StringEquals: {
+                  "elasticfilesystem:AccessPointArn":
+                    accessPoint.accessPointArn,
+                },
+              }
+            : {}),
+          Bool: {
+            "elasticfilesystem:AccessedViaMountTarget": true,
+          },
+        },
+      }),
+    );
+  }
+
+  private addMountBootstrapAction({
+    target,
+    mountPoint,
+    username,
+    uid,
+    gid,
+  }: {
+    target: IAccessPoint | IFileSystem;
+    mountPoint: string;
+    username: string;
+    uid: string;
+    gid: string;
+  }) {
+    const [fileSystemId, accessPointId] =
+      "accessPointId" in target
+        ? [target.fileSystem.fileSystemId, target.accessPointId]
+        : [target.fileSystemId, undefined];
+    this.addBootstrapAction({
+      name: `Mount ${mountPoint}`,
+      script: this.getScript("mount-efs.sh"),
+      args: [
+        "--file-system-id",
+        fileSystemId,
+        "--mount-point",
+        mountPoint,
+        ...(accessPointId ? ["--access-point-id", accessPointId] : []),
+        "--user",
+        username,
+        "--uid",
+        `${uid}`,
+        "--gid",
+        `${gid}`,
+      ],
     });
   }
 

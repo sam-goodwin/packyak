@@ -1,5 +1,5 @@
 from typing import Any
-from packyak.integration import Integration
+from packyak.runtime.integration import Integration
 
 
 class Call:

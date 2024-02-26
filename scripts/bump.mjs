@@ -25,9 +25,9 @@ for (const arg of args) {
 }
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const root = path.join(__dirname, "..");
 
 if (process.env.BUMP_ROOT) {
-  const root = path.join(__dirname, "..");
   const rootPackage = JSON.parse(
     await fs.readFile(path.join(root, "package.json"), "utf-8"),
   );

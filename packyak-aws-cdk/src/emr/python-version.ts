@@ -1,4 +1,4 @@
-import { Version } from "../version.js";
+import { Version } from "../version";
 
 export class PythonVersion extends Version {
   public static readonly V3_7 = new PythonVersion("3.7");

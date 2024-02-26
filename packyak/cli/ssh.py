@@ -1,11 +1,14 @@
-from typing import Generator
+from typing import Any
 import click
 import subprocess
 import time
 import boto3
 import os
+import re
+import collections
 
-from .cli import cli
+
+from packyak.cli.cli import cli
 
 
 @cli.command()
@@ -117,7 +120,7 @@ def ssh(
             pass
         time.sleep(0.1)
 
-    if output["Status"] != "Success":
+    if output["Status"] != "Success":  # type: ignore
         log("Error: Command didn't finish successfully in time")
         return
 
@@ -164,3 +167,54 @@ def ssh(
         check=True,
     )
     return process.stdout, process.stderr
+
+
+class Host:
+    def __init__(self, name: str, props: dict[str, Any]):
+        self.name = name
+        self.props = props
+
+
+def parse_ssh_config(file_path: str = "~/.ssh/config") -> list[Host]:
+    """Parse the SSH config file and return a list of Host objects with kwargs for each property."""
+    hosts = []
+
+    def parse_key_value(line: str) -> tuple[str, str] | None:
+        split = re.split(r"\s+", line.strip(), maxsplit=1)
+        if len(split) == 2:
+            return split[0], split[1]
+        else:
+            return None
+
+    with open(file_path, "r") as f:
+        lines = f.readlines()
+
+        queue_lines = collections.deque(lines)
+
+        hosts: list[Host] = []
+
+        while queue_lines:
+            line = queue_lines.popleft()
+
+            if line.startswith("Host "):
+                parsed_host = parse_key_value(line)
+                if parsed_host is None:
+                    raise ValueError(
+                        "Failed to parse host name from SSH config line:\n{line}"
+                    )
+                host = Host(name=parsed_host[1], props={})
+                hosts.append(host)
+
+                # now collect all of its key-value props
+                while queue_lines:
+                    # Peek at the next line without removing it from the queue
+                    line = queue_lines[0]
+                    if line.startswith("Host "):
+                        # have found a new host, we're done
+                        break
+                    else:
+                        key_value = parse_key_value(line)
+                        if key_value is not None:
+                            host.props[key_value[0]] = key_value[1]
+
+    return hosts

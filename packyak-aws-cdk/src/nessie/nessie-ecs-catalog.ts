@@ -16,11 +16,8 @@ import {
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
-import {
-  BaseNessieCatalog,
-  BaseNessieRepoProps,
-} from "./base-nessie-catalog.js";
-import type { DNSConfiguration } from "../dns-configuration.js";
+import { BaseNessieCatalog, BaseNessieRepoProps } from "./base-nessie-catalog";
+import type { DNSConfiguration } from "../dns-configuration";
 import { ILogGroup, LogGroup } from "aws-cdk-lib/aws-logs";
 
 export interface NessieECSCatalogProps

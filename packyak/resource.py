@@ -1,14 +1,14 @@
-from packyak.spec import ResourceType
-
-
 class Resource:
-    resource_type: ResourceType
-
-    def __init__(self, resource_type: ResourceType, resource_id: str):
-        self.resource_type = resource_type
+    def __init__(self, resource_id: str):
         self.resource_id = resource_id
         self.bucket_id = self.resource_id
-        resources.append(self)
+        if resource_id in RESOURCES:
+            raise ValueError(f"Resource with id {resource_id} already exists")
+        RESOURCES[self.resource_id] = self
+
+    @property
+    def resource_type(self) -> str:
+        return self.__class__.__name__
 
 
-resources: list[Resource] = []
+RESOURCES: dict[str, Resource] = {}

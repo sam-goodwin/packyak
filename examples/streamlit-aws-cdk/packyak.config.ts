@@ -4,6 +4,7 @@ import {
   DynamoDBNessieVersionStore,
   NessieECSCatalog,
   Cluster,
+  Workspace,
 } from "@packyak/aws-cdk";
 import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
@@ -35,8 +36,18 @@ const myCatalog = new NessieECSCatalog(stack, "MyCatalog", {
   versionStore,
 });
 
+// create a workspace
+const workspace = new Workspace(stack, "Workspace", {
+  vpc,
+  removalPolicy,
+});
+const sam = workspace.addHome({
+  username: "sam",
+  uid: "2001",
+});
+
 const spark = new Cluster(stack, "SparkCluster", {
-  clusterName: "streamlit-example",
+  clusterName: "example",
   vpc,
   catalogs: {
     spark_catalog: myCatalog,
@@ -46,6 +57,9 @@ const spark = new Cluster(stack, "SparkCluster", {
   },
   installSSMAgent: true,
 });
+
+// spark.mount(workspace.ssm);
+spark.mount(sam);
 
 const sparkSQL = spark.jdbc({
   port: 10000,

@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 from typing import List, Literal, TypeVar
+from enum import Enum
 from pydantic import BaseModel
 
 BucketSubscriptionScope = Literal["create"] | Literal["delete"]
+
 
 BucketIntegrationScope = (
     Literal["get"] | Literal["list"] | Literal["put"] | Literal["delete"]
 )
 
-ResourceType = Literal["bucket"] | Literal["queue"] | Literal["function"]
 
 Item = TypeVar("Item")
 
@@ -19,7 +20,7 @@ DependencyGroup = NonEmptyList[str] | str | None
 
 
 class BindingSpec(BaseModel):
-    resource_type: ResourceType
+    resource_type: str
     resource_id: str
     scopes: list[str]
     props: dict[str, str] | None
@@ -50,6 +51,12 @@ class FunctionSpec(PythonPoetryArgs):
     bindings: list[BindingSpec] | None
 
 
+class JobSpec(PythonPoetryArgs):
+    job_id: str
+    file_name: str
+    bindings: list[BindingSpec] | None
+
+
 class BucketSubscriptionSpec(BaseModel):
     scopes: List[BucketSubscriptionScope]
     function_id: str
@@ -70,8 +77,15 @@ class QueueSpec(BaseModel):
     subscriptions: list[QueueSubscriptionSpec]
 
 
+class ClusterSpec(BaseModel):
+    cluster_id: str
+    # bindings: list[BindingSpec] | None
+
+
 class PackyakSpec(BaseModel):
     modules: list[ModuleSpec]
     buckets: list[BucketSpec]
     queues: list[QueueSpec]
+    clusters: list[ClusterSpec]
     functions: list[FunctionSpec]
+    jobs: list[JobSpec]

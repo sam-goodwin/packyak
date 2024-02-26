@@ -1,7 +1,7 @@
 from typing import Callable, Generic, TypeVar
 
-from .asset import AssetNode, TInput, TOutput
-from .manifest import Manifest
+from packyak.asset.asset import AssetNode, TInput, TOutput
+from packyak.asset.manifest import Manifest
 
 
 TManifest = TypeVar("TManifest", bound=Manifest)

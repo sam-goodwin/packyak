@@ -1,6 +1,6 @@
 import click
 
-from .cli import cli
+from packyak.cli.cli import cli
 
 
 @cli.command()

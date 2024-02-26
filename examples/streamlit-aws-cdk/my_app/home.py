@@ -1,6 +1,6 @@
 import pandas as pd
 from packyak import Bucket, function
-from app.videos import get_video
+from my_app.videos import get_video
 
 bucket = Bucket("bucket")
 

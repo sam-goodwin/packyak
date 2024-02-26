@@ -1,6 +1,6 @@
-import { PythonVersion } from "./python-version.js";
-import { ScalaVersion } from "./scala-version.js";
-import { SparkVersion } from "./spark-version.js";
+import { PythonVersion } from "./python-version";
+import { ScalaVersion } from "./scala-version";
+import { SparkVersion } from "./spark-version";
 
 export class ReleaseLabel {
   public static readonly EMR_7_0_0 = new ReleaseLabel(
