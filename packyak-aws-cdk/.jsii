@@ -3798,6 +3798,98 @@
     }
   },
   "types": {
+    "@packyak/aws-cdk.AddHomeRequest": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.AddHomeRequest",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/workspace/workspace.ts",
+        "line": 12
+      },
+      "name": "AddHomeRequest",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "This should be a unique identifier.",
+            "stability": "experimental",
+            "summary": "The POSIX user ID for the user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/workspace.ts",
+            "line": 20
+          },
+          "name": "uid",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "This should be unique across all users.",
+            "stability": "experimental",
+            "summary": "The username for the user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/workspace.ts",
+            "line": 16
+          },
+          "name": "username",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- same as the uid",
+            "remarks": "This is used for file system permissions.",
+            "stability": "experimental",
+            "summary": "The POSIX group ID for the user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/workspace.ts",
+            "line": 26
+          },
+          "name": "gid",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "Secondary groups to assign to files written to this home directory."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/workspace.ts",
+            "line": 30
+          },
+          "name": "secondaryGroups",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.PosixGroup"
+              },
+              "kind": "array"
+            }
+          }
+        }
+      ],
+      "symbolId": "src/workspace/workspace:AddHomeRequest"
+    },
     "@packyak/aws-cdk.AddUserProfileProps": {
       "assembly": "@packyak/aws-cdk",
       "datatype": true,
@@ -3808,7 +3900,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/sagemaker/domain.ts",
-        "line": 546
+        "line": 544
       },
       "name": "AddUserProfileProps",
       "properties": [
@@ -3820,7 +3912,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 547
+            "line": 545
           },
           "name": "executionRole",
           "optional": true,
@@ -3840,7 +3932,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/sagemaker/domain.ts",
-        "line": 40
+        "line": 42
       },
       "members": [
         {
@@ -3868,7 +3960,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/sagemaker/domain.ts",
-        "line": 31
+        "line": 33
       },
       "members": [
         {
@@ -4321,6 +4413,27 @@
           "type": {
             "fqn": "aws-cdk-lib.aws_s3_assets.Asset"
           }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/bootstrap-action.ts",
+            "line": 6
+          },
+          "name": "args",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "primitive": "string"
+              },
+              "kind": "array"
+            }
+          }
         }
       ],
       "symbolId": "src/emr/bootstrap-action:BootstrapAction"
@@ -4338,7 +4451,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/cluster.ts",
-          "line": 191
+          "line": 201
         },
         "parameters": [
           {
@@ -4368,7 +4481,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 172
+        "line": 182
       },
       "methods": [
         {
@@ -4380,7 +4493,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 429
+            "line": 446
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -4403,7 +4516,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 417
+            "line": 434
           },
           "name": "addConfig",
           "parameters": [
@@ -4428,7 +4541,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 406
+            "line": 423
           },
           "name": "addStep",
           "parameters": [
@@ -4450,7 +4563,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 535
+            "line": 682
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -4470,7 +4583,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 496
+            "line": 643
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -4492,7 +4605,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 463
+            "line": 480
           },
           "name": "installGitHubCLI"
         },
@@ -4505,7 +4618,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 446
+            "line": 463
           },
           "name": "installSSMAgent"
         },
@@ -4518,7 +4631,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 395
+            "line": 412
           },
           "name": "jdbc",
           "parameters": [
@@ -4537,6 +4650,90 @@
               "fqn": "@packyak/aws-cdk.Jdbc"
             }
           }
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Mount a {@link Home} directory onto the File System."
+          },
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 496
+          },
+          "name": "mount",
+          "parameters": [
+            {
+              "docs": {
+                "summary": "the home directory to mount."
+              },
+              "name": "home",
+              "type": {
+                "fqn": "@packyak/aws-cdk.Home"
+              }
+            }
+          ]
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Mount an EFS Access Point on the EMR cluster."
+          },
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 519
+          },
+          "name": "mountAccessPoint",
+          "parameters": [
+            {
+              "docs": {
+                "summary": "the EFS Access Point to mount."
+              },
+              "name": "accessPoint",
+              "type": {
+                "fqn": "aws-cdk-lib.aws_efs.IAccessPoint"
+              }
+            },
+            {
+              "docs": {
+                "summary": "the options to use when mounting the Access Point."
+              },
+              "name": "options",
+              "type": {
+                "fqn": "@packyak/aws-cdk.MountOptions"
+              }
+            }
+          ]
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Mount an EFS File System on the EMR cluster."
+          },
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 536
+          },
+          "name": "mountFileSystem",
+          "parameters": [
+            {
+              "docs": {
+                "summary": "the EFS File System to mount."
+              },
+              "name": "fileSystem",
+              "type": {
+                "fqn": "aws-cdk-lib.aws_efs.IFileSystem"
+              }
+            },
+            {
+              "docs": {
+                "summary": "the options to use when mounting the File System."
+              },
+              "name": "options",
+              "type": {
+                "fqn": "@packyak/aws-cdk.MountOptions"
+              }
+            }
+          ]
         }
       ],
       "name": "Cluster",
@@ -4549,7 +4746,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 177
+            "line": 187
           },
           "name": "connections",
           "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
@@ -4564,7 +4761,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 175
+            "line": 185
           },
           "name": "coreSg",
           "type": {
@@ -4578,7 +4775,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 179
+            "line": 189
           },
           "name": "extraJavaOptions",
           "type": {
@@ -4598,7 +4795,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 178
+            "line": 188
           },
           "name": "grantPrincipal",
           "overrides": "aws-cdk-lib.aws_iam.IGrantable",
@@ -4613,7 +4810,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 181
+            "line": 191
           },
           "name": "instanceProfile",
           "type": {
@@ -4627,7 +4824,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 180
+            "line": 190
           },
           "name": "jobFlowRole",
           "type": {
@@ -4641,7 +4838,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 174
+            "line": 184
           },
           "name": "primarySg",
           "type": {
@@ -4655,7 +4852,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 173
+            "line": 183
           },
           "name": "release",
           "type": {
@@ -4669,7 +4866,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 189
+            "line": 199
           },
           "name": "resource",
           "protected": true,
@@ -4684,7 +4881,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 176
+            "line": 186
           },
           "name": "serviceAccessSg",
           "type": {
@@ -4698,7 +4895,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 182
+            "line": 192
           },
           "name": "serviceRole",
           "type": {
@@ -4718,7 +4915,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 81
+        "line": 91
       },
       "name": "ClusterProps",
       "properties": [
@@ -4731,7 +4928,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 115
+            "line": 125
           },
           "name": "catalogs",
           "type": {
@@ -4752,7 +4949,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 85
+            "line": 95
           },
           "name": "clusterName",
           "type": {
@@ -4768,7 +4965,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 89
+            "line": 99
           },
           "name": "vpc",
           "type": {
@@ -4784,7 +4981,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 137
+            "line": 147
           },
           "name": "bootstrapActions",
           "optional": true,
@@ -4807,7 +5004,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 129
+            "line": 139
           },
           "name": "configurations",
           "optional": true,
@@ -4829,7 +5026,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 97
+            "line": 107
           },
           "name": "coreInstanceGroup",
           "optional": true,
@@ -4846,7 +5043,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 153
+            "line": 163
           },
           "name": "extraJavaOptions",
           "optional": true,
@@ -4868,12 +5065,12 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 169
+            "line": 179
           },
           "name": "home",
           "optional": true,
           "type": {
-            "fqn": "@packyak/aws-cdk.Home"
+            "fqn": "@packyak/aws-cdk.Workspace"
           }
         },
         {
@@ -4885,7 +5082,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 107
+            "line": 117
           },
           "name": "idleTimeout",
           "optional": true,
@@ -4903,7 +5100,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 165
+            "line": 175
           },
           "name": "installGitHubCLI",
           "optional": true,
@@ -4921,7 +5118,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 159
+            "line": 169
           },
           "name": "installSSMAgent",
           "optional": true,
@@ -4938,7 +5135,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 123
+            "line": 133
           },
           "name": "managedScalingPolicy",
           "optional": true,
@@ -4955,7 +5152,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 93
+            "line": 103
           },
           "name": "masterInstanceGroup",
           "optional": true,
@@ -4972,7 +5169,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 111
+            "line": 121
           },
           "name": "releaseLabel",
           "optional": true,
@@ -4989,7 +5186,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 133
+            "line": 143
           },
           "name": "removalPolicy",
           "optional": true,
@@ -5006,7 +5203,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 119
+            "line": 129
           },
           "name": "scaleDownBehavior",
           "optional": true,
@@ -5024,7 +5221,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 149
+            "line": 159
           },
           "name": "stepConcurrencyLevel",
           "optional": true,
@@ -5042,7 +5239,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 143
+            "line": 153
           },
           "name": "steps",
           "optional": true,
@@ -5068,7 +5265,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 75
+        "line": 78
       },
       "name": "ComputeLimits",
       "properties": [
@@ -5080,7 +5277,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 78
+            "line": 81
           },
           "name": "maximumCapacityUnits",
           "type": {
@@ -5095,7 +5292,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 77
+            "line": 80
           },
           "name": "minimumCapacityUnits",
           "type": {
@@ -5110,7 +5307,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 76
+            "line": 79
           },
           "name": "unitType",
           "type": {
@@ -5244,7 +5441,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/sagemaker/domain.ts",
-        "line": 45
+        "line": 47
       },
       "name": "DefaultUserSettings",
       "properties": [
@@ -5257,7 +5454,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 49
+            "line": 51
           },
           "name": "executionRole",
           "optional": true,
@@ -5275,7 +5472,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 55
+            "line": 57
           },
           "name": "studioWebPortal",
           "optional": true,
@@ -5299,7 +5496,7 @@
         },
         "locationInModule": {
           "filename": "src/sagemaker/domain.ts",
-          "line": 126
+          "line": 128
         },
         "parameters": [
           {
@@ -5329,7 +5526,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/sagemaker/domain.ts",
-        "line": 107
+        "line": 109
       },
       "methods": [
         {
@@ -5338,7 +5535,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 534
+            "line": 532
           },
           "name": "addUserProfile",
           "parameters": [
@@ -5370,7 +5567,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 286
+            "line": 288
           },
           "name": "enableCleanup",
           "parameters": [
@@ -5388,7 +5585,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 436
+            "line": 434
           },
           "name": "grantCreateApp",
           "parameters": [
@@ -5406,7 +5603,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 443
+            "line": 441
           },
           "name": "grantCreatePresignedDomainUrl",
           "parameters": [
@@ -5424,7 +5621,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 450
+            "line": 448
           },
           "name": "grantCreateSpace",
           "parameters": [
@@ -5442,7 +5639,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 457
+            "line": 455
           },
           "name": "grantDeleteApp",
           "parameters": [
@@ -5460,7 +5657,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 464
+            "line": 462
           },
           "name": "grantDeleteSpace",
           "parameters": [
@@ -5478,7 +5675,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 471
+            "line": 469
           },
           "name": "grantDescribeApp",
           "parameters": [
@@ -5496,7 +5693,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 478
+            "line": 476
           },
           "name": "grantDescribeDomain",
           "parameters": [
@@ -5514,7 +5711,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 488
+            "line": 486
           },
           "name": "grantDescribeSpace",
           "parameters": [
@@ -5532,7 +5729,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 495
+            "line": 493
           },
           "name": "grantDescribeUserProfile",
           "parameters": [
@@ -5551,7 +5748,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 361
+            "line": 359
           },
           "name": "grantEMRClusterAccess",
           "parameters": [
@@ -5569,7 +5766,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 251
+            "line": 253
           },
           "name": "grantGlueInteractiveSession",
           "parameters": [
@@ -5587,7 +5784,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 386
+            "line": 384
           },
           "name": "grantListApps",
           "parameters": [
@@ -5605,7 +5802,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 393
+            "line": 391
           },
           "name": "grantListSessions",
           "parameters": [
@@ -5623,7 +5820,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 429
+            "line": 427
           },
           "name": "grantListSpaces",
           "parameters": [
@@ -5641,7 +5838,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 404
+            "line": 402
           },
           "name": "grantListTags",
           "parameters": [
@@ -5659,7 +5856,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 379
+            "line": 377
           },
           "name": "grantSageMakerSearch",
           "parameters": [
@@ -5677,7 +5874,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 418
+            "line": 416
           },
           "name": "grantSearchServiceCatalogProducts",
           "parameters": [
@@ -5695,7 +5892,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 340
+            "line": 338
           },
           "name": "grantStudioAccess",
           "parameters": [
@@ -5713,7 +5910,7 @@
           },
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 502
+            "line": 500
           },
           "name": "grantUpdateSpace",
           "parameters": [
@@ -5736,7 +5933,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 122
+            "line": 124
           },
           "name": "connections",
           "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
@@ -5751,7 +5948,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 109
+            "line": 111
           },
           "name": "domainArn",
           "type": {
@@ -5765,7 +5962,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 108
+            "line": 110
           },
           "name": "domainId",
           "type": {
@@ -5779,7 +5976,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 110
+            "line": 112
           },
           "name": "domainUrl",
           "type": {
@@ -5794,7 +5991,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 124
+            "line": 126
           },
           "name": "grantPrincipal",
           "overrides": "aws-cdk-lib.aws_iam.IGrantable",
@@ -5809,7 +6006,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 112
+            "line": 114
           },
           "name": "homeEfsFileSystemArn",
           "type": {
@@ -5823,7 +6020,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 111
+            "line": 113
           },
           "name": "homeEfsFileSystemId",
           "type": {
@@ -5837,7 +6034,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 116
+            "line": 118
           },
           "name": "resource",
           "protected": true,
@@ -5852,7 +6049,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 120
+            "line": 122
           },
           "name": "sageMakerSg",
           "type": {
@@ -5866,7 +6063,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 114
+            "line": 116
           },
           "name": "singleSignOnApplicationArn",
           "type": {
@@ -5880,7 +6077,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 113
+            "line": 115
           },
           "name": "singleSignOnManagedApplicationInstanceId",
           "type": {
@@ -5900,7 +6097,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/sagemaker/domain.ts",
-        "line": 58
+        "line": 60
       },
       "name": "DomainProps",
       "properties": [
@@ -5914,7 +6111,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 70
+            "line": 72
           },
           "name": "domainName",
           "type": {
@@ -5930,7 +6127,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 74
+            "line": 76
           },
           "name": "vpc",
           "type": {
@@ -5947,7 +6144,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 86
+            "line": 88
           },
           "name": "appNetworkAccessType",
           "optional": true,
@@ -5965,7 +6162,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 64
+            "line": 66
           },
           "name": "authMode",
           "optional": true,
@@ -5983,7 +6180,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 96
+            "line": 98
           },
           "name": "defaultImage",
           "optional": true,
@@ -6000,7 +6197,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 90
+            "line": 92
           },
           "name": "defaultUserSettings",
           "optional": true,
@@ -6017,7 +6214,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 100
+            "line": 102
           },
           "name": "removalPolicy",
           "optional": true,
@@ -6034,7 +6231,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 104
+            "line": 106
           },
           "name": "sageMakerSg",
           "optional": true,
@@ -6052,7 +6249,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/sagemaker/domain.ts",
-            "line": 80
+            "line": 82
           },
           "name": "subnetSelection",
           "optional": true,
@@ -6261,9 +6458,8 @@
       "assembly": "@packyak/aws-cdk",
       "base": "constructs.Construct",
       "docs": {
-        "remarks": "A Home contains a shared EFS {@link FileSystem} with {@link AccessPoint }s\nfor each {@link User } granted access to the system.\n\nA Home can be mounted to EC2 machines, SageMaker Domains and AWS EMR Clusters.\n\nA Home is designed to provide a shared environment for a team of developers\nto work on a project together.",
         "stability": "experimental",
-        "summary": "Represents a \"Home\" environment in AWS."
+        "summary": "A Home directory is a secure directory in a {@link Workspace} only accessible by the User who owns it."
       },
       "fqn": "@packyak/aws-cdk.Home",
       "initializer": {
@@ -6271,8 +6467,8 @@
           "stability": "experimental"
         },
         "locationInModule": {
-          "filename": "src/home/home.ts",
-          "line": 29
+          "filename": "src/workspace/home.ts",
+          "line": 65
         },
         "parameters": [
           {
@@ -6295,10 +6491,13 @@
           }
         ]
       },
+      "interfaces": [
+        "aws-cdk-lib.aws_ec2.IConnectable"
+      ],
       "kind": "class",
       "locationInModule": {
-        "filename": "src/home/home.ts",
-        "line": 24
+        "filename": "src/workspace/home.ts",
+        "line": 37
       },
       "methods": [
         {
@@ -6306,57 +6505,199 @@
             "stability": "experimental"
           },
           "locationInModule": {
-            "filename": "src/home/home.ts",
-            "line": 48
+            "filename": "src/workspace/home.ts",
+            "line": 97
           },
-          "name": "addUser",
+          "name": "allowFrom",
           "parameters": [
             {
-              "name": "props",
+              "name": "connectable",
               "type": {
-                "fqn": "@packyak/aws-cdk.UserProps"
+                "fqn": "aws-cdk-lib.aws_ec2.IConnectable"
               }
             }
-          ],
-          "returns": {
-            "type": {
-              "fqn": "@packyak/aws-cdk.User"
+          ]
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 124
+          },
+          "name": "grant",
+          "parameters": [
+            {
+              "name": "__0",
+              "type": {
+                "fqn": "aws-cdk-lib.aws_iam.IGrantable"
+              }
+            },
+            {
+              "name": "actions",
+              "type": {
+                "collection": {
+                  "elementtype": {
+                    "primitive": "string"
+                  },
+                  "kind": "array"
+                }
+              }
             }
-          }
+          ]
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 101
+          },
+          "name": "grantRead",
+          "parameters": [
+            {
+              "name": "__0",
+              "type": {
+                "fqn": "aws-cdk-lib.aws_iam.IGrantable"
+              }
+            }
+          ]
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 114
+          },
+          "name": "grantReadWrite",
+          "parameters": [
+            {
+              "name": "__0",
+              "type": {
+                "fqn": "aws-cdk-lib.aws_iam.IGrantable"
+              }
+            }
+          ]
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 119
+          },
+          "name": "grantRootAccess",
+          "parameters": [
+            {
+              "name": "__0",
+              "type": {
+                "fqn": "aws-cdk-lib.aws_iam.IGrantable"
+              }
+            }
+          ]
         }
       ],
       "name": "Home",
       "properties": [
         {
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "An {@link AccessPoint} to the user's home directory."
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/home/home.ts",
-            "line": 25
+            "filename": "src/workspace/home.ts",
+            "line": 45
           },
-          "name": "fileSystem",
+          "name": "accessPoint",
           "type": {
-            "fqn": "aws-cdk-lib.aws_efs.FileSystem"
+            "fqn": "aws-cdk-lib.aws_efs.AccessPoint"
           }
         },
         {
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "The connections for the EFS file system."
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/home/home.ts",
-            "line": 27
+            "filename": "src/workspace/home.ts",
+            "line": 41
           },
-          "name": "users",
+          "name": "connections",
+          "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
           "type": {
-            "fqn": "@packyak/aws-cdk.Users"
+            "fqn": "aws-cdk-lib.aws_ec2.Connections"
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "The POSIX group ID."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 59
+          },
+          "name": "gid",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Absolute path to the home directory."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 63
+          },
+          "name": "path",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "The POSIX user ID."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 55
+          },
+          "name": "uid",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "docs": {
+            "remarks": "Should match the AWS SSO username.",
+            "stability": "experimental",
+            "summary": "The username of the user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 51
+          },
+          "name": "username",
+          "type": {
+            "primitive": "string"
           }
         }
       ],
-      "symbolId": "src/home/home:Home"
+      "symbolId": "src/workspace/home:Home"
     },
     "@packyak/aws-cdk.HomeProps": {
       "assembly": "@packyak/aws-cdk",
@@ -6365,16 +6706,106 @@
         "stability": "experimental"
       },
       "fqn": "@packyak/aws-cdk.HomeProps",
-      "interfaces": [
-        "aws-cdk-lib.aws_efs.FileSystemProps"
-      ],
       "kind": "interface",
       "locationInModule": {
-        "filename": "src/home/home.ts",
-        "line": 11
+        "filename": "src/workspace/home.ts",
+        "line": 8
       },
       "name": "HomeProps",
-      "symbolId": "src/home/home:HomeProps"
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "The file system associated with the user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 12
+          },
+          "name": "fileSystem",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_efs.FileSystem"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "This should be a unique identifier.",
+            "stability": "experimental",
+            "summary": "The POSIX user ID for the user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 20
+          },
+          "name": "uid",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "This should be unique across all users.",
+            "stability": "experimental",
+            "summary": "The username for the user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 16
+          },
+          "name": "username",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- same as the uid",
+            "remarks": "This is used for file system permissions.",
+            "stability": "experimental",
+            "summary": "The POSIX group ID for the user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 26
+          },
+          "name": "gid",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "Secondary groups to assign to files written to this home directory."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/home.ts",
+            "line": 30
+          },
+          "name": "secondaryGroups",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.PosixGroup"
+              },
+              "kind": "array"
+            }
+          }
+        }
+      ],
+      "symbolId": "src/workspace/home:HomeProps"
     },
     "@packyak/aws-cdk.IBindable": {
       "assembly": "@packyak/aws-cdk",
@@ -6731,7 +7162,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 45
+        "line": 48
       },
       "name": "InstanceGroup",
       "properties": [
@@ -6744,7 +7175,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 49
+            "line": 52
           },
           "name": "instanceCount",
           "optional": true,
@@ -6761,7 +7192,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 53
+            "line": 56
           },
           "name": "instanceType",
           "optional": true,
@@ -6778,7 +7209,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 57
+            "line": 60
           },
           "name": "market",
           "optional": true,
@@ -6974,7 +7405,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 71
+        "line": 74
       },
       "name": "ManagedScalingPolicy",
       "properties": [
@@ -6986,7 +7417,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 72
+            "line": 75
           },
           "name": "computeLimits",
           "type": {
@@ -7024,6 +7455,83 @@
       "name": "Market",
       "symbolId": "src/emr/market:Market"
     },
+    "@packyak/aws-cdk.MountOptions": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.MountOptions",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/cluster.ts",
+        "line": 84
+      },
+      "name": "MountOptions",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 88
+          },
+          "name": "gid",
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 85
+          },
+          "name": "mountPoint",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 87
+          },
+          "name": "uid",
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 86
+          },
+          "name": "username",
+          "type": {
+            "primitive": "string"
+          }
+        }
+      ],
+      "symbolId": "src/emr/cluster:MountOptions"
+    },
     "@packyak/aws-cdk.NessieECSCatalog": {
       "assembly": "@packyak/aws-cdk",
       "base": "@packyak/aws-cdk.BaseNessieCatalog",
@@ -7037,7 +7545,7 @@
         },
         "locationInModule": {
           "filename": "src/nessie/nessie-ecs-catalog.ts",
-          "line": 41
+          "line": 38
         },
         "parameters": [
           {
@@ -7066,7 +7574,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/nessie/nessie-ecs-catalog.ts",
-        "line": 33
+        "line": 30
       },
       "name": "NessieECSCatalog",
       "properties": [
@@ -7078,7 +7586,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/nessie/nessie-ecs-catalog.ts",
-            "line": 36
+            "line": 33
           },
           "name": "endpoint",
           "overrides": "@packyak/aws-cdk.BaseNessieCatalog",
@@ -7094,7 +7602,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/nessie/nessie-ecs-catalog.ts",
-            "line": 38
+            "line": 35
           },
           "name": "grantPrincipal",
           "overrides": "aws-cdk-lib.aws_iam.IGrantable",
@@ -7109,7 +7617,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/nessie/nessie-ecs-catalog.ts",
-            "line": 39
+            "line": 36
           },
           "name": "logGroup",
           "type": {
@@ -7123,7 +7631,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/nessie/nessie-ecs-catalog.ts",
-            "line": 34
+            "line": 31
           },
           "name": "service",
           "type": {
@@ -7147,7 +7655,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/nessie/nessie-ecs-catalog.ts",
-        "line": 26
+        "line": 23
       },
       "name": "NessieECSCatalogProps",
       "properties": [
@@ -7159,7 +7667,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/nessie/nessie-ecs-catalog.ts",
-            "line": 30
+            "line": 27
           },
           "name": "dns",
           "optional": true,
@@ -7175,7 +7683,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/nessie/nessie-ecs-catalog.ts",
-            "line": 29
+            "line": 26
           },
           "name": "platform",
           "optional": true,
@@ -7199,7 +7707,7 @@
         },
         "locationInModule": {
           "filename": "src/nessie/nessie-lambda-catalog.ts",
-          "line": 25
+          "line": 22
         },
         "parameters": [
           {
@@ -7225,7 +7733,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/nessie/nessie-lambda-catalog.ts",
-        "line": 19
+        "line": 16
       },
       "name": "NessieLambdaCatalog",
       "properties": [
@@ -7237,7 +7745,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/nessie/nessie-lambda-catalog.ts",
-            "line": 23
+            "line": 20
           },
           "name": "endpoint",
           "overrides": "@packyak/aws-cdk.BaseNessieCatalog",
@@ -7252,7 +7760,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/nessie/nessie-lambda-catalog.ts",
-            "line": 20
+            "line": 17
           },
           "name": "function",
           "type": {
@@ -7266,7 +7774,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/nessie/nessie-lambda-catalog.ts",
-            "line": 21
+            "line": 18
           },
           "name": "functionUrl",
           "type": {
@@ -7289,7 +7797,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/nessie/nessie-lambda-catalog.ts",
-        "line": 17
+        "line": 14
       },
       "name": "NessieLambdaCatalogProps",
       "symbolId": "src/nessie/nessie-lambda-catalog:NessieLambdaCatalogProps"
@@ -7347,6 +7855,56 @@
         }
       ],
       "symbolId": "src/nessie/nessie-version-store:NessieVersionStoreProps"
+    },
+    "@packyak/aws-cdk.PosixGroup": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental",
+        "summary": "A statically defined POSIX Group."
+      },
+      "fqn": "@packyak/aws-cdk.PosixGroup",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/workspace/group.ts",
+        "line": 4
+      },
+      "name": "PosixGroup",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "Unique ID of the POSIX group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/group.ts",
+            "line": 12
+          },
+          "name": "gid",
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "Unique name of the POSIX group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/group.ts",
+            "line": 8
+          },
+          "name": "name",
+          "type": {
+            "primitive": "string"
+          }
+        }
+      ],
+      "symbolId": "src/workspace/group:PosixGroup"
     },
     "@packyak/aws-cdk.PythonPoetryArgs": {
       "assembly": "@packyak/aws-cdk",
@@ -7969,7 +8527,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 60
+        "line": 63
       },
       "members": [
         {
@@ -7997,7 +8555,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 65
+        "line": 68
       },
       "members": [
         {
@@ -8291,113 +8849,6 @@
       "name": "TransportMode",
       "symbolId": "src/emr/jdbc:TransportMode"
     },
-    "@packyak/aws-cdk.User": {
-      "assembly": "@packyak/aws-cdk",
-      "base": "constructs.Construct",
-      "docs": {
-        "stability": "experimental"
-      },
-      "fqn": "@packyak/aws-cdk.User",
-      "initializer": {
-        "docs": {
-          "stability": "experimental"
-        },
-        "locationInModule": {
-          "filename": "src/home/user.ts",
-          "line": 43
-        },
-        "parameters": [
-          {
-            "name": "scope",
-            "type": {
-              "fqn": "constructs.Construct"
-            }
-          },
-          {
-            "name": "id",
-            "type": {
-              "primitive": "string"
-            }
-          },
-          {
-            "name": "props",
-            "type": {
-              "fqn": "@packyak/aws-cdk.UserProps"
-            }
-          }
-        ]
-      },
-      "kind": "class",
-      "locationInModule": {
-        "filename": "src/home/user.ts",
-        "line": 23
-      },
-      "name": "User",
-      "properties": [
-        {
-          "docs": {
-            "stability": "experimental",
-            "summary": "The POSIX group ID."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/user.ts",
-            "line": 41
-          },
-          "name": "gid",
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "docs": {
-            "stability": "experimental",
-            "summary": "An {@link AccessPoint} to the user's home directory."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/user.ts",
-            "line": 33
-          },
-          "name": "home",
-          "type": {
-            "fqn": "aws-cdk-lib.aws_efs.AccessPoint"
-          }
-        },
-        {
-          "docs": {
-            "stability": "experimental",
-            "summary": "The POSIX user ID."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/user.ts",
-            "line": 37
-          },
-          "name": "uid",
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "docs": {
-            "remarks": "Should match the AWS SSO username.",
-            "stability": "experimental",
-            "summary": "The username of the user."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/user.ts",
-            "line": 29
-          },
-          "name": "username",
-          "type": {
-            "primitive": "string"
-          }
-        }
-      ],
-      "symbolId": "src/home/user:User"
-    },
     "@packyak/aws-cdk.UserProfile": {
       "assembly": "@packyak/aws-cdk",
       "base": "aws-cdk-lib.Resource",
@@ -8522,224 +8973,6 @@
       ],
       "symbolId": "src/sagemaker/user-profile:UserProfileProps"
     },
-    "@packyak/aws-cdk.UserProps": {
-      "assembly": "@packyak/aws-cdk",
-      "datatype": true,
-      "docs": {
-        "stability": "experimental"
-      },
-      "fqn": "@packyak/aws-cdk.UserProps",
-      "kind": "interface",
-      "locationInModule": {
-        "filename": "src/home/user.ts",
-        "line": 4
-      },
-      "name": "UserProps",
-      "properties": [
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental",
-            "summary": "The file system associated with the user."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/user.ts",
-            "line": 8
-          },
-          "name": "fileSystem",
-          "type": {
-            "fqn": "aws-cdk-lib.aws_efs.FileSystem"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "remarks": "This is used for file system permissions.",
-            "stability": "experimental",
-            "summary": "The POSIX group ID for the user."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/user.ts",
-            "line": 20
-          },
-          "name": "gid",
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "remarks": "This should be a unique identifier.",
-            "stability": "experimental",
-            "summary": "The POSIX user ID for the user."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/user.ts",
-            "line": 16
-          },
-          "name": "uid",
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "remarks": "This should be unique across all users.",
-            "stability": "experimental",
-            "summary": "The username for the user."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/user.ts",
-            "line": 12
-          },
-          "name": "username",
-          "type": {
-            "primitive": "string"
-          }
-        }
-      ],
-      "symbolId": "src/home/user:UserProps"
-    },
-    "@packyak/aws-cdk.Users": {
-      "assembly": "@packyak/aws-cdk",
-      "base": "constructs.Construct",
-      "docs": {
-        "stability": "experimental"
-      },
-      "fqn": "@packyak/aws-cdk.Users",
-      "initializer": {
-        "docs": {
-          "stability": "experimental"
-        },
-        "locationInModule": {
-          "filename": "src/home/users.ts",
-          "line": 22
-        },
-        "parameters": [
-          {
-            "name": "scope",
-            "type": {
-              "fqn": "constructs.Construct"
-            }
-          },
-          {
-            "name": "id",
-            "type": {
-              "primitive": "string"
-            }
-          },
-          {
-            "name": "props",
-            "type": {
-              "fqn": "@packyak/aws-cdk.UsersProps"
-            }
-          }
-        ]
-      },
-      "kind": "class",
-      "locationInModule": {
-        "filename": "src/home/users.ts",
-        "line": 12
-      },
-      "methods": [
-        {
-          "docs": {
-            "stability": "experimental"
-          },
-          "locationInModule": {
-            "filename": "src/home/users.ts",
-            "line": 34
-          },
-          "name": "add",
-          "parameters": [
-            {
-              "name": "props",
-              "type": {
-                "fqn": "@packyak/aws-cdk.UserProps"
-              }
-            }
-          ],
-          "returns": {
-            "type": {
-              "fqn": "@packyak/aws-cdk.User"
-            }
-          }
-        }
-      ],
-      "name": "Users",
-      "properties": [
-        {
-          "docs": {
-            "stability": "experimental",
-            "summary": "The EFS FileSystem that the users will be granted access to."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/users.ts",
-            "line": 16
-          },
-          "name": "fileSystem",
-          "type": {
-            "fqn": "aws-cdk-lib.aws_efs.FileSystem"
-          }
-        },
-        {
-          "docs": {
-            "stability": "experimental",
-            "summary": "The SSM user is the default user when connecting to a machine with AWS SSM."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/users.ts",
-            "line": 20
-          },
-          "name": "ssmUser",
-          "type": {
-            "fqn": "@packyak/aws-cdk.User"
-          }
-        }
-      ],
-      "symbolId": "src/home/users:Users"
-    },
-    "@packyak/aws-cdk.UsersProps": {
-      "assembly": "@packyak/aws-cdk",
-      "datatype": true,
-      "docs": {
-        "stability": "experimental"
-      },
-      "fqn": "@packyak/aws-cdk.UsersProps",
-      "kind": "interface",
-      "locationInModule": {
-        "filename": "src/home/users.ts",
-        "line": 5
-      },
-      "name": "UsersProps",
-      "properties": [
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental",
-            "summary": "The EFS FileSystem that the users will be granted access to."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/home/users.ts",
-            "line": 9
-          },
-          "name": "fileSystem",
-          "type": {
-            "fqn": "aws-cdk-lib.aws_efs.FileSystem"
-          }
-        }
-      ],
-      "symbolId": "src/home/users:UsersProps"
-    },
     "@packyak/aws-cdk.Version": {
       "assembly": "@packyak/aws-cdk",
       "docs": {
@@ -8800,8 +9033,172 @@
         }
       ],
       "symbolId": "src/version:Version"
+    },
+    "@packyak/aws-cdk.Workspace": {
+      "assembly": "@packyak/aws-cdk",
+      "base": "constructs.Construct",
+      "docs": {
+        "remarks": "A Workspace contains a shared EFS {@link FileSystem} with {@link AccessPoint }s\nfor each {@link User } granted access to the system.\n\nA Workspace can be mounted to EC2 machines, SageMaker Domains and AWS EMR Clusters.",
+        "stability": "experimental",
+        "summary": "A Workspace is a shared environment for a team of developers to work on a project together."
+      },
+      "fqn": "@packyak/aws-cdk.Workspace",
+      "initializer": {
+        "docs": {
+          "stability": "experimental"
+        },
+        "locationInModule": {
+          "filename": "src/workspace/workspace.ts",
+          "line": 62
+        },
+        "parameters": [
+          {
+            "name": "scope",
+            "type": {
+              "fqn": "constructs.Construct"
+            }
+          },
+          {
+            "name": "id",
+            "type": {
+              "primitive": "string"
+            }
+          },
+          {
+            "name": "props",
+            "type": {
+              "fqn": "@packyak/aws-cdk.WorkspaceProps"
+            }
+          }
+        ]
+      },
+      "interfaces": [
+        "aws-cdk-lib.aws_ec2.IConnectable"
+      ],
+      "kind": "class",
+      "locationInModule": {
+        "filename": "src/workspace/workspace.ts",
+        "line": 43
+      },
+      "methods": [
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Add a home directory to the workspace."
+          },
+          "locationInModule": {
+            "filename": "src/workspace/workspace.ts",
+            "line": 99
+          },
+          "name": "addHome",
+          "parameters": [
+            {
+              "name": "props",
+              "type": {
+                "fqn": "@packyak/aws-cdk.AddHomeRequest"
+              }
+            }
+          ],
+          "returns": {
+            "type": {
+              "fqn": "@packyak/aws-cdk.Home"
+            }
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Allow access to the EFS file system from a connectable, e.g. SecurityGroup."
+          },
+          "locationInModule": {
+            "filename": "src/workspace/workspace.ts",
+            "line": 92
+          },
+          "name": "allowFrom",
+          "parameters": [
+            {
+              "docs": {
+                "summary": "the connectable to allow access to the shared EFS file system."
+              },
+              "name": "connectable",
+              "type": {
+                "fqn": "aws-cdk-lib.aws_ec2.IConnectable"
+              }
+            }
+          ]
+        }
+      ],
+      "name": "Workspace",
+      "properties": [
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Connections for the EFS file system."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/workspace.ts",
+            "line": 57
+          },
+          "name": "connections",
+          "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.Connections"
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "EFS File System shared by all users of the Workspace."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/workspace.ts",
+            "line": 47
+          },
+          "name": "fileSystem",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_efs.FileSystem"
+          }
+        },
+        {
+          "docs": {
+            "remarks": "This is the default user assigned when logging into a machine via SSM.",
+            "stability": "experimental",
+            "summary": "Home directory of the `ssm-user` POSIX user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/workspace/workspace.ts",
+            "line": 53
+          },
+          "name": "ssm",
+          "type": {
+            "fqn": "@packyak/aws-cdk.Home"
+          }
+        }
+      ],
+      "symbolId": "src/workspace/workspace:Workspace"
+    },
+    "@packyak/aws-cdk.WorkspaceProps": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.WorkspaceProps",
+      "interfaces": [
+        "aws-cdk-lib.aws_efs.FileSystemProps"
+      ],
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/workspace/workspace.ts",
+        "line": 33
+      },
+      "name": "WorkspaceProps",
+      "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.0",
-  "fingerprint": "SnduPHZIdLD+rzms7Y9sA3CgaBWVkdn4rAbOogzdMFw="
+  "version": "0.4.4",
+  "fingerprint": "vtwOv3NVkODBMJNhd7ie2bwIX4WV/Rp8DEQO3Nuec18="
 }

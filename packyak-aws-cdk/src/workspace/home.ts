@@ -3,7 +3,7 @@ import { Construct } from "constructs";
 import type { Workspace } from "./workspace";
 import { type IGrantable, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import type { Connections, IConnectable } from "aws-cdk-lib/aws-ec2";
-import { PosixGroup } from "./group";
+import type { PosixGroup } from "./group";
 
 export interface HomeProps {
   /**

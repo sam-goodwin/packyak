@@ -514,7 +514,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
    * Mount an EFS Access Point on the EMR cluster.
    *
    * @param accessPoint the EFS Access Point to mount
-   * @param mountPoint the directory to mount the Access Point to
+   * @param options the options to use when mounting the Access Point
    */
   public mountAccessPoint(accessPoint: IAccessPoint, options: MountOptions) {
     this.grantMountPermissions(accessPoint.fileSystem, accessPoint);
@@ -531,7 +531,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
    * Mount an EFS File System on the EMR cluster.
    *
    * @param fileSystem the EFS File System to mount
-   * @param mountPoint the directory to mount the File System to
+   * @param options the options to use when mounting the File System
    */
   public mountFileSystem(fileSystem: IFileSystem, options: MountOptions) {
     this.grantMountPermissions(fileSystem);

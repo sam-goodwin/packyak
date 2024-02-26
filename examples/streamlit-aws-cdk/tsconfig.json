@@ -7,7 +7,7 @@
   },
   "references": [
     {
-      "path": "../../packyak-aws-cdk"
+      "path": "../../packyak-aws-cdk/tsconfig.ref.json"
     }
   ]
 }

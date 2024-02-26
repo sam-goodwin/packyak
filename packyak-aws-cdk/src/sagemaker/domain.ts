@@ -1,4 +1,3 @@
-import fs from "fs";
 import {
   Connections,
   IConnectable,
@@ -16,6 +15,7 @@ import {
   Role,
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
+import { Code } from "aws-cdk-lib/aws-lambda";
 import { CfnDomain } from "aws-cdk-lib/aws-sagemaker";
 import {
   Arn,
@@ -29,7 +29,6 @@ import * as path from "path";
 import { PackYakResource } from "../packyak-resource";
 import { SageMakerImage } from "./sage-maker-image";
 import { UserProfile } from "./user-profile";
-import { Code, Runtime } from "aws-cdk-lib/aws-lambda";
 
 export enum AuthMode {
   SSO = "SSO",

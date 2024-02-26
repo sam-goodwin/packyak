@@ -23,8 +23,9 @@ export * from "./sagemaker/sage-maker-image";
 export * from "./sagemaker/user-profile";
 export * from "./streamlit-site";
 export * from "./version";
-export * from "./workspace/workspace";
+export * from "./workspace/group";
 export * from "./workspace/home";
+export * from "./workspace/workspace";
 
 import { CfnOutput, Stack } from "aws-cdk-lib/core";
 

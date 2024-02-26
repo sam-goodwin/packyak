@@ -1,7 +1,7 @@
 {
   "name": "@packyak/packyak",
   "private": true,
-  "version": "0.4.5",
+  "version": "0.4.6",
   "type": "module",
   "exports": {
     ".": {
@@ -14,13 +14,13 @@
     "watch": "tsc -b -w",
     "codegen": "poetry run python ./scripts/codegen.py",
     "typecheck": "poetry run pyright",
-    "build": "tsc -b",
+    "build": "tsc -b && pnpm run --filter @packyak/aws-cdk build",
     "build:cdk": "pnpm --filter @packyak/aws-cdk run build && pnpm --filter @packyak/aws-cdk run package",
     "synth": "poetry run python ./examples/app.py",
     "synth:website": "cdk synth --app 'tsx ./packyak.config.ts'",
     "publish:all": "BUMP_ROOT=true BUMP_CDK=true ./scripts/publish.sh",
     "publish:packyak": "BUMP_ROOT=true ./scripts/publish.sh",
-    "publish:packyak-aws-cdk": "BUMP_ROOT=true ./scripts/publish.sh"
+    "publish:cdk": "BUMP_CDK=true ./scripts/publish.sh"
   },
   "keywords": [],
   "author": "",
