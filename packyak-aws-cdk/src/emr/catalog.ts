@@ -1,4 +1,4 @@
-import type { Cluster } from "./cluster.js";
+import type { Cluster } from "./cluster";
 
 /**
  * A Table Catalog implementation provides

@@ -1,5 +1,5 @@
-import { ScalaVersion } from "./scala-version.js";
-import { SparkVersion } from "./spark-version.js";
+import { ScalaVersion } from "./scala-version";
+import { SparkVersion } from "./spark-version";
 
 export class SparkSqlExtension {
   public static readonly Nessie = new SparkSqlExtension(

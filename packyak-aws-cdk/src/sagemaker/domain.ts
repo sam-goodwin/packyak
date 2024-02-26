@@ -1,3 +1,4 @@
+import fs from "fs";
 import {
   Connections,
   IConnectable,
@@ -24,9 +25,11 @@ import {
   Stack,
 } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
-import { SageMakerImage } from "./sage-maker-image.js";
-import { UserProfile } from "./user-profile.js";
-import { PackYakResource } from "../packyak-resource.js";
+import * as path from "path";
+import { PackYakResource } from "../packyak-resource";
+import { SageMakerImage } from "./sage-maker-image";
+import { UserProfile } from "./user-profile";
+import { Code, Runtime } from "aws-cdk-lib/aws-lambda";
 
 export enum AuthMode {
   SSO = "SSO",
@@ -290,12 +293,8 @@ export class Domain extends Resource implements IConnectable, IGrantable {
 
     const cleanup = new PackYakResource(this, "CleanupDomain", {
       resourceType: "Custom::PackYakCleanupDomain",
+      code: Code.fromAsset(path.join(__dirname, "cleanup")),
       properties: {
-        FileSystemId: this.homeEfsFileSystemId,
-        DomainId: this.domainId,
-        RemovalPolicy: removalPolicy,
-      },
-      environment: {
         FileSystemId: this.homeEfsFileSystemId,
         DomainId: this.domainId,
         RemovalPolicy: removalPolicy,

@@ -1,10 +1,10 @@
 import { Stack } from "aws-cdk-lib";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
-import type { ICatalog } from "./catalog.js";
-import type { Cluster } from "./cluster.js";
+import type { ICatalog } from "./catalog";
+import type { Cluster } from "./cluster";
 import { Bucket, IBucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
-import { SparkSqlExtension } from "./spark-sql-extension.js";
+import { SparkSqlExtension } from "./spark-sql-extension";
 
 export interface IcebergGlueCatalogProps {
   /**

@@ -1,4 +1,4 @@
-import "./packyak-aws-cdk/lib/index.js";
+import "./packyak-aws-cdk/lib/index";
 
 import {
   Certificate,

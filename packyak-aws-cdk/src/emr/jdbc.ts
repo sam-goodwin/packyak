@@ -1,6 +1,6 @@
 import { IConnectable, Port } from "aws-cdk-lib/aws-ec2";
-import type { Cluster } from "./cluster.js";
-import { toCLIArgs, mergeSparkExtraJars } from "./spark-config.js";
+import type { Cluster } from "./cluster";
+import { toCLIArgs, mergeSparkExtraJars } from "./spark-config";
 
 /**
  * https://mr3docs.datamonad.com/docs/k8s/advanced/transport/

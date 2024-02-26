@@ -9,10 +9,7 @@ import {
 } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 import * as path from "path";
-import {
-  BaseNessieCatalog,
-  BaseNessieRepoProps,
-} from "./base-nessie-catalog.js";
+import { BaseNessieCatalog, BaseNessieRepoProps } from "./base-nessie-catalog";
 
 export interface NessieLambdaCatalogProps extends BaseNessieRepoProps {}
 

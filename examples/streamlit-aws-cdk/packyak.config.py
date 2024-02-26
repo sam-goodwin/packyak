@@ -1,15 +1,13 @@
-from typing import Any, Callable
 from aws_cdk import App, RemovalPolicy, Stack
-from packyak import Asset
 from packyak_aws_cdk import (
     DynamoDBNessieVersionStore,
-    Cluster,
     NessieECSCatalog,
     StreamlitSite,
 )
 from aws_cdk.aws_ec2 import Vpc
 
 # Import the app so that dependencies are implicitly configured
+# TODO: I don't like that it's implicit ... it just dangles here and it's not obvious
 import my_app
 
 removal_policy = RemovalPolicy.DESTROY

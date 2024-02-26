@@ -1,30 +1,31 @@
-import { Duration, CustomResource } from "aws-cdk-lib";
-import { Architecture } from "aws-cdk-lib/aws-lambda";
-import {
-  NodejsFunctionProps,
-  NodejsFunction,
-} from "aws-cdk-lib/aws-lambda-nodejs";
+import { CustomResource, Duration } from "aws-cdk-lib";
+import { Architecture, Function, Runtime, Code } from "aws-cdk-lib/aws-lambda";
 import { Provider } from "aws-cdk-lib/custom-resources";
-import { Construct } from "constructs";
-import * as path from "path";
+import type { Construct } from "constructs";
 
-export interface PackYakResourceProps extends NodejsFunctionProps {
+export interface PackYakResourceProps {
   resourceType: string;
   properties: Record<string, any>;
+  code: Code;
+  architecture?: Architecture;
+  runtime?: Runtime;
+  handler?: string;
+  timeout?: Duration;
+  environment?: Record<string, string>;
 }
 
-export class PackYakResource extends NodejsFunction {
+export class PackYakResource extends Function {
   constructor(scope: Construct, id: string, props: PackYakResourceProps) {
     super(scope, id, {
-      architecture: Architecture.ARM_64,
-      entry: path.join(__dirname, "delete-domain"),
-      handler: "index.handler",
-      timeout: Duration.minutes(1),
+      code: props.code,
+      architecture: props.architecture ?? Architecture.ARM_64,
+      runtime: props.runtime ?? Runtime.NODEJS_20_X,
+      handler: props.handler ?? "index.handler",
+      timeout: props.timeout ?? Duration.minutes(1),
       environment: {
-        NODE_OPTIONS: "--experimental-modules=true",
+        NODE_OPTIONS: "--enable-source-maps",
         ...props.environment,
       },
-      ...props,
     });
 
     const provider = new Provider(this, "CreateUsers", {

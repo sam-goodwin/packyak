@@ -41,6 +41,7 @@
     "dagster",
     "dedupe",
     "Fargate",
+    "Gids",
     "HDFS",
     "hudi",
     "JDBC",

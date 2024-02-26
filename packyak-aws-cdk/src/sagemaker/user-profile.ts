@@ -2,7 +2,7 @@ import { Resource } from "aws-cdk-lib";
 import { IRole } from "aws-cdk-lib/aws-iam";
 import { CfnUserProfile } from "aws-cdk-lib/aws-sagemaker";
 import { Construct } from "constructs";
-import { Domain } from "./domain.js";
+import { Domain } from "./domain";
 
 export interface UserProfileProps {
   readonly domain: Domain;

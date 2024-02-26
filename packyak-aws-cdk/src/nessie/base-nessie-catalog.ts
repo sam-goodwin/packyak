@@ -1,14 +1,14 @@
 import { Construct } from "constructs";
-import { DynamoDBNessieVersionStore } from "./nessie-version-store.js";
+import { DynamoDBNessieVersionStore } from "./nessie-version-store";
 import {
   NessieConfig,
   NessieVersionStoreType,
   nessieConfigToEnvironment,
-} from "./nessie-config.js";
+} from "./nessie-config";
 import { RemovalPolicy, Stack } from "aws-cdk-lib/core";
-import { ICatalog } from "../emr/catalog.js";
-import { Cluster } from "../emr/cluster.js";
-import { SparkSqlExtension } from "../emr/spark-sql-extension.js";
+import { ICatalog } from "../emr/catalog";
+import { Cluster } from "../emr/cluster";
+import { SparkSqlExtension } from "../emr/spark-sql-extension";
 import { Bucket, IBucket } from "aws-cdk-lib/aws-s3";
 import { ILogGroup } from "aws-cdk-lib/aws-logs";
 

@@ -1,6 +1,6 @@
 {
   "extends": "../tsconfig.base.json",
-  "include": ["src", "src/sagemaker/delete-domain/package.json"],
+  "include": ["src", "src/sagemaker/cleanup/package.json"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "rootDir": "src",

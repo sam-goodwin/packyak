@@ -30,7 +30,7 @@ import asyncio
 def synth(
     config: str,
     branch: str,
-    profile: str | None = None,
+    profile: str | None,
 ):
     import importlib
     import importlib.util

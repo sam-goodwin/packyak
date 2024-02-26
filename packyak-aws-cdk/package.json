@@ -1,7 +1,7 @@
 {
   "name": "@packyak/aws-cdk",
   "description": "AWS CDK Constructs for the PackYak Lakehouse Platform",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": "Sam Goodwin",
   "license": "Apache-2.0",
   "repository": {
@@ -111,7 +111,7 @@
     "outdir": "lib.jsii",
     "versionFormat": "full",
     "tsc": {
-      "outDir": "lib",
+      "outDir": "lib.jsii",
       "rootDir": "src"
     }
   }

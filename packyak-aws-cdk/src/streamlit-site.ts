@@ -11,10 +11,10 @@ import {
 } from "aws-cdk-lib/aws-ecs-patterns";
 import { HealthCheck } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Construct } from "constructs";
-import { exportRequirementsSync } from "./export-requirements.js";
+import { exportRequirementsSync } from "./export-requirements";
 import * as path from "path";
 import { Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
-import type { PythonPoetryArgs } from "./python-poetry.js";
+import type { PythonPoetryArgs } from "./python-poetry";
 
 export interface StreamlitSiteProps
   extends ApplicationLoadBalancedFargateServiceProps {
