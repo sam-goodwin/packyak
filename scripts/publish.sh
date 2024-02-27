@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+set -e
+
 extra_args=$*
 version=$(node -p "require('./package.json').version")
 
