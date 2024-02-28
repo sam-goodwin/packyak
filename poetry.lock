@@ -337,10 +337,12 @@ botocore-stubs = "*"
 mypy-boto3-cloudformation = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
 mypy-boto3-dynamodb = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
 mypy-boto3-ec2 = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
+mypy-boto3-emr = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"emr\""}
 mypy-boto3-lambda = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
 mypy-boto3-rds = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
 mypy-boto3-s3 = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
 mypy-boto3-sqs = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
+mypy-boto3-ssm = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"ssm\""}
 mypy-boto3-sts = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"sts\""}
 types-s3transfer = "*"
 typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
@@ -2036,13 +2038,13 @@ files = [
 
 [[package]]
 name = "multimethod"
-version = "1.11.1"
+version = "1.11.2"
 description = "Multiple argument dispatching."
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "multimethod-1.11.1-py3-none-any.whl", hash = "sha256:939703e1667725169722269f3bb6d078ce414526a16475028ea3eb3b8a5fc4ef"},
-    {file = "multimethod-1.11.1.tar.gz", hash = "sha256:e2bfd270a30ee4b56e64b94b8353ed10f7e7aa769cedf6cb8f1d429ce50d72ea"},
+    {file = "multimethod-1.11.2-py3-none-any.whl", hash = "sha256:cb338f09395c0ee87d36c7691cdd794d13d8864358082cf1205f812edd5ce05a"},
+    {file = "multimethod-1.11.2.tar.gz", hash = "sha256:7f2a4863967142e6db68632fef9cd79053c09670ba0c5f113301e245140bba5c"},
 ]
 
 [[package]]
@@ -2082,6 +2084,20 @@ python-versions = ">=3.8"
 files = [
     {file = "mypy-boto3-ec2-1.34.50.tar.gz", hash = "sha256:702378c68af01c47c1fd6e739f16599b0c388045127a993e0cc41dbbff31cc0d"},
     {file = "mypy_boto3_ec2-1.34.50-py3-none-any.whl", hash = "sha256:ea74f5a45f1c4bfa8c21604ab391d3c504b218c2db091488d7c803bd9b443c9c"},
+]
+
+[package.dependencies]
+typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
+
+[[package]]
+name = "mypy-boto3-emr"
+version = "1.34.44"
+description = "Type annotations for boto3.EMR 1.34.44 service generated with mypy-boto3-builder 7.23.1"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "mypy-boto3-emr-1.34.44.tar.gz", hash = "sha256:cccd55a406814b1a9d6624ab36268029fbe588d45730b126bc5bd77059a464ed"},
+    {file = "mypy_boto3_emr-1.34.44-py3-none-any.whl", hash = "sha256:ae95b8f99f93db0001434280e5a0680a2f4e14e710df3218804a65460ee82149"},
 ]
 
 [package.dependencies]
@@ -2138,6 +2154,20 @@ python-versions = ">=3.7"
 files = [
     {file = "mypy-boto3-sqs-1.34.0.tar.gz", hash = "sha256:0bf8995f58919ab295398100e72eaa7da898adcfd9d339a42f3c48ce473419d5"},
     {file = "mypy_boto3_sqs-1.34.0-py3-none-any.whl", hash = "sha256:94d8aea4ae75605f70e58e440d706e04d5c614101ddb2f0c73d306d776d10995"},
+]
+
+[package.dependencies]
+typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
+
+[[package]]
+name = "mypy-boto3-ssm"
+version = "1.34.47"
+description = "Type annotations for boto3.SSM 1.34.47 service generated with mypy-boto3-builder 7.23.1"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "mypy-boto3-ssm-1.34.47.tar.gz", hash = "sha256:be70cc32f9a07e6701746ebe65fba14d59c3f24a8511d275fd8322c9365f2270"},
+    {file = "mypy_boto3_ssm-1.34.47-py3-none-any.whl", hash = "sha256:6517b1dc01e3ffe48a251c91e2a7fb6801223baf4a8cf1600411f9e132422297"},
 ]
 
 [package.dependencies]
@@ -4554,4 +4584,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "e4d6d7f90ea2d5d711b95aa6b87981822db19660c0b4189d3c443d0f3c2cf71c"
+content-hash = "8dab552a7d4d7be8d300ce3b6f66e38f8ebd7ab1f1ef4534f0d50ed636ea7240"

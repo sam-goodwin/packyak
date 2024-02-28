@@ -14,7 +14,7 @@ from packyak.cli.cli import cli
 @click.argument(
     "instance-id",
     type=str,
-    # prompt="What is the EC2 Instance ID of the instance you wish to tunnel to?",
+    # prompt="What is the ID of the EC2 Instance or EMR Cluster you wish to tunnel to?",
     # help="The EC2 Instance ID of the instance you wish to tunnel to",
 )
 @click.option(
@@ -56,16 +56,36 @@ def ssh(
     if profile is not None:
         os.environ["AWS_PROFILE"] = profile
 
+    def log(message: str):
+        if verbose:
+            print(message)
+
+    def resolve_primary_node() -> str:
+        emr = boto3.client("emr")
+
+        for group in emr.list_instance_groups(ClusterId=instance_id)["InstanceGroups"]:
+            if group["InstanceGroupType"] == "MASTER":
+                instances = emr.list_instances(
+                    ClusterId=instance_id, InstanceGroupId=group["Id"]
+                )["Instances"]
+                if len(instances) == 1:
+                    return instances[0]["Ec2InstanceId"]
+
+        raise Exception(f"No primary instance found for EMR cluster {instance_id}")
+
+    if instance_id.startswith("j"):
+        log(
+            f"Instance ID {instance_id} looks like an EMR cluster ID. Resolving the Primary node."
+        )
+        instance_id = resolve_primary_node()
+        log(f"Resolved primary node: {instance_id}")
+
     if user is None:
         sts_client = boto3.client("sts")
         caller_identity = sts_client.get_caller_identity()
         user_id = caller_identity.get("UserId", "")
         user = user_id.split(":")[1] if ":" in user_id else "root"
-    print(f"Logging in as {user}")
-
-    def log(message: str):
-        if verbose:
-            print(message)
+    log(f"Logging in as {user}")
 
     log(f"{time.ctime()} sm-connect-ssh-proxy: Connecting to: {instance_id}")
     # print(f"{time.ctime()} sm-connect-ssh-proxy: Extra args: {extra_ssh_args}")
