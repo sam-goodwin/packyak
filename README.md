@@ -132,6 +132,25 @@ spark = Cluster(
 yak ssh {ec2-instance-id}
 ```
 
+### Initialize a SparkSession
+
+To create a SparkSession using your code reposistory's `.venv` file instead of the system one, use the `init_session` helper:
+
+```py
+from packyak.spark import init_session
+
+spark = init_session()
+```
+
+> [!TIP]
+> This is usually found in the first cell of a Jupyter notebook.
+
+If you want to customize the SparkSession further, use `session_builder` instead:
+
+```py
+spark = init_session().getOrCreate()
+```
+
 ## Remote VS Code over SSH
 
 Once connected to a remote host, you can use [VS Code's Remote SSH](https://code.visualstudio.com/docs/remote/ssh) to start editing code and running commands on the remote host with the comfort of your local VS Code IDE.
