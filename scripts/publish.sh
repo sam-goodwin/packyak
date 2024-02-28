@@ -23,7 +23,6 @@ fi
 
 if [ "$BUMP_CDK" == "true" ]; then
     cd packyak-aws-cdk
-    pnpm run build
     pnpm run publish:pypi
     npm publish
 fi
