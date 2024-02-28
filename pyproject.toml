@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "packyak"
-version = "0.4.11"
+version = "0.4.14"
 description = "Infrastructure for AI applications and machine learning pipelines"
 authors = ["sam <sam@eventual.ai>"]
 readme = "README.md"
@@ -31,6 +31,7 @@ aiofiles = "^23.2.1"
 pyspark = { extras = ["pandas-on-spark"], version = "^3.5.0" }
 click = "^8.1.7"
 tabulate = "^0.9.0"
+findspark = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 matplotlib = "^3.8.2"
