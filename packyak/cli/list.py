@@ -1,15 +1,9 @@
-from typing import Any
 import click
-import subprocess
-import time
-import boto3
 import os
-import re
-import collections
+from tabulate import tabulate
 
 from packyak.cli.cli import cli
 from packyak.util.emr import EMR
-from tabulate import tabulate
 
 
 @cli.command()
@@ -42,6 +36,6 @@ def list(profile: str | None, verbose: bool = False):
                 )
             )
         else:
-            print("No active EMR clusters found.")
+            pass
     except Exception as e:
         raise click.ClickException(f"Error listing EMR clusters: {e}")

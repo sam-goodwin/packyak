@@ -8,6 +8,7 @@ import re
 import collections
 
 from packyak.cli.cli import cli
+from packyak.util.emr import EMR
 
 
 @cli.command()
@@ -60,24 +61,16 @@ def ssh(
         if verbose:
             print(message)
 
-    def resolve_primary_node() -> str:
-        emr = boto3.client("emr")
+    def resolve_primary_node(instance_id: str) -> str:
+        emr = EMR()
 
-        for group in emr.list_instance_groups(ClusterId=instance_id)["InstanceGroups"]:
-            if group["InstanceGroupType"] == "MASTER":
-                instances = emr.list_instances(
-                    ClusterId=instance_id, InstanceGroupId=group["Id"]
-                )["Instances"]
-                if len(instances) == 1:
-                    return instances[0]["Ec2InstanceId"]
-
-        raise Exception(f"No primary instance found for EMR cluster {instance_id}")
+        return emr.get_primary_node_instance_id(cluster_id=instance_id)
 
     if instance_id.startswith("j"):
         log(
             f"Instance ID {instance_id} looks like an EMR cluster ID. Resolving the Primary node."
         )
-        instance_id = resolve_primary_node()
+        instance_id = resolve_primary_node(instance_id)
         log(f"Resolved primary node: {instance_id}")
 
     if user is None:
