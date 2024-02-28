@@ -166,7 +166,7 @@ export interface ClusterProps {
    *
    * @default - `true` if {@link enableSSMTunnelOverSSH} is also `true`, otherwise `false`
    */
-  readonly installSSMAgent?: boolean;
+  readonly enableSSMAgent?: boolean;
   /**
    * Install the GitHub CLI on the EMR cluster.
    *
@@ -250,7 +250,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
             {
               service: "ec2",
               resource: "security-group",
-              resourceName: `*`,
+              resourceName: "*",
             },
             Stack.of(this),
           ),
@@ -384,14 +384,14 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       // autoScalingRole: "EMR_AutoScaling_DefaultRole",
     });
     logsBucket.grantReadWrite(this.jobFlowRole);
-    Object.entries(props.catalogs).forEach(([catalogName, catalog]) =>
-      catalog.bind(this, catalogName),
-    );
+    for (const [catalogName, catalog] of Object.entries(props.catalogs)) {
+      catalog.bind(this, catalogName);
+    }
     this.resource = cluster;
     cluster.applyRemovalPolicy(props.removalPolicy ?? RemovalPolicy.DESTROY);
 
-    if (props.installSSMAgent) {
-      this.installSSMAgent();
+    if (props.enableSSMAgent) {
+      this.enableSSMAgent();
     }
     if (props.installGitHubCLI) {
       this.installGitHubCLI();
@@ -449,26 +449,13 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
   }
 
   /**
-   * private flag to make {@link installSSMAgent} idempotent
-   */
-  private isSSMAgentInstalled: boolean | undefined;
-
-  /**
    * Installs the SSM Agent on Primary, Core, and Task nodes.
    *
    * Authorizes the EC2 instances to communicate with the SSM service.
    *
    * @see https://aws.amazon.com/blogs/big-data/securing-access-to-emr-clusters-using-aws-systems-manager/
    */
-  public installSSMAgent() {
-    if (this.isSSMAgentInstalled) {
-      return;
-    }
-    this.isSSMAgentInstalled = true;
-    this.addBootstrapAction({
-      name: "Install SSM Agent",
-      script: this.getScript("install-ssm-agent.sh"),
-    });
+  public enableSSMAgent() {
     // this allows the SSM agent to communicate with the SSM service
     this.jobFlowRole.addManagedPolicy(
       ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"),

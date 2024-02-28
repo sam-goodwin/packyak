@@ -4563,7 +4563,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 682
+            "line": 669
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -4577,13 +4577,26 @@
         },
         {
           "docs": {
+            "remarks": "Authorizes the EC2 instances to communicate with the SSM service.",
+            "see": "https://aws.amazon.com/blogs/big-data/securing-access-to-emr-clusters-using-aws-systems-manager/",
+            "stability": "experimental",
+            "summary": "Installs the SSM Agent on Primary, Core, and Task nodes."
+          },
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 458
+          },
+          "name": "enableSSMAgent"
+        },
+        {
+          "docs": {
             "see": "https://docs.aws.amazon.com/systems-manager/latest/userguide/getting-started-specify-session-document.html",
             "stability": "experimental",
             "summary": "Grant an permission to start an SSM Session on the EMR cluster."
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 643
+            "line": 630
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -4605,22 +4618,9 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 480
+            "line": 467
           },
           "name": "installGitHubCLI"
-        },
-        {
-          "docs": {
-            "remarks": "Authorizes the EC2 instances to communicate with the SSM service.",
-            "see": "https://aws.amazon.com/blogs/big-data/securing-access-to-emr-clusters-using-aws-systems-manager/",
-            "stability": "experimental",
-            "summary": "Installs the SSM Agent on Primary, Core, and Task nodes."
-          },
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 463
-          },
-          "name": "installSSMAgent"
         },
         {
           "docs": {
@@ -4658,7 +4658,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 496
+            "line": 483
           },
           "name": "mount",
           "parameters": [
@@ -4680,7 +4680,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 519
+            "line": 506
           },
           "name": "mountAccessPoint",
           "parameters": [
@@ -4711,7 +4711,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 536
+            "line": 523
           },
           "name": "mountFileSystem",
           "parameters": [
@@ -5037,6 +5037,24 @@
         {
           "abstract": true,
           "docs": {
+            "default": "- `true` if {@link enableSSMTunnelOverSSH } is also `true`, otherwise `false`",
+            "stability": "experimental",
+            "summary": "Installs and configures the SSM agent to run on all Primary, Core and Task nodes."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 169
+          },
+          "name": "enableSSMAgent",
+          "optional": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
             "stability": "experimental",
             "summary": "Extra java options to include in the Spark context by default."
           },
@@ -5103,24 +5121,6 @@
             "line": 175
           },
           "name": "installGitHubCLI",
-          "optional": true,
-          "type": {
-            "primitive": "boolean"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "- `true` if {@link enableSSMTunnelOverSSH } is also `true`, otherwise `false`",
-            "stability": "experimental",
-            "summary": "Installs and configures the SSM agent to run on all Primary, Core and Task nodes."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 169
-          },
-          "name": "installSSMAgent",
           "optional": true,
           "type": {
             "primitive": "boolean"
@@ -9088,7 +9088,7 @@
           },
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 99
+            "line": 100
           },
           "name": "addHome",
           "parameters": [
@@ -9112,7 +9112,7 @@
           },
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 92
+            "line": 93
           },
           "name": "allowFrom",
           "parameters": [
@@ -9199,6 +9199,6 @@
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.5",
-  "fingerprint": "SP7i1YzW5xzj2Z0o0hZPeZb2V4fvRHDg5ZK+7RtqnDk="
+  "version": "0.4.8",
+  "fingerprint": "QH0sKL0PNBneIEgaxQXYI8wc34yDx4zTVuC/aZFwH2o="
 }

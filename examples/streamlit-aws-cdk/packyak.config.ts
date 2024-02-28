@@ -55,7 +55,7 @@ const spark = new Cluster(stack, "SparkCluster", {
   extraJavaOptions: {
     "-Djdk.httpclient.allowRestrictedHeaders": "host",
   },
-  installSSMAgent: true,
+  enableSSMAgent: true,
 });
 
 // spark.mount(workspace.ssm);

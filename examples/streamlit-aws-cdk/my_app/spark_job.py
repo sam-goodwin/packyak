@@ -15,8 +15,6 @@ orion = data / "orion"
 
 scans = data / "scans"
 
-a = duration(1, "day")
-
 
 @every(1, "day")
 @spark.job()

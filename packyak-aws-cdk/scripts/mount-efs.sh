@@ -31,10 +31,11 @@ check_variable USER_ID
 sudo yum check-update -y
 sudo yum upgrade -y
 sudo yum install -y amazon-efs-utils nfs-utils
+sudo yum install -y openssl-devel bzip2-devel libffi-devel zlib-devel xz-devel sqlite-devel readline-devel
 
 if ! getent group $GROUP_ID &>/dev/null; then
   echo "Group with GID $GROUP_ID does not exist, creating group."
-  sudo groupadd --gid $GROUP_ID efs_group
+  sudo groupadd --gid $GROUP_ID ${USERNAME}
 else
   echo "Group with GID $GROUP_ID already exists, proceeding."
 fi
@@ -45,7 +46,29 @@ if id "$USERNAME" &>/dev/null; then
 else
     echo "User ${USERNAME} does not exist, creating user."
     sudo adduser --uid ${USER_ID} --gid ${GROUP_ID} ${USERNAME}
+
+    # user needs to be able to run docker
+    sudo usermod -aG docker ${USERNAME}
+    sudo usermod -aG hadoop ${USERNAME}
+    sudo usermod -aG hdfsadmingroup ${USERNAME}
+    sudo usermod -aG hdfs ${USERNAME}
+    sudo usermod -aG spark ${USERNAME}
+
+    # allow yarn to access the user's files that allow read access at the group level  
+    sudo usermod -aG ${USERNAME} yarn
 fi
+
+# TODO: add ssh pub keys, set them up in the bootstrap
+# TODO: remove ssm-user from the sudoers file
+# result: now i can't log in as tyler by adding my ssh key ..
+
+sudo mkdir -p ${MOUNT_POINT}
+sudo chown ${USERNAME}:${GROUP_ID} ${MOUNT_POINT}
+sudo chmod 750 ${MOUNT_POINT}
+
+sudo mkdir -p ${MOUNT_POINT}/.ssh
+sudo chown ${USERNAME}:${GROUP_ID} ${MOUNT_POINT}/.ssh
+sudo chmod 750 ${MOUNT_POINT}/.ssh
 
 #####
 # Resolve this EC2 machine's Subnet and find the most appropriate EFS MountTarget
@@ -83,9 +106,6 @@ if [ ! -z "$PARAMS" ]; then
   PARAMS=",$PARAMS"
 fi
 
-sudo mkdir -p ${MOUNT_POINT}
-sudo chown ${USERNAME}:${GROUP_ID} ${MOUNT_POINT}
-sudo chmod 750 ${MOUNT_POINT}
 
 # see: https://docs.aws.amazon.com/efs/latest/ug/mounting-fs-mount-helper-ec2-linux.html
 
@@ -96,3 +116,5 @@ echo "${FILE_SYSTEM_ID}:/ ${MOUNT_POINT} efs _netdev,noresvport,tls,iam${PARAMS}
 
 # mount the newly added file system
 sudo mount ${MOUNT_POINT}
+
+echo Mounted ${MOUNT_POINT} successfully.

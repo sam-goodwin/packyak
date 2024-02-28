@@ -220,13 +220,13 @@ files = [
 
 [[package]]
 name = "astroid"
-version = "3.0.3"
+version = "3.1.0"
 description = "An abstract syntax tree for Python with inference support."
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "astroid-3.0.3-py3-none-any.whl", hash = "sha256:92fcf218b89f449cdf9f7b39a269f8d5d617b27be68434912e11e79203963a17"},
-    {file = "astroid-3.0.3.tar.gz", hash = "sha256:4148645659b08b70d72460ed1921158027a9e53ae8b7234149b1400eddacbb93"},
+    {file = "astroid-3.1.0-py3-none-any.whl", hash = "sha256:951798f922990137ac090c53af473db7ab4e70c770e6d7fae0cec59f74411819"},
+    {file = "astroid-3.1.0.tar.gz", hash = "sha256:ac248253bfa4bd924a0de213707e7ebeeb3138abeb48d798784ead1e56d419d4"},
 ]
 
 [package.dependencies]
@@ -281,128 +281,6 @@ tests-mypy = ["mypy (>=1.6)", "pytest-mypy-plugins"]
 tests-no-zope = ["attrs[tests-mypy]", "cloudpickle", "hypothesis", "pympler", "pytest (>=4.3.0)", "pytest-xdist[psutil]"]
 
 [[package]]
-name = "aws-cdk-asset-awscli-v1"
-version = "2.2.202"
-description = "A library that contains the AWS CLI for use in Lambda Layers"
-optional = false
-python-versions = "~=3.8"
-files = [
-    {file = "aws-cdk.asset-awscli-v1-2.2.202.tar.gz", hash = "sha256:3ef87d6530736b3a7b0f777fe3b4297994dd40c3ce9306d95f80f48fb18036e8"},
-    {file = "aws_cdk.asset_awscli_v1-2.2.202-py3-none-any.whl", hash = "sha256:96205ea2e5e132ec52fabfff37ea25b9b859498f167d05b32564c949822cd331"},
-]
-
-[package.dependencies]
-jsii = ">=1.93.0,<2.0.0"
-publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
-
-[[package]]
-name = "aws-cdk-asset-kubectl-v20"
-version = "2.1.2"
-description = "A library that contains kubectl for use in Lambda Layers"
-optional = false
-python-versions = "~=3.7"
-files = [
-    {file = "aws-cdk.asset-kubectl-v20-2.1.2.tar.gz", hash = "sha256:346283e43018a43e3b3ca571de3f44e85d49c038dc20851894cb8f9b2052b164"},
-    {file = "aws_cdk.asset_kubectl_v20-2.1.2-py3-none-any.whl", hash = "sha256:7f0617ab6cb942b066bd7174bf3e1f377e57878c3e1cddc21d6b2d13c92d0cc1"},
-]
-
-[package.dependencies]
-jsii = ">=1.70.0,<2.0.0"
-publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
-
-[[package]]
-name = "aws-cdk-asset-node-proxy-agent-v6"
-version = "2.0.1"
-description = "@aws-cdk/asset-node-proxy-agent-v6"
-optional = false
-python-versions = "~=3.7"
-files = [
-    {file = "aws-cdk.asset-node-proxy-agent-v6-2.0.1.tar.gz", hash = "sha256:42cdbc1de2ed3f845e3eb883a72f58fc7e5554c2e0b6fcdb366c159778dce74d"},
-    {file = "aws_cdk.asset_node_proxy_agent_v6-2.0.1-py3-none-any.whl", hash = "sha256:e442673d4f93137ab165b75386761b1d46eea25fc5015e5145ae3afa9da06b6e"},
-]
-
-[package.dependencies]
-jsii = ">=1.86.1,<2.0.0"
-publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
-
-[[package]]
-name = "aws-cdk-aws-glue-alpha"
-version = "2.126.0a0"
-description = "The CDK Construct Library for AWS::Glue"
-optional = false
-python-versions = "~=3.8"
-files = [
-    {file = "aws-cdk.aws-glue-alpha-2.126.0a0.tar.gz", hash = "sha256:610639d5136080242c5872e1185539b43a91014706e9f5639df993cb8d7e3e71"},
-    {file = "aws_cdk.aws_glue_alpha-2.126.0a0-py3-none-any.whl", hash = "sha256:c3b68ff83cecab447dacc4d4e076d01688517984c77ef5799c3e952c71c1d777"},
-]
-
-[package.dependencies]
-aws-cdk-lib = ">=2.126.0,<3.0.0"
-constructs = ">=10.0.0,<11.0.0"
-jsii = ">=1.94.0,<2.0.0"
-publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
-
-[[package]]
-name = "aws-cdk-aws-lambda-python-alpha"
-version = "2.126.0a0"
-description = "The CDK Construct Library for AWS Lambda in Python"
-optional = false
-python-versions = "~=3.8"
-files = [
-    {file = "aws-cdk.aws-lambda-python-alpha-2.126.0a0.tar.gz", hash = "sha256:0ccbf5b754f6f0bf90da24ee520aa3d3104e3a57cb02a822b135b3796463a137"},
-    {file = "aws_cdk.aws_lambda_python_alpha-2.126.0a0-py3-none-any.whl", hash = "sha256:4d45e9db2681ca9b220eea71fbfc00b753bfa9fde31640c425edda7265f174a7"},
-]
-
-[package.dependencies]
-aws-cdk-lib = ">=2.126.0,<3.0.0"
-constructs = ">=10.0.0,<11.0.0"
-jsii = ">=1.94.0,<2.0.0"
-publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
-
-[[package]]
-name = "aws-cdk-aws-sagemaker-alpha"
-version = "2.126.0a0"
-description = "The CDK Construct Library for AWS::SageMaker"
-optional = false
-python-versions = "~=3.8"
-files = [
-    {file = "aws-cdk.aws-sagemaker-alpha-2.126.0a0.tar.gz", hash = "sha256:bf266c00f767255886043ba24b01ce1ab6593f76230cb966f09e477f65c30c88"},
-    {file = "aws_cdk.aws_sagemaker_alpha-2.126.0a0-py3-none-any.whl", hash = "sha256:19f8b75fdb2970579efb89c879e11c6e00807ac1c453a0b0c9786c0c369979a3"},
-]
-
-[package.dependencies]
-aws-cdk-lib = ">=2.126.0,<3.0.0"
-constructs = ">=10.0.0,<11.0.0"
-jsii = ">=1.94.0,<2.0.0"
-publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
-
-[[package]]
-name = "aws-cdk-lib"
-version = "2.126.0"
-description = "Version 2 of the AWS Cloud Development Kit library"
-optional = false
-python-versions = "~=3.8"
-files = [
-    {file = "aws-cdk-lib-2.126.0.tar.gz", hash = "sha256:291f9a15fb45f1461644ffa2ff360c8c2ed2797ac29082655252de291fa04333"},
-    {file = "aws_cdk_lib-2.126.0-py3-none-any.whl", hash = "sha256:8e00c0a3bfe8f5c20d305d149df251b8fbf292aa7e74df0765ba47fdbbec82d6"},
-]
-
-[package.dependencies]
-"aws-cdk.asset-awscli-v1" = ">=2.2.202,<3.0.0"
-"aws-cdk.asset-kubectl-v20" = ">=2.1.2,<3.0.0"
-"aws-cdk.asset-node-proxy-agent-v6" = ">=2.0.1,<3.0.0"
-constructs = ">=10.0.0,<11.0.0"
-jsii = ">=1.94.0,<2.0.0"
-publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
-
-[[package]]
 name = "aws-lambda-typing"
 version = "2.18.0"
 description = "A package that provides type hints for AWS Lambda event, context and response objects"
@@ -445,13 +323,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "boto3-stubs"
-version = "1.34.49"
-description = "Type annotations for boto3 1.34.49 generated with mypy-boto3-builder 7.23.1"
+version = "1.34.51"
+description = "Type annotations for boto3 1.34.51 generated with mypy-boto3-builder 7.23.2"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "boto3-stubs-1.34.49.tar.gz", hash = "sha256:976d57e15a962547de4e75a8fb60515984692b721074305b88ae4d7a56afe1e5"},
-    {file = "boto3_stubs-1.34.49-py3-none-any.whl", hash = "sha256:9ef4c7b33e91224e6bab422e388eddf3629e8bf6270d17c2acc80549147d9398"},
+    {file = "boto3-stubs-1.34.51.tar.gz", hash = "sha256:c04ece156a376745af34aefe7283e93f7066d8f2be2500297b129e3d46e0ac26"},
+    {file = "boto3_stubs-1.34.51-py3-none-any.whl", hash = "sha256:3c3283d3982099cfbe6fee474f8eae42217b7cdfd98d5dd857ea952e29bdabf1"},
 ]
 
 [package.dependencies]
@@ -463,6 +341,7 @@ mypy-boto3-lambda = {version = ">=1.34.0,<1.35.0", optional = true, markers = "e
 mypy-boto3-rds = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
 mypy-boto3-s3 = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
 mypy-boto3-sqs = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"essential\""}
+mypy-boto3-sts = {version = ">=1.34.0,<1.35.0", optional = true, markers = "extra == \"sts\""}
 types-s3transfer = "*"
 typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
 
@@ -509,7 +388,7 @@ bedrock-agent = ["mypy-boto3-bedrock-agent (>=1.34.0,<1.35.0)"]
 bedrock-agent-runtime = ["mypy-boto3-bedrock-agent-runtime (>=1.34.0,<1.35.0)"]
 bedrock-runtime = ["mypy-boto3-bedrock-runtime (>=1.34.0,<1.35.0)"]
 billingconductor = ["mypy-boto3-billingconductor (>=1.34.0,<1.35.0)"]
-boto3 = ["boto3 (==1.34.49)", "botocore (==1.34.49)"]
+boto3 = ["boto3 (==1.34.51)", "botocore (==1.34.51)"]
 braket = ["mypy-boto3-braket (>=1.34.0,<1.35.0)"]
 budgets = ["mypy-boto3-budgets (>=1.34.0,<1.35.0)"]
 ce = ["mypy-boto3-ce (>=1.34.0,<1.35.0)"]
@@ -871,13 +750,13 @@ crt = ["awscrt (==0.19.17)"]
 
 [[package]]
 name = "botocore-stubs"
-version = "1.34.49"
+version = "1.34.51"
 description = "Type annotations and code completion for botocore"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "botocore_stubs-1.34.49-py3-none-any.whl", hash = "sha256:96e16513e8e2e8c964f436129c68d252d9f79c6ea27dad192984f8d9f7cfb27b"},
-    {file = "botocore_stubs-1.34.49.tar.gz", hash = "sha256:4ade7ea7498a44532285eadf283ed9dd2bd6e78d27ffd5632818f8a54803b36c"},
+    {file = "botocore_stubs-1.34.51-py3-none-any.whl", hash = "sha256:8748b9fe01f66bb1e7b13f45e3336e2e2c5460d232816d45941573425459c66e"},
+    {file = "botocore_stubs-1.34.51.tar.gz", hash = "sha256:d0f4d9859d9f6affbe4b0b46e37fe729860eaab55ebefe7e09cf567396b2feda"},
 ]
 
 [package.dependencies]
@@ -888,39 +767,14 @@ botocore = ["botocore"]
 
 [[package]]
 name = "cachetools"
-version = "5.3.2"
+version = "5.3.3"
 description = "Extensible memoizing collections and decorators"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "cachetools-5.3.2-py3-none-any.whl", hash = "sha256:861f35a13a451f94e301ce2bec7cac63e881232ccce7ed67fab9b5df4d3beaa1"},
-    {file = "cachetools-5.3.2.tar.gz", hash = "sha256:086ee420196f7b2ab9ca2db2520aca326318b68fe5ba8bc4d49cca91add450f2"},
+    {file = "cachetools-5.3.3-py3-none-any.whl", hash = "sha256:0abad1021d3f8325b2fc1d2e9c8b9c9d57b04c3932657a72465447332c24d945"},
+    {file = "cachetools-5.3.3.tar.gz", hash = "sha256:ba29e2dfa0b8b556606f097407ed1aa62080ee108ab0dc5ec9d6a723a007d105"},
 ]
-
-[[package]]
-name = "cattrs"
-version = "23.2.3"
-description = "Composable complex class support for attrs and dataclasses."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "cattrs-23.2.3-py3-none-any.whl", hash = "sha256:0341994d94971052e9ee70662542699a3162ea1e0c62f7ce1b4a57f563685108"},
-    {file = "cattrs-23.2.3.tar.gz", hash = "sha256:a934090d95abaa9e911dac357e3a8699e0b4b14f8529bcc7d2b1ad9d51672b9f"},
-]
-
-[package.dependencies]
-attrs = ">=23.1.0"
-exceptiongroup = {version = ">=1.1.1", markers = "python_version < \"3.11\""}
-typing-extensions = {version = ">=4.1.0,<4.6.3 || >4.6.3", markers = "python_version < \"3.11\""}
-
-[package.extras]
-bson = ["pymongo (>=4.4.0)"]
-cbor2 = ["cbor2 (>=5.4.6)"]
-msgpack = ["msgpack (>=1.0.5)"]
-orjson = ["orjson (>=3.9.2)"]
-pyyaml = ["pyyaml (>=6.0)"]
-tomlkit = ["tomlkit (>=0.11.8)"]
-ujson = ["ujson (>=5.7.0)"]
 
 [[package]]
 name = "certifi"
@@ -1151,22 +1005,6 @@ files = [
 
 [package.dependencies]
 pyyaml = "*"
-
-[[package]]
-name = "constructs"
-version = "10.3.0"
-description = "A programming model for software-defined state"
-optional = false
-python-versions = "~=3.7"
-files = [
-    {file = "constructs-10.3.0-py3-none-any.whl", hash = "sha256:2972f514837565ff5b09171cfba50c0159dfa75ee86a42921ea8c86f2941b3d2"},
-    {file = "constructs-10.3.0.tar.gz", hash = "sha256:518551135ec236f9cc6b86500f4fbbe83b803ccdc6c2cb7684e0b7c4d234e7b1"},
-]
-
-[package.dependencies]
-jsii = ">=1.90.0,<2.0.0"
-publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
 
 [[package]]
 name = "contourpy"
@@ -1564,29 +1402,14 @@ perf = ["ipython"]
 testing = ["flufl.flake8", "importlib-resources (>=1.3)", "packaging", "pyfakefs", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-perf (>=0.9.2)", "pytest-ruff"]
 
 [[package]]
-name = "importlib-resources"
-version = "6.1.1"
-description = "Read resources from Python packages"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "importlib_resources-6.1.1-py3-none-any.whl", hash = "sha256:e8bf90d8213b486f428c9c39714b920041cb02c184686a3dee24905aaa8105d6"},
-    {file = "importlib_resources-6.1.1.tar.gz", hash = "sha256:3893a00122eafde6894c59914446a512f728a0c1a45f9bb9b63721b6bacf0b4a"},
-]
-
-[package.extras]
-docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (<7.2.5)", "sphinx (>=3.5)", "sphinx-lint"]
-testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff", "zipp (>=3.17)"]
-
-[[package]]
 name = "ipykernel"
-version = "6.29.2"
+version = "6.29.3"
 description = "IPython Kernel for Jupyter"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "ipykernel-6.29.2-py3-none-any.whl", hash = "sha256:50384f5c577a260a1d53f1f59a828c7266d321c9b7d00d345693783f66616055"},
-    {file = "ipykernel-6.29.2.tar.gz", hash = "sha256:3bade28004e3ff624ed57974948116670604ac5f676d12339693f3142176d3f0"},
+    {file = "ipykernel-6.29.3-py3-none-any.whl", hash = "sha256:5aa086a4175b0229d4eca211e181fb473ea78ffd9869af36ba7694c947302a21"},
+    {file = "ipykernel-6.29.3.tar.gz", hash = "sha256:e14c250d1f9ea3989490225cc1a542781b095a18a19447fcf2b5eaf7d0ac5bd2"},
 ]
 
 [package.dependencies]
@@ -1609,7 +1432,7 @@ cov = ["coverage[toml]", "curio", "matplotlib", "pytest-cov", "trio"]
 docs = ["myst-parser", "pydata-sphinx-theme", "sphinx", "sphinx-autodoc-typehints", "sphinxcontrib-github-alt", "sphinxcontrib-spelling", "trio"]
 pyqt5 = ["pyqt5"]
 pyside6 = ["pyside6"]
-test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0)", "pytest-asyncio (==0.23.4)", "pytest-cov", "pytest-timeout"]
+test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0)", "pytest-asyncio (>=0.23.5)", "pytest-cov", "pytest-timeout"]
 
 [[package]]
 name = "ipython"
@@ -1707,26 +1530,6 @@ files = [
     {file = "jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980"},
     {file = "jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe"},
 ]
-
-[[package]]
-name = "jsii"
-version = "1.94.0"
-description = "Python client for jsii runtime"
-optional = false
-python-versions = "~=3.8"
-files = [
-    {file = "jsii-1.94.0-py3-none-any.whl", hash = "sha256:1105bae271ae47c27cf31c1565c5157306efed5ad9323c9a27336f962f465716"},
-    {file = "jsii-1.94.0.tar.gz", hash = "sha256:175abc356603d98f18ab6f6aa74bfeae253e4e56340aef9dc40bbb1a6a59868b"},
-]
-
-[package.dependencies]
-attrs = ">=21.2,<24.0"
-cattrs = ">=1.8,<23.3"
-importlib-resources = ">=5.2.0"
-publication = ">=0.0.3"
-python-dateutil = "*"
-typeguard = ">=2.13.3,<2.14.0"
-typing-extensions = ">=3.8,<5.0"
 
 [[package]]
 name = "jsonschema"
@@ -2013,22 +1816,21 @@ files = [
 
 [[package]]
 name = "marshmallow"
-version = "3.20.2"
+version = "3.21.0"
 description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "marshmallow-3.20.2-py3-none-any.whl", hash = "sha256:c21d4b98fee747c130e6bc8f45c4b3199ea66bc00c12ee1f639f0aeca034d5e9"},
-    {file = "marshmallow-3.20.2.tar.gz", hash = "sha256:4c1daff273513dc5eb24b219a8035559dc573c8f322558ef85f5438ddd1236dd"},
+    {file = "marshmallow-3.21.0-py3-none-any.whl", hash = "sha256:e7997f83571c7fd476042c2c188e4ee8a78900ca5e74bd9c8097afa56624e9bd"},
+    {file = "marshmallow-3.21.0.tar.gz", hash = "sha256:20f53be28c6e374a711a16165fb22a8dc6003e3f7cda1285e3ca777b9193885b"},
 ]
 
 [package.dependencies]
 packaging = ">=17.0"
 
 [package.extras]
-dev = ["pre-commit (>=2.4,<4.0)", "pytest", "pytz", "simplejson", "tox"]
-docs = ["alabaster (==0.7.15)", "autodocsumm (==0.2.12)", "sphinx (==7.2.6)", "sphinx-issues (==3.0.1)", "sphinx-version-warning (==1.1.2)"]
-lint = ["pre-commit (>=2.4,<4.0)"]
+dev = ["marshmallow[tests]", "pre-commit (>=3.5,<4.0)", "tox"]
+docs = ["alabaster (==0.7.16)", "autodocsumm (==0.2.12)", "sphinx (==7.2.6)", "sphinx-issues (==4.0.0)", "sphinx-version-warning (==1.1.2)"]
 tests = ["pytest", "pytz", "simplejson"]
 
 [[package]]
@@ -2273,13 +2075,13 @@ typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
 
 [[package]]
 name = "mypy-boto3-ec2"
-version = "1.34.30"
-description = "Type annotations for boto3.EC2 1.34.30 service generated with mypy-boto3-builder 7.23.1"
+version = "1.34.50"
+description = "Type annotations for boto3.EC2 1.34.50 service generated with mypy-boto3-builder 7.23.2"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "mypy-boto3-ec2-1.34.30.tar.gz", hash = "sha256:eeb931fe27db9a235d7d6a2dd0fb742f2eedb3c99a14037cb17d18409c10264a"},
-    {file = "mypy_boto3_ec2-1.34.30-py3-none-any.whl", hash = "sha256:d990349a1fa39e81b9976e429992871062a51639653a2cd224b5b2c8a8c50907"},
+    {file = "mypy-boto3-ec2-1.34.50.tar.gz", hash = "sha256:702378c68af01c47c1fd6e739f16599b0c388045127a993e0cc41dbbff31cc0d"},
+    {file = "mypy_boto3_ec2-1.34.50-py3-none-any.whl", hash = "sha256:ea74f5a45f1c4bfa8c21604ab391d3c504b218c2db091488d7c803bd9b443c9c"},
 ]
 
 [package.dependencies]
@@ -2301,13 +2103,13 @@ typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
 
 [[package]]
 name = "mypy-boto3-rds"
-version = "1.34.49"
-description = "Type annotations for boto3.RDS 1.34.49 service generated with mypy-boto3-builder 7.23.1"
+version = "1.34.50"
+description = "Type annotations for boto3.RDS 1.34.50 service generated with mypy-boto3-builder 7.23.1"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "mypy-boto3-rds-1.34.49.tar.gz", hash = "sha256:efcd7d182549411e8ac7abd9dd9d2e7576427c8c8721f526cb121982b6994977"},
-    {file = "mypy_boto3_rds-1.34.49-py3-none-any.whl", hash = "sha256:eaac97cd2fb9e838e695cadf0cd63644b752ce749daff7f18f57d1c538dd2db0"},
+    {file = "mypy-boto3-rds-1.34.50.tar.gz", hash = "sha256:9561dfac562ec9cd039806d5de2bc2bb8be4f9f7c03620270550a49e456fef46"},
+    {file = "mypy_boto3_rds-1.34.50-py3-none-any.whl", hash = "sha256:59124bd98653c73c685b7dc0d0a9069572d340f0ecb116a9706aa3e2d40a166d"},
 ]
 
 [package.dependencies]
@@ -2336,6 +2138,20 @@ python-versions = ">=3.7"
 files = [
     {file = "mypy-boto3-sqs-1.34.0.tar.gz", hash = "sha256:0bf8995f58919ab295398100e72eaa7da898adcfd9d339a42f3c48ce473419d5"},
     {file = "mypy_boto3_sqs-1.34.0-py3-none-any.whl", hash = "sha256:94d8aea4ae75605f70e58e440d706e04d5c614101ddb2f0c73d306d776d10995"},
+]
+
+[package.dependencies]
+typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
+
+[[package]]
+name = "mypy-boto3-sts"
+version = "1.34.0"
+description = "Type annotations for boto3.STS 1.34.0 service generated with mypy-boto3-builder 7.21.0"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "mypy-boto3-sts-1.34.0.tar.gz", hash = "sha256:b347e0a336d60162dd94074d9d10f614f2b09a455c9b42415850d54d676e2067"},
+    {file = "mypy_boto3_sts-1.34.0-py3-none-any.whl", hash = "sha256:3ba1875c2792b4f35fd918dca957ce09ad197beb7cfbda61f42144ffa9cda05d"},
 ]
 
 [package.dependencies]
@@ -2434,27 +2250,6 @@ files = [
 ]
 
 [[package]]
-name = "packyak-aws-cdk"
-version = "0.4.0"
-description = "AWS CDK Constructs for the PackYak Lakehouse Platform"
-optional = false
-python-versions = "~=3.8"
-files = [
-    {file = "packyak-aws-cdk-0.4.0.tar.gz", hash = "sha256:2f2fe0cd4b526bce9114758f505931dff045c8f5ab5abfb0d445cf13c633445a"},
-    {file = "packyak_aws_cdk-0.4.0-py3-none-any.whl", hash = "sha256:19d87d72e13fed71a7f3052119de9a6c6cad3c9aae75da9b56562adf86794fe2"},
-]
-
-[package.dependencies]
-"aws-cdk.aws-glue-alpha" = "2.126.0.a0"
-"aws-cdk.aws-lambda-python-alpha" = "2.126.0.a0"
-"aws-cdk.aws-sagemaker-alpha" = "2.126.0.a0"
-aws-cdk-lib = "2.126.0"
-constructs = ">=10.3.0,<11.0.0"
-jsii = ">=1.94.0,<2.0.0"
-publication = ">=0.0.3"
-typeguard = ">=2.13.3,<2.14.0"
-
-[[package]]
 name = "pandas"
 version = "2.2.1"
 description = "Powerful data structures for data analysis, time series, and statistics"
@@ -2544,13 +2339,13 @@ types-pytz = ">=2022.1.1"
 
 [[package]]
 name = "pandera"
-version = "0.14.5"
+version = "0.18.0"
 description = "A light-weight and flexible data validation and testing tool for statistical data objects."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pandera-0.14.5-py3-none-any.whl", hash = "sha256:d8093404010d3e908aa11ae5bd4d0a6be6a715a1209800c4eec0eb03f06561fc"},
-    {file = "pandera-0.14.5.tar.gz", hash = "sha256:41cb917ecb898c392af9e34c13cd55d42934b10a36595b0d39cbbb5129e56487"},
+    {file = "pandera-0.18.0-py3-none-any.whl", hash = "sha256:fe2da835a16df5a7e49fbfb828f1eeaea9d6f4534f124630957e64fef53e7e73"},
+    {file = "pandera-0.18.0.tar.gz", hash = "sha256:97ab33d884362c0bb99668a12be2855d15c1a71f4934c588a999947b47764bc1"},
 ]
 
 [package.dependencies]
@@ -2559,6 +2354,7 @@ numpy = ">=1.19.0"
 packaging = ">=20.0"
 pandas = ">=1.2.0"
 pydantic = "*"
+typeguard = ">=3.0.2"
 typing-inspect = ">=0.6.0"
 wrapt = "*"
 
@@ -2779,17 +2575,6 @@ files = [
 ]
 
 [[package]]
-name = "publication"
-version = "0.0.3"
-description = "Publication helps you maintain public-api-friendly modules by preventing unintentional access to private implementation details via introspection."
-optional = false
-python-versions = "*"
-files = [
-    {file = "publication-0.0.3-py2.py3-none-any.whl", hash = "sha256:0248885351febc11d8a1098d5c8e3ab2dabcf3e8c0c96db1e17ecd12b53afbe6"},
-    {file = "publication-0.0.3.tar.gz", hash = "sha256:68416a0de76dddcdd2930d1c8ef853a743cc96c82416c4e4d3b5d901c6276dc4"},
-]
-
-[[package]]
 name = "pure-eval"
 version = "0.2.2"
 description = "Safely evaluate AST nodes without side effects"
@@ -2875,13 +2660,13 @@ files = [
 
 [[package]]
 name = "pydantic"
-version = "2.6.2"
+version = "2.6.3"
 description = "Data validation using Python type hints"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pydantic-2.6.2-py3-none-any.whl", hash = "sha256:37a5432e54b12fecaa1049c5195f3d860a10e01bdfd24f1840ef14bd0d3aeab3"},
-    {file = "pydantic-2.6.2.tar.gz", hash = "sha256:a09be1c3d28f3abe37f8a78af58284b236a92ce520105ddc91a6d29ea1176ba7"},
+    {file = "pydantic-2.6.3-py3-none-any.whl", hash = "sha256:72c6034df47f46ccdf81869fddb81aade68056003900a8724a4f160700016a2a"},
+    {file = "pydantic-2.6.3.tar.gz", hash = "sha256:e07805c4c7f5c6826e33a1d4c9d47950d7eaf34868e2690f8594d2e30241f11f"},
 ]
 
 [package.dependencies]
@@ -3019,17 +2804,17 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pylint"
-version = "3.0.4"
+version = "3.1.0"
 description = "python code static checker"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "pylint-3.0.4-py3-none-any.whl", hash = "sha256:59ab3532506f32affefeb50d5057a221bb351f5a1383fa36c424c2c6c05e7005"},
-    {file = "pylint-3.0.4.tar.gz", hash = "sha256:d73b70b3fff8f3fbdcb49a209b9c7d71d8090c138d61d576d1895e152cb392b3"},
+    {file = "pylint-3.1.0-py3-none-any.whl", hash = "sha256:507a5b60953874766d8a366e8e8c7af63e058b26345cfcb5f91f89d987fd6b74"},
+    {file = "pylint-3.1.0.tar.gz", hash = "sha256:6a69beb4a6f63debebaab0a3477ecd0f559aa726af4954fc948c51f7a2549e23"},
 ]
 
 [package.dependencies]
-astroid = ">=3.0.1,<=3.1.0-dev0"
+astroid = ">=3.1.0,<=3.2.0-dev0"
 colorama = {version = ">=0.4.5", markers = "sys_platform == \"win32\""}
 dill = [
     {version = ">=0.2", markers = "python_version < \"3.11\""},
@@ -3104,12 +2889,12 @@ dev = ["twine (>=3.4.1)"]
 
 [[package]]
 name = "pyspark"
-version = "3.5.0"
+version = "3.5.1"
 description = "Apache Spark Python API"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pyspark-3.5.0.tar.gz", hash = "sha256:d41a9b76bd2aca370a6100d075c029e22ba44c5940927877e9435a3a9c566558"},
+    {file = "pyspark-3.5.1.tar.gz", hash = "sha256:dd6569e547365eadc4f887bf57f153e4d582a68c4b490de475d55b9981664910"},
 ]
 
 [package.dependencies]
@@ -3802,13 +3587,13 @@ files = [
 
 [[package]]
 name = "tomlkit"
-version = "0.12.3"
+version = "0.12.4"
 description = "Style preserving TOML library"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "tomlkit-0.12.3-py3-none-any.whl", hash = "sha256:b0a645a9156dc7cb5d3a1f0d4bab66db287fcb8e0430bdd4664a095ea16414ba"},
-    {file = "tomlkit-0.12.3.tar.gz", hash = "sha256:75baf5012d06501f07bee5bf8e801b9f343e7aac5a92581f20f80ce632e6b5a4"},
+    {file = "tomlkit-0.12.4-py3-none-any.whl", hash = "sha256:5cd82d48a3dd89dee1f9d64420aa20ae65cfbd00668d6f094d7578a78efbb77b"},
+    {file = "tomlkit-0.12.4.tar.gz", hash = "sha256:7ca1cfc12232806517a8515047ba66a19369e71edf2439d0f5824f91032b6cc3"},
 ]
 
 [[package]]
@@ -3859,18 +3644,21 @@ test = ["argcomplete (>=3.0.3)", "mypy (>=1.7.0)", "pre-commit", "pytest (>=7.0,
 
 [[package]]
 name = "typeguard"
-version = "2.13.3"
+version = "4.1.5"
 description = "Run-time type checker for Python"
 optional = false
-python-versions = ">=3.5.3"
+python-versions = ">=3.8"
 files = [
-    {file = "typeguard-2.13.3-py3-none-any.whl", hash = "sha256:5e3e3be01e887e7eafae5af63d1f36c849aaa94e3a0112097312aabfa16284f1"},
-    {file = "typeguard-2.13.3.tar.gz", hash = "sha256:00edaa8da3a133674796cf5ea87d9f4b4c367d77476e185e80251cc13dfbb8c4"},
+    {file = "typeguard-4.1.5-py3-none-any.whl", hash = "sha256:8923e55f8873caec136c892c3bed1f676eae7be57cdb94819281b3d3bc9c0953"},
+    {file = "typeguard-4.1.5.tar.gz", hash = "sha256:ea0a113bbc111bcffc90789ebb215625c963411f7096a7e9062d4e4630c155fd"},
 ]
 
+[package.dependencies]
+typing-extensions = {version = ">=4.7.0", markers = "python_version < \"3.12\""}
+
 [package.extras]
-doc = ["sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
-test = ["mypy", "pytest", "typing-extensions"]
+doc = ["Sphinx (>=7)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)"]
+test = ["coverage[toml] (>=7)", "mypy (>=1.2.0)", "pytest (>=7)"]
 
 [[package]]
 name = "types-aiobotocore"
@@ -4423,13 +4211,13 @@ files = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.9.0"
+version = "4.10.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.9.0-py3-none-any.whl", hash = "sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"},
-    {file = "typing_extensions-4.9.0.tar.gz", hash = "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783"},
+    {file = "typing_extensions-4.10.0-py3-none-any.whl", hash = "sha256:69b1a937c3a517342112fb4c6df7e72fc39a38e7891a5730ed4985b5214b5475"},
+    {file = "typing_extensions-4.10.0.tar.gz", hash = "sha256:b0abd7c89e8fb96f98db18d86106ff1d90ab692004eb746cf6eda2682f91b3cb"},
 ]
 
 [[package]]
@@ -4766,4 +4554,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "feff2573fa5a12bc91620293958386126f27dda19c1f0e6602174e03f43bf434"
+content-hash = "e4d6d7f90ea2d5d711b95aa6b87981822db19660c0b4189d3c443d0f3c2cf71c"

@@ -79,6 +79,7 @@ export class Workspace extends Construct implements IConnectable {
 
     this.ssm = this.addHome({
       username: "ssm-user",
+      // TODO: what's the default UID and GID for the ssm-user when created by AWS?
       uid: "2000",
       gid: "2000",
     });

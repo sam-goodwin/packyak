@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "packyak"
-version = "0.4.7"
+version = "0.4.8"
 description = "Infrastructure for AI applications and machine learning pipelines"
 authors = ["sam <sam@eventual.ai>"]
 readme = "README.md"
@@ -16,7 +16,7 @@ types-boto3 = "^1.0.2"
 aioboto3 = "^12.1.0"
 aiobotocore = { version = "2.8.0", extras = ["boto3"] }
 aws-lambda-typing = "^2.18.0"
-boto3-stubs = { extras = ["essential"], version = "^1.34.15" }
+boto3-stubs = { extras = ["essential", "sts", "ssm"], version = "^1.34.15" }
 pandas = ">2"
 pandera = "*"
 pydantic = "^2.5.3"

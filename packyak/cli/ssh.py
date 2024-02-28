@@ -7,7 +7,6 @@ import os
 import re
 import collections
 
-
 from packyak.cli.cli import cli
 
 
@@ -34,6 +33,7 @@ from packyak.cli.cli import cli
 @click.option(
     "--profile", type=str, help="AWS CLI profile to use when authenticating to SSM"
 )
+@click.option("--user", type=str, help="POSIX username to log in as. Defaults to root.")
 def ssh(
     instance_id: str,
     ssh_key: str = "~/.ssh/id_rsa",
@@ -41,6 +41,7 @@ def ssh(
     port_forwards: list[str] = ["9001:localhost:22"],
     verbose: bool = False,
     profile: str | None = None,
+    user: str | None = None,
 ):
     """
     Establishes a secure tunnel to an EC2 instance.
@@ -54,6 +55,13 @@ def ssh(
 
     if profile is not None:
         os.environ["AWS_PROFILE"] = profile
+
+    if user is None:
+        sts_client = boto3.client("sts")
+        caller_identity = sts_client.get_caller_identity()
+        user_id = caller_identity.get("UserId", "")
+        user = user_id.split(":")[1] if ":" in user_id else "root"
+    print(f"Logging in as {user}")
 
     def log(message: str):
         if verbose:
@@ -88,11 +96,14 @@ def ssh(
     ).decode()
     log(f"AWS CLI version (should be v2): {aws_cli_version}")
 
-    commands = [
-        f'echo "{ssh_pub_key}" > /etc/ssh/authorized_keys',
-        f'echo "{ssh_pub_key}" > /root/.ssh/authorized_keys',
-    ]
+    ssh_dir = "/root/.ssh/" if user == "root" else f"/home/{user}/.ssh/"
 
+    commands = [
+        # f'echo "{ssh_pub_key}" > /etc/ssh/authorized_keys',
+        f"mkdir -p {ssh_dir}",
+        f'echo "{ssh_pub_key}" > {ssh_dir}/authorized_keys',
+    ]
+    log(f"Sending command to instance: {commands}")
     send_command_response = ssm_client.send_command(
         InstanceIds=[instance_id],
         DocumentName="AWS-RunShellScript",
@@ -140,7 +151,7 @@ def ssh(
 
     # Add each SSH option prefixed by '-o'
     for option in [
-        "User=root",
+        f"User={user}",
         f"IdentityFile={ssh_key}",
         "IdentitiesOnly=yes",
         f"ProxyCommand={proxy_command}",
