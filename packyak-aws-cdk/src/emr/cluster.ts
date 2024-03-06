@@ -555,15 +555,16 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
               instance.bidPriceAsPercentageOfOnDemandPrice,
             bidPrice: instance.bidPrice,
             ebsConfiguration: this.getEbsConfigurations(instance),
-            configurations: [
-              {
-                classification: "yarn-site",
-                configurationProperties: {
-                  "yarn.nodemanager.resource.cpu-vcores": "2",
-                  "yarn.nodemanager.resource.memory-mb": "4096",
-                },
-              },
-            ],
+            // TODO: support customizing different configs like yarn, spark, etc. for individual fleet instance types
+            // configurations: [
+            //   {
+            //     classification: "yarn-site",
+            //     configurationProperties: {
+            //       "yarn.nodemanager.resource.cpu-vcores": "2",
+            //       "yarn.nodemanager.resource.memory-mb": "4096",
+            //     },
+            //   },
+            // ],
           }) satisfies CfnCluster.InstanceTypeConfigProperty,
       ),
     };
