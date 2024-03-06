@@ -3,10 +3,18 @@ import {
   Domain,
   DynamoDBNessieVersionStore,
   NessieECSCatalog,
-  Cluster,
+  UniformCluster,
   Workspace,
+  AllocationStrategy,
+  ComputeUnit,
+  FleetCluster,
 } from "@packyak/aws-cdk";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
+import {
+  InstanceClass,
+  InstanceSize,
+  InstanceType,
+  Vpc,
+} from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
 
@@ -46,8 +54,10 @@ const sam = workspace.addHome({
   uid: "2001",
 });
 
-const spark = new Cluster(stack, "SparkCluster", {
-  clusterName: "example",
+const m5n8xlarge = InstanceType.of(InstanceClass.M5, InstanceSize.XLARGE8);
+
+const sparkUniform = new UniformCluster(stack, "UniformCluster", {
+  clusterName: "spark-uniform",
   vpc,
   catalogs: {
     spark_catalog: myCatalog,
@@ -56,12 +66,90 @@ const spark = new Cluster(stack, "SparkCluster", {
     "-Djdk.httpclient.allowRestrictedHeaders": "host",
   },
   enableSSMAgent: true,
+  managedScalingPolicy: {
+    computeLimits: {
+      unitType: ComputeUnit.INSTANCE_FLEET_UNITS,
+      minimumCapacityUnits: 10,
+      maximumCapacityUnits: 100,
+    },
+  },
+  primaryInstanceGroup: {
+    instanceType: m5n8xlarge,
+  },
+  coreInstanceGroup: {
+    instanceType: m5n8xlarge,
+    instanceCount: 10,
+  },
+});
+
+const sparkFleet = new FleetCluster(stack, "SparkFleet", {
+  clusterName: "spark-fleet",
+  vpc,
+  catalogs: {
+    spark_catalog: myCatalog,
+  },
+  extraJavaOptions: {
+    "-Djdk.httpclient.allowRestrictedHeaders": "host",
+  },
+  enableSSMAgent: true,
+  managedScalingPolicy: {
+    computeLimits: {
+      unitType: ComputeUnit.INSTANCE_FLEET_UNITS,
+      minimumCapacityUnits: 10,
+      maximumCapacityUnits: 100,
+    },
+  },
+  primaryInstanceFleet: {
+    name: "primary",
+    instanceTypes: [
+      {
+        instanceType: m5n8xlarge,
+      },
+    ],
+  },
+  coreInstanceFleet: {
+    name: "core",
+    instanceTypes: [
+      {
+        instanceType: m5n8xlarge,
+      },
+    ],
+  },
+  taskInstanceFleets: [
+    {
+      name: "memory-intensive-spot",
+      allocationStrategy: AllocationStrategy.PRICE_CAPACITY_OPTIMIZED,
+      // we want at least 10 spot m5n8xlarge
+      targetSpotCapacity: 10 * 10,
+      targetOnDemandCapacity: 0,
+      instanceTypes: [
+        {
+          instanceType: m5n8xlarge,
+          bidPriceAsPercentageOfOnDemandPrice: 10,
+          // if we can get it at 1/10th the price, give us 10x the capacity
+          weightedCapacity: 10,
+        },
+        {
+          instanceType: m5n8xlarge,
+          // if we can get it at 1/2th the price, give us 2x the capacity
+          bidPriceAsPercentageOfOnDemandPrice: 50,
+          weightedCapacity: 5,
+        },
+        {
+          instanceType: m5n8xlarge,
+          // otherwise, give us the 10 we asked for
+          bidPriceAsPercentageOfOnDemandPrice: 100,
+          weightedCapacity: 10,
+        },
+      ],
+    },
+  ],
 });
 
 // spark.mount(workspace.ssm);
-spark.mount(sam);
+sparkFleet.mount(sam);
 
-const sparkSQL = spark.jdbc({
+const sparkSQL = sparkFleet.jdbc({
   port: 10000,
 });
 
@@ -78,10 +166,10 @@ domain.addUserProfile("sam");
 sparkSQL.allowFrom(domain);
 
 // allow the SageMaker domain to connect to the Spark's Ivy service
-spark.allowLivyFrom(domain);
+sparkFleet.allowLivyFrom(domain);
 
 // allow the SageMaker domain to start a session on the Spark cluster
-spark.grantStartSSMSession(domain);
+sparkFleet.grantStartSSMSession(domain);
 
 // spark.connections.allowFrom(domain.sageMakerSg, Port.tcp(443));
 

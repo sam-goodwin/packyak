@@ -9,6 +9,13 @@ import { Construct } from "constructs";
 import { PosixGroup } from "./group";
 import { Home } from "./home";
 
+export interface MountFileSystemOptions {
+  readonly mountPoint: string;
+  readonly username: string;
+  readonly uid: number;
+  readonly gid: number;
+}
+
 export interface AddHomeRequest {
   /**
    * The username for the user. This should be unique across all users.
