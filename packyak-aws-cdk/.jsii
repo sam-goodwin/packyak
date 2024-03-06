@@ -3808,7 +3808,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/workspace/workspace.ts",
-        "line": 12
+        "line": 19
       },
       "name": "AddHomeRequest",
       "properties": [
@@ -3822,7 +3822,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 20
+            "line": 27
           },
           "name": "uid",
           "type": {
@@ -3839,7 +3839,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 16
+            "line": 23
           },
           "name": "username",
           "type": {
@@ -3857,7 +3857,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 26
+            "line": 33
           },
           "name": "gid",
           "optional": true,
@@ -3874,7 +3874,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 30
+            "line": 37
           },
           "name": "secondaryGroups",
           "optional": true,
@@ -3922,6 +3922,47 @@
         }
       ],
       "symbolId": "src/sagemaker/domain:AddUserProfileProps"
+    },
+    "@packyak/aws-cdk.AllocationStrategy": {
+      "assembly": "@packyak/aws-cdk",
+      "docs": {
+        "see": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/managed-scaling-allocation-strategy.html",
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.AllocationStrategy",
+      "kind": "enum",
+      "locationInModule": {
+        "filename": "src/emr/instance-fleet.ts",
+        "line": 84
+      },
+      "members": [
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "name": "CAPACITY_OPTIMIZED"
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "name": "PRICE_CAPACITY_OPTIMIZED"
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "name": "DIVERSIFIED"
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "name": "LOWEST_PRICE"
+        }
+      ],
+      "name": "AllocationStrategy",
+      "symbolId": "src/emr/instance-fleet:AllocationStrategy"
     },
     "@packyak/aws-cdk.AppNetworkAccessType": {
       "assembly": "@packyak/aws-cdk",
@@ -3978,6 +4019,322 @@
       ],
       "name": "AuthMode",
       "symbolId": "src/sagemaker/domain:AuthMode"
+    },
+    "@packyak/aws-cdk.BaseClusterProps": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.BaseClusterProps",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/cluster.ts",
+        "line": 55
+      },
+      "name": "BaseClusterProps",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "The catalogs to use for the EMR cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 75
+          },
+          "name": "catalogs",
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.ICatalog"
+              },
+              "kind": "map"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "Name of the EMR Cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 59
+          },
+          "name": "clusterName",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "The VPC to deploy the EMR cluster into."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 63
+          },
+          "name": "vpc",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.IVpc"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- No bootstrap actions",
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 97
+          },
+          "name": "bootstrapActions",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.BootstrapAction"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- the {@link catalog }'s configurations + .venv for the user code.",
+            "stability": "experimental",
+            "summary": "Override EMR Configurations."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 89
+          },
+          "name": "configurations",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.Configuration"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- `true` if {@link enableSSMTunnelOverSSH } is also `true`, otherwise `false`",
+            "stability": "experimental",
+            "summary": "Installs and configures the SSM agent to run on all Primary, Core and Task nodes."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 119
+          },
+          "name": "enableSSMAgent",
+          "optional": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "Extra java options to include in the Spark context by default."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 113
+          },
+          "name": "extraJavaOptions",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "primitive": "string"
+              },
+              "kind": "map"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "Mount a shared filesystem to the EMR cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 129
+          },
+          "name": "home",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.Workspace"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "None",
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 67
+          },
+          "name": "idleTimeout",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.Duration"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "false",
+            "stability": "experimental",
+            "summary": "Install the GitHub CLI on the EMR cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 125
+          },
+          "name": "installGitHubCLI",
+          "optional": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- No managed scaling policy",
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 83
+          },
+          "name": "managedScalingPolicy",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.ManagedScalingPolicy"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- {@link ReleaseLabel.LATEST }",
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 71
+          },
+          "name": "releaseLabel",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.ReleaseLabel"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "{@link RemovalPolicy.DESTROY }",
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 93
+          },
+          "name": "removalPolicy",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.RemovalPolicy"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- {@link ScaleDownBehavior.TERMINATE_AT_TASK_COMPLETION }",
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 79
+          },
+          "name": "scaleDownBehavior",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.ScaleDownBehavior"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "1",
+            "stability": "experimental",
+            "summary": "The concurrency level of the cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 109
+          },
+          "name": "stepConcurrencyLevel",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-submit-step.html",
+            "stability": "experimental",
+            "summary": "The EMR Steps to submit to the cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 103
+          },
+          "name": "steps",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.Step"
+              },
+              "kind": "array"
+            }
+          }
+        }
+      ],
+      "symbolId": "src/emr/cluster:BaseClusterProps"
     },
     "@packyak/aws-cdk.BaseNessieCatalog": {
       "abstract": true,
@@ -4442,7 +4799,8 @@
       "assembly": "@packyak/aws-cdk",
       "base": "aws-cdk-lib.Resource",
       "docs": {
-        "stability": "experimental"
+        "stability": "experimental",
+        "summary": "An EMR Cluster."
       },
       "fqn": "@packyak/aws-cdk.Cluster",
       "initializer": {
@@ -4451,7 +4809,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/cluster.ts",
-          "line": 201
+          "line": 214
         },
         "parameters": [
           {
@@ -4481,7 +4839,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 182
+        "line": 192
       },
       "methods": [
         {
@@ -4493,7 +4851,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 446
+            "line": 495
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -4516,7 +4874,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 434
+            "line": 483
           },
           "name": "addConfig",
           "parameters": [
@@ -4541,7 +4899,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 423
+            "line": 472
           },
           "name": "addStep",
           "parameters": [
@@ -4563,7 +4921,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 669
+            "line": 820
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -4584,7 +4942,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 458
+            "line": 603
           },
           "name": "enableSSMAgent"
         },
@@ -4596,7 +4954,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 630
+            "line": 781
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -4618,7 +4976,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 467
+            "line": 612
           },
           "name": "installGitHubCLI"
         },
@@ -4631,7 +4989,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 412
+            "line": 461
           },
           "name": "jdbc",
           "parameters": [
@@ -4658,7 +5016,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 483
+            "line": 628
           },
           "name": "mount",
           "parameters": [
@@ -4680,7 +5038,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 506
+            "line": 651
           },
           "name": "mountAccessPoint",
           "parameters": [
@@ -4699,7 +5057,7 @@
               },
               "name": "options",
               "type": {
-                "fqn": "@packyak/aws-cdk.MountOptions"
+                "fqn": "@packyak/aws-cdk.MountFileSystemOptions"
               }
             }
           ]
@@ -4711,7 +5069,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 523
+            "line": 671
           },
           "name": "mountFileSystem",
           "parameters": [
@@ -4730,7 +5088,7 @@
               },
               "name": "options",
               "type": {
-                "fqn": "@packyak/aws-cdk.MountOptions"
+                "fqn": "@packyak/aws-cdk.MountFileSystemOptions"
               }
             }
           ]
@@ -4746,7 +5104,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 187
+            "line": 197
           },
           "name": "connections",
           "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
@@ -4761,7 +5119,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 185
+            "line": 195
           },
           "name": "coreSg",
           "type": {
@@ -4775,7 +5133,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 189
+            "line": 199
           },
           "name": "extraJavaOptions",
           "type": {
@@ -4795,7 +5153,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 188
+            "line": 198
           },
           "name": "grantPrincipal",
           "overrides": "aws-cdk-lib.aws_iam.IGrantable",
@@ -4810,7 +5168,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 191
+            "line": 201
           },
           "name": "instanceProfile",
           "type": {
@@ -4824,7 +5182,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 190
+            "line": 200
           },
           "name": "jobFlowRole",
           "type": {
@@ -4838,7 +5196,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 184
+            "line": 194
           },
           "name": "primarySg",
           "type": {
@@ -4852,7 +5210,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 183
+            "line": 193
           },
           "name": "release",
           "type": {
@@ -4866,7 +5224,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 199
+            "line": 212
           },
           "name": "resource",
           "protected": true,
@@ -4881,7 +5239,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 186
+            "line": 196
           },
           "name": "serviceAccessSg",
           "type": {
@@ -4895,11 +5253,51 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 192
+            "line": 202
           },
           "name": "serviceRole",
           "type": {
             "fqn": "aws-cdk-lib.aws_iam.Role"
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 210
+          },
+          "name": "taskInstanceFleets",
+          "protected": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.InstanceFleet"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 209
+          },
+          "name": "taskInstanceGroups",
+          "protected": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.InstanceGroup"
+              },
+              "kind": "array"
+            }
           }
         }
       ],
@@ -4912,121 +5310,45 @@
         "stability": "experimental"
       },
       "fqn": "@packyak/aws-cdk.ClusterProps",
+      "interfaces": [
+        "@packyak/aws-cdk.BaseClusterProps"
+      ],
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 91
+        "line": 132
       },
       "name": "ClusterProps",
       "properties": [
         {
           "abstract": true,
           "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-coreinstancefleet",
             "stability": "experimental",
-            "summary": "The catalogs to use for the EMR cluster."
+            "summary": "Describes the EC2 instances and instance configurations for the core {@link InstanceFleet} when using {@link FleetCluster}s."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 125
+            "line": 160
           },
-          "name": "catalogs",
-          "type": {
-            "collection": {
-              "elementtype": {
-                "fqn": "@packyak/aws-cdk.ICatalog"
-              },
-              "kind": "map"
-            }
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental",
-            "summary": "Name of the EMR Cluster."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 95
-          },
-          "name": "clusterName",
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental",
-            "summary": "The VPC to deploy the EMR cluster into."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 99
-          },
-          "name": "vpc",
-          "type": {
-            "fqn": "aws-cdk-lib.aws_ec2.IVpc"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "- No bootstrap actions",
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 147
-          },
-          "name": "bootstrapActions",
+          "name": "coreInstanceFleet",
           "optional": true,
           "type": {
-            "collection": {
-              "elementtype": {
-                "fqn": "@packyak/aws-cdk.BootstrapAction"
-              },
-              "kind": "array"
-            }
+            "fqn": "@packyak/aws-cdk.InstanceFleet"
           }
         },
         {
           "abstract": true,
           "docs": {
-            "default": "- the {@link catalog }'s configurations + .venv for the user code.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-coreinstancegroup",
             "stability": "experimental",
-            "summary": "Override EMR Configurations."
+            "summary": "Describes the EC2 instances and instance configurations for core {@link InstanceGroup}s when using {@link UniformCluster}s."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 139
-          },
-          "name": "configurations",
-          "optional": true,
-          "type": {
-            "collection": {
-              "elementtype": {
-                "fqn": "@packyak/aws-cdk.Configuration"
-              },
-              "kind": "array"
-            }
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "- 1 m5.xlarge from SPOT market",
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 107
+            "line": 153
           },
           "name": "coreInstanceGroup",
           "optional": true,
@@ -5037,216 +5359,82 @@
         {
           "abstract": true,
           "docs": {
-            "default": "- `true` if {@link enableSSMTunnelOverSSH } is also `true`, otherwise `false`",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-masterinstancefleet",
             "stability": "experimental",
-            "summary": "Installs and configures the SSM agent to run on all Primary, Core and Task nodes."
+            "summary": "Describes the EC2 instances and instance configurations for the master {@link InstanceFleet} when using {@link FleetCluster}s."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 169
+            "line": 146
           },
-          "name": "enableSSMAgent",
+          "name": "primaryInstanceFleet",
           "optional": true,
           "type": {
-            "primitive": "boolean"
+            "fqn": "@packyak/aws-cdk.InstanceFleet"
           }
         },
         {
           "abstract": true,
           "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-masterinstancegroup",
             "stability": "experimental",
-            "summary": "Extra java options to include in the Spark context by default."
+            "summary": "Describes the EC2 instances and instance configurations for the master {@link InstanceGroup} when using {@link UniformCluster}s."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 163
+            "line": 139
           },
-          "name": "extraJavaOptions",
+          "name": "primaryInstanceGroup",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.PrimaryInstanceGroup"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "These task {@link InstanceFleet}s are added to the cluster as part of the cluster launch.\nEach task {@link InstanceFleet} must have a unique name specified so that CloudFormation\ncan differentiate between the task {@link InstanceFleet}s.\n\n> You can currently specify only one task instance fleet for a cluster. After creating the cluster, you can only modify the mutable properties of `InstanceFleetConfig` , which are `TargetOnDemandCapacity` and `TargetSpotCapacity` . Modifying any other property results in cluster replacement. > To allow a maximum of 30 Amazon EC2 instance types per fleet, include `TaskInstanceFleets` when you create your cluster. If you create your cluster without `TaskInstanceFleets` , Amazon EMR uses its default allocation strategy, which allows for a maximum of five Amazon EC2 instance types.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-taskinstancefleets",
+            "stability": "experimental",
+            "summary": "Describes the EC2 instances and instance configurations for the task {@link InstanceFleet}s when using {@link FleetCluster}s."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 186
+          },
+          "name": "taskInstanceFleets",
           "optional": true,
           "type": {
             "collection": {
               "elementtype": {
-                "primitive": "string"
+                "fqn": "@packyak/aws-cdk.InstanceFleet"
               },
-              "kind": "map"
+              "kind": "array"
             }
           }
         },
         {
           "abstract": true,
           "docs": {
+            "remarks": "These task {@link InstanceGroup}s are added to the cluster as part of the cluster launch.\nEach task {@link InstanceGroup} must have a unique name specified so that CloudFormation\ncan differentiate between the task {@link InstanceGroup}s.\n\n> After creating the cluster, you can only modify the mutable properties of `InstanceGroupConfig` , which are `AutoScalingPolicy` and `InstanceCount` . Modifying any other property results in cluster replacement.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-taskinstancegroups",
             "stability": "experimental",
-            "summary": "Mount a shared filesystem to the EMR cluster."
+            "summary": "Describes the EC2 instances and instance configurations for task {@link InstanceGroup}s when using {@link UniformCluster}s."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 179
+            "line": 173
           },
-          "name": "home",
-          "optional": true,
-          "type": {
-            "fqn": "@packyak/aws-cdk.Workspace"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "None",
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 117
-          },
-          "name": "idleTimeout",
-          "optional": true,
-          "type": {
-            "fqn": "aws-cdk-lib.Duration"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "false",
-            "stability": "experimental",
-            "summary": "Install the GitHub CLI on the EMR cluster."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 175
-          },
-          "name": "installGitHubCLI",
-          "optional": true,
-          "type": {
-            "primitive": "boolean"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "- No managed scaling policy",
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 133
-          },
-          "name": "managedScalingPolicy",
-          "optional": true,
-          "type": {
-            "fqn": "@packyak/aws-cdk.ManagedScalingPolicy"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "- 1 m5.xlarge from SPOT market",
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 103
-          },
-          "name": "masterInstanceGroup",
-          "optional": true,
-          "type": {
-            "fqn": "@packyak/aws-cdk.InstanceGroup"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "- {@link ReleaseLabel.LATEST }",
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 121
-          },
-          "name": "releaseLabel",
-          "optional": true,
-          "type": {
-            "fqn": "@packyak/aws-cdk.ReleaseLabel"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "{@link RemovalPolicy.DESTROY }",
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 143
-          },
-          "name": "removalPolicy",
-          "optional": true,
-          "type": {
-            "fqn": "aws-cdk-lib.RemovalPolicy"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "- {@link ScaleDownBehavior.TERMINATE_AT_TASK_COMPLETION }",
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 129
-          },
-          "name": "scaleDownBehavior",
-          "optional": true,
-          "type": {
-            "fqn": "@packyak/aws-cdk.ScaleDownBehavior"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "1",
-            "stability": "experimental",
-            "summary": "The concurrency level of the cluster."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 159
-          },
-          "name": "stepConcurrencyLevel",
-          "optional": true,
-          "type": {
-            "primitive": "number"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "see": "https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-submit-step.html",
-            "stability": "experimental",
-            "summary": "The EMR Steps to submit to the cluster."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 153
-          },
-          "name": "steps",
+          "name": "taskInstanceGroups",
           "optional": true,
           "type": {
             "collection": {
               "elementtype": {
-                "fqn": "@packyak/aws-cdk.Step"
+                "fqn": "@packyak/aws-cdk.InstanceGroup"
               },
               "kind": "array"
             }
@@ -5264,8 +5452,8 @@
       "fqn": "@packyak/aws-cdk.ComputeLimits",
       "kind": "interface",
       "locationInModule": {
-        "filename": "src/emr/cluster.ts",
-        "line": 78
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 11
       },
       "name": "ComputeLimits",
       "properties": [
@@ -5276,8 +5464,8 @@
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 81
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 14
           },
           "name": "maximumCapacityUnits",
           "type": {
@@ -5291,8 +5479,8 @@
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 80
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 13
           },
           "name": "minimumCapacityUnits",
           "type": {
@@ -5306,16 +5494,50 @@
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 79
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 12
           },
           "name": "unitType",
           "type": {
-            "fqn": "@packyak/aws-cdk.ScalingUnit"
+            "fqn": "@packyak/aws-cdk.ComputeUnit"
           }
         }
       ],
-      "symbolId": "src/emr/cluster:ComputeLimits"
+      "symbolId": "src/emr/managed-scaling:ComputeLimits"
+    },
+    "@packyak/aws-cdk.ComputeUnit": {
+      "assembly": "@packyak/aws-cdk",
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.ComputeUnit",
+      "kind": "enum",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 1
+      },
+      "members": [
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "name": "INSTANCES"
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "name": "INSTANCE_FLEET_UNITS"
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "name": "VCPU"
+        }
+      ],
+      "name": "ComputeUnit",
+      "symbolId": "src/emr/managed-scaling:ComputeUnit"
     },
     "@packyak/aws-cdk.Configuration": {
       "assembly": "@packyak/aws-cdk",
@@ -6406,6 +6628,240 @@
       ],
       "symbolId": "src/nessie/nessie-version-store:DynamoDBNessieVersionStore"
     },
+    "@packyak/aws-cdk.EbsBlockDevice": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "see": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-storage.html",
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.EbsBlockDevice",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/block-device.ts",
+        "line": 6
+      },
+      "name": "EbsBlockDevice",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "This can be a number from 1 - 1024. If the volume type is EBS-optimized, the minimum value is 10.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-volumespecification.html#cfn-emr-cluster-volumespecification-sizeingb",
+            "stability": "experimental",
+            "summary": "The volume size, in gibibytes (GiB)."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/block-device.ts",
+            "line": 20
+          },
+          "name": "sizeInGb",
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "standard",
+            "remarks": "Volume types supported are:\n- gp3 ({@link EbsDeviceVolumeType.GENERAL_PURPOSE_SSD_GP3})\n- gp2 ({@link EbsDeviceVolumeType.GENERAL_PURPOSE_SSD})\n- io1 ({@link EbsDeviceVolumeType.PROVISIONED_IOPS_SSD})\n- st1 ({@link EbsDeviceVolumeType.THROUGHPUT_OPTIMIZED_HDD})\n- sc1 ({@link EbsDeviceVolumeType.COLD_HDD})\n- standard ({@link EbsDeviceVolumeType.STANDARD})",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-volumespecification.html#cfn-emr-cluster-volumespecification-volumetype",
+            "stability": "experimental",
+            "summary": "The volume type."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/block-device.ts",
+            "line": 44
+          },
+          "name": "volumeType",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.EbsDeviceVolumeType"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-volumespecification.html#cfn-emr-cluster-volumespecification-iops",
+            "stability": "experimental",
+            "summary": "The number of I/O operations per second (IOPS) that the volume supports."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/block-device.ts",
+            "line": 12
+          },
+          "name": "iops",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "This optional parameter can be a number from `125` - `1000` and is valid\nonly for {@link EbsDeviceVolumeType.GENERAL_PURPOSE_SSD_GP3} volumes.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-volumespecification.html#cfn-emr-cluster-volumespecification-throughput",
+            "stability": "experimental",
+            "summary": "The throughput, in mebibyte per second (MiB/s)."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/block-device.ts",
+            "line": 29
+          },
+          "name": "throughput",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "1",
+            "stability": "experimental",
+            "summary": "The number of EBS volumes with a specific volume configuration to attach to each instance."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/block-device.ts",
+            "line": 50
+          },
+          "name": "volumesPerInstance",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        }
+      ],
+      "symbolId": "src/emr/block-device:EbsBlockDevice"
+    },
+    "@packyak/aws-cdk.FleetCluster": {
+      "assembly": "@packyak/aws-cdk",
+      "base": "@packyak/aws-cdk.Cluster",
+      "docs": {
+        "see": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/on-demand-capacity-reservations.html",
+        "stability": "experimental",
+        "summary": "An EMR Cluster that is comprised of {@link InstanceFleet}s."
+      },
+      "fqn": "@packyak/aws-cdk.FleetCluster",
+      "initializer": {
+        "docs": {
+          "stability": "experimental"
+        },
+        "locationInModule": {
+          "filename": "src/emr/fleet-cluster.ts",
+          "line": 40
+        },
+        "parameters": [
+          {
+            "name": "scope",
+            "type": {
+              "fqn": "constructs.Construct"
+            }
+          },
+          {
+            "name": "id",
+            "type": {
+              "primitive": "string"
+            }
+          },
+          {
+            "name": "props",
+            "type": {
+              "fqn": "@packyak/aws-cdk.FleetClusterProps"
+            }
+          }
+        ]
+      },
+      "kind": "class",
+      "locationInModule": {
+        "filename": "src/emr/fleet-cluster.ts",
+        "line": 39
+      },
+      "name": "FleetCluster",
+      "symbolId": "src/emr/fleet-cluster:FleetCluster"
+    },
+    "@packyak/aws-cdk.FleetClusterProps": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.FleetClusterProps",
+      "interfaces": [
+        "@packyak/aws-cdk.BaseClusterProps"
+      ],
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/fleet-cluster.ts",
+        "line": 5
+      },
+      "name": "FleetClusterProps",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-coreinstancefleet",
+            "stability": "experimental",
+            "summary": "Describes the EC2 instances and instance configurations for the core {@link InstanceFleet}."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/fleet-cluster.ts",
+            "line": 18
+          },
+          "name": "coreInstanceFleet",
+          "type": {
+            "fqn": "@packyak/aws-cdk.InstanceFleet"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-masterinstancefleet",
+            "stability": "experimental",
+            "summary": "Describes the EC2 instances and instance configurations for the primary {@link InstanceFleet} when using {@link FleetCluster}s."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/fleet-cluster.ts",
+            "line": 12
+          },
+          "name": "primaryInstanceFleet",
+          "type": {
+            "fqn": "@packyak/aws-cdk.InstanceFleet"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "These task {@link InstanceFleet}s are added to the cluster as part of the cluster launch.\nEach task {@link InstanceFleet} must have a unique name specified so that CloudFormation\ncan differentiate between the task {@link InstanceFleet}s.\n\n> You can currently specify only one task instance fleet for a cluster. After creating the cluster, you can only modify the mutable properties of `InstanceFleetConfig` , which are `TargetOnDemandCapacity` and `TargetSpotCapacity` . Modifying any other property results in cluster replacement. > To allow a maximum of 30 Amazon EC2 instance types per fleet, include `TaskInstanceFleets` when you create your cluster. If you create your cluster without `TaskInstanceFleets` , Amazon EMR uses its default allocation strategy, which allows for a maximum of five Amazon EC2 instance types.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-taskinstancefleets",
+            "stability": "experimental",
+            "summary": "Describes the EC2 instances and instance configurations for the task {@link InstanceFleet}s."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/fleet-cluster.ts",
+            "line": 30
+          },
+          "name": "taskInstanceFleets",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.InstanceFleet"
+              },
+              "kind": "array"
+            }
+          }
+        }
+      ],
+      "symbolId": "src/emr/fleet-cluster:FleetClusterProps"
+    },
     "@packyak/aws-cdk.FromBucketProps": {
       "assembly": "@packyak/aws-cdk",
       "datatype": true,
@@ -7152,6 +7608,155 @@
       ],
       "symbolId": "src/emr/glue-catalog:IcebergGlueCatalogProps"
     },
+    "@packyak/aws-cdk.InstanceFleet": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.InstanceFleet",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/instance-fleet.ts",
+        "line": 5
+      },
+      "name": "InstanceFleet",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "The instance types and their weights to use for the InstanceFleet."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 47
+          },
+          "name": "instanceTypes",
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.InstanceTypeConfig"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "The name of the InstanceFleet."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 9
+          },
+          "name": "name",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "AllocationStrategy.LOWEST_PRICE",
+            "stability": "experimental",
+            "summary": "The allocation strategy to use when provisioning Spot Instances."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 53
+          },
+          "name": "allocationStrategy",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.AllocationStrategy"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "When the instance fleet launches, Amazon EMR\ntries to provision On-Demand instances as specified by {@link instanceTypes}.\n\nEach {@link InstanceTypeConfig} has a specified {@link InstanceTypeConfig.weightedCapacity}.\nWhen an On-Demand instance is provisioned, the {@link InstanceTypeConfig.weightedCapacity}\nunits count toward the target capacity.\n\nAmazon EMR provisions instances until the target capacity is totally fulfilled, even\nif this results in an overage. For example, if there are 2 units remaining to fulfill\ncapacity, and Amazon EMR can only provision an instance with a `WeightedCapacity` of 5\nunits, the instance is provisioned, and the target capacity is exceeded by 3 units.\n\n> If not specified or set to 0, only Spot instances are provisioned for the instance fleet\nusing `TargetSpotCapacity` . At least one of `TargetSpotCapacity` and `TargetOnDemandCapacity`\nshould be greater than 0. For a master instance fleet, only one of `TargetSpotCapacity` and\n`TargetOnDemandCapacity` can be specified, and its value must be 1.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancefleetconfig.html#cfn-emr-cluster-instancefleetconfig-targetondemandcapacity",
+            "stability": "experimental",
+            "summary": "The target capacity of On-Demand units for the instance fleet, which determines how many On-Demand instances to provision."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 31
+          },
+          "name": "targetOnDemandCapacity",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "When the instance fleet launches, Amazon EMR tries to provision Spot instances as specified by\n{@link InstanceTypeConfig}. Each instance configuration has a specified `WeightedCapacity`. When a Spot instance is provisioned, the `WeightedCapacity` units count toward the target capacity. Amazon EMR provisions instances until the target capacity is totally fulfilled, even if this results in an overage. For example, if there are 2 units remaining to fulfill capacity, and Amazon EMR can only provision an instance with a `WeightedCapacity` of 5 units, the instance is provisioned, and the target capacity is exceeded by 3 units.\n\n> If not specified or set to 0, only On-Demand instances are provisioned for the instance fleet. At least one of `TargetSpotCapacity` and `TargetOnDemandCapacity` should be greater than 0. For a master instance fleet, only one of `TargetSpotCapacity` and `TargetOnDemandCapacity` can be specified, and its value must be 1.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancefleetconfig.html#cfn-emr-cluster-instancefleetconfig-targetspotcapacity",
+            "stability": "experimental",
+            "summary": "The target capacity of Spot units for the instance fleet, which determines how many Spot instances to provision."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 43
+          },
+          "name": "targetSpotCapacity",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "SWITCH_TO_ON_DEMAND",
+            "see": "https://docs.aws.amazon.com/emr/latest/APIReference/API_SpotProvisioningSpecification.html",
+            "stability": "experimental",
+            "summary": "The action to take when provisioning a Cluster and Spot Instances are not available."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 60
+          },
+          "name": "timeoutAction",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.TimeoutAction"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- 1 hour",
+            "remarks": "that is, when all Spot Instances\ncould not be provisioned within the Spot provisioning timeout. Valid\nvalues are {@link TimeoutAction.TERMINATE_CLUSTER} and {@link TimeoutAction.SWITCH_TO_ON_DEMAND}.\n\n{@link TimeoutAction.SWITCH_TO_ON_DEMAND} specifies that if no Spot Instances\nare available, On-Demand Instances should be provisioned to fulfill any\nremaining Spot capacity.\n\nThe minimum is `5` minutes and the maximum is `24` hours.",
+            "see": "{@link http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-spotprovisioningspecification.html#cfn-emr-cluster-spotprovisioningspecification-timeoutaction}",
+            "stability": "experimental",
+            "summary": "The action to take when TargetSpotCapacity has not been fulfilled when the TimeoutDurationMinutes has expired;"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 76
+          },
+          "name": "timeoutDuration",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.Duration"
+          }
+        }
+      ],
+      "symbolId": "src/emr/instance-fleet:InstanceFleet"
+    },
     "@packyak/aws-cdk.InstanceGroup": {
       "assembly": "@packyak/aws-cdk",
       "datatype": true,
@@ -7161,23 +7766,294 @@
       "fqn": "@packyak/aws-cdk.InstanceGroup",
       "kind": "interface",
       "locationInModule": {
-        "filename": "src/emr/cluster.ts",
-        "line": 48
+        "filename": "src/emr/instance-group.ts",
+        "line": 18
       },
       "name": "InstanceGroup",
       "properties": [
         {
           "abstract": true,
           "docs": {
-            "default": "1",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-instancecount",
+            "stability": "experimental",
+            "summary": "Target number of instances for the instance group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 24
+          },
+          "name": "instanceCount",
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-instancetype",
+            "stability": "experimental",
+            "summary": "The Amazon EC2 instance type for all instances in the instance group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 80
+          },
+          "name": "instanceType",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.InstanceType"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-autoscalingpolicy",
+            "stability": "experimental",
+            "summary": "`AutoScalingPolicy` is a subproperty of the [InstanceGroupConfig](https://docs.aws.amazon.com//AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig-instancegroupconfig.html) property type that specifies the constraints and rules of an automatic scaling policy in Amazon EMR . The automatic scaling policy defines how an instance group dynamically adds and terminates EC2 instances in response to the value of a CloudWatch metric. Only core and task instance groups can use automatic scaling policies. For more information, see [Using Automatic Scaling in Amazon EMR](https://docs.aws.amazon.com//emr/latest/ManagementGuide/emr-automatic-scaling.html) ."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 33
+          },
+          "name": "autoScalingPolicy",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.aws_emr.CfnCluster.AutoScalingPolicyProperty"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "This is the maximum price you are willing to pay for Spot Instances. Specify `OnDemandPrice` to set the amount equal to the On-Demand price, or specify an amount in USD.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-bidprice",
+            "stability": "experimental",
+            "summary": "If specified, indicates that the instance group uses Spot Instances."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 41
+          },
+          "name": "bidPrice",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "The list of configurations supplied for an Amazon EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-configurations",
+            "stability": "experimental",
+            "summary": "> Amazon EMR releases 4.x or later."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 49
+          },
+          "name": "configurations",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.Configuration"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-customamiid",
+            "stability": "experimental",
+            "summary": "The custom AMI ID to use for the provisioned instance group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 55
+          },
+          "name": "customAmi",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.IMachineImage"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- No EBS block devices",
+            "stability": "experimental",
+            "summary": "EBS {@link EbsBlockDevice}s to attach to an instance in an {@link InstanceFleet }."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 61
+          },
+          "name": "ebsBlockDevices",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.EbsBlockDevice"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "true",
+            "remarks": "This\noptimization provides the best performance for your EBS volumes by minimizing\ncontention between Amazon EBS I/O and other traffic from your instance.\n\n**Note**:\n> For Current Generation Instance types, EBS-optimization is enabled by default at no additional cost. For Previous Generation Instances types, EBS-optimization prices are on the Previous Generation Pricing Page.",
+            "see": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html",
+            "stability": "experimental",
+            "summary": "An Amazon EBS–optimized instance uses an optimized configuration stack and provides additional, dedicated capacity for Amazon EBS I/O."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 74
+          },
+          "name": "ebsOptimized",
+          "optional": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-market",
+            "stability": "experimental",
+            "summary": "Market type of the Amazon EC2 instances used to create a cluster node."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 86
+          },
+          "name": "market",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.InstanceMarket"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-name",
+            "stability": "experimental",
+            "summary": "Friendly name given to the instance group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 92
+          },
+          "name": "name",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        }
+      ],
+      "symbolId": "src/emr/instance-group:InstanceGroup"
+    },
+    "@packyak/aws-cdk.InstanceMarket": {
+      "assembly": "@packyak/aws-cdk",
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.InstanceMarket",
+      "kind": "enum",
+      "locationInModule": {
+        "filename": "src/emr/instance-market.ts",
+        "line": 1
+      },
+      "members": [
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "name": "ON_DEMAND"
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "name": "SPOT"
+        }
+      ],
+      "name": "InstanceMarket",
+      "symbolId": "src/emr/instance-market:InstanceMarket"
+    },
+    "@packyak/aws-cdk.InstanceTypeConfig": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.InstanceTypeConfig",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/instance-fleet.ts",
+        "line": 108
+      },
+      "name": "InstanceTypeConfig",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
             "stability": "experimental"
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 52
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 109
           },
-          "name": "instanceCount",
+          "name": "instanceType",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.InstanceType"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancetypeconfig.html#cfn-emr-cluster-instancetypeconfig-bidprice",
+            "stability": "experimental",
+            "summary": "The bid price for each Amazon EC2 Spot Instance type as defined by {@link InstanceType} ."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 132
+          },
+          "name": "bidPrice",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancetypeconfig.html#cfn-emr-cluster-instancetypeconfig-bidpriceaspercentageofondemandprice",
+            "stability": "experimental",
+            "summary": "The bid price, as a percentage of On-Demand price, for each Amazon EC2 Spot Instance as defined by {@link InstanceType}."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 139
+          },
+          "name": "bidPriceAsPercentageOfOnDemandPrice",
           "optional": true,
           "type": {
             "primitive": "number"
@@ -7186,39 +8062,86 @@
         {
           "abstract": true,
           "docs": {
-            "default": "m5.xlarge",
-            "stability": "experimental"
+            "default": "- The default Amazon EMR AMI for the specified release label.",
+            "stability": "experimental",
+            "summary": "The custom AMI to use for the InstanceFleet."
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 56
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 115
           },
-          "name": "instanceType",
+          "name": "customAmi",
           "optional": true,
           "type": {
-            "fqn": "aws-cdk-lib.aws_ec2.InstanceType"
+            "fqn": "aws-cdk-lib.aws_ec2.IMachineImage"
           }
         },
         {
           "abstract": true,
           "docs": {
-            "default": "SPOT",
-            "stability": "experimental"
+            "default": "- No EBS block devices",
+            "stability": "experimental",
+            "summary": "EBS {@link EbsBlockDevice}s to attach to an instance in an {@link InstanceFleet}."
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 60
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 145
           },
-          "name": "market",
+          "name": "ebsBlockDevices",
           "optional": true,
           "type": {
-            "fqn": "@packyak/aws-cdk.Market"
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.EbsBlockDevice"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "true",
+            "remarks": "This\noptimization provides the best performance for your EBS volumes by minimizing\ncontention between Amazon EBS I/O and other traffic from your instance.\n\n**Note**:\n> For Current Generation Instance types, EBS-optimization is enabled by default at no additional cost. For Previous Generation Instances types, EBS-optimization prices are on the Previous Generation Pricing Page.",
+            "see": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html",
+            "stability": "experimental",
+            "summary": "An Amazon EBS–optimized instance uses an optimized configuration stack and provides additional, dedicated capacity for Amazon EBS I/O."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 158
+          },
+          "name": "ebsOptimized",
+          "optional": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "1",
+            "remarks": "This value is `1` for a master instance fleet, and must be 1 or greater for\ncore and task instance fleets. Defaults to 1 if not specified.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancetypeconfig.html#cfn-emr-cluster-instancetypeconfig-weightedcapacity",
+            "stability": "experimental",
+            "summary": "The number of units that a provisioned instance of this type provides toward fulfilling the target capacities defined in `InstanceFleetConfig`."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-fleet.ts",
+            "line": 126
+          },
+          "name": "weightedCapacity",
+          "optional": true,
+          "type": {
+            "primitive": "number"
           }
         }
       ],
-      "symbolId": "src/emr/cluster:InstanceGroup"
+      "symbolId": "src/emr/instance-fleet:InstanceTypeConfig"
     },
     "@packyak/aws-cdk.Jdbc": {
       "assembly": "@packyak/aws-cdk",
@@ -7404,8 +8327,8 @@
       "fqn": "@packyak/aws-cdk.ManagedScalingPolicy",
       "kind": "interface",
       "locationInModule": {
-        "filename": "src/emr/cluster.ts",
-        "line": 74
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 7
       },
       "name": "ManagedScalingPolicy",
       "properties": [
@@ -7416,8 +8339,8 @@
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 75
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 8
           },
           "name": "computeLimits",
           "type": {
@@ -7425,49 +8348,21 @@
           }
         }
       ],
-      "symbolId": "src/emr/cluster:ManagedScalingPolicy"
+      "symbolId": "src/emr/managed-scaling:ManagedScalingPolicy"
     },
-    "@packyak/aws-cdk.Market": {
-      "assembly": "@packyak/aws-cdk",
-      "docs": {
-        "stability": "experimental"
-      },
-      "fqn": "@packyak/aws-cdk.Market",
-      "kind": "enum",
-      "locationInModule": {
-        "filename": "src/emr/market.ts",
-        "line": 1
-      },
-      "members": [
-        {
-          "docs": {
-            "stability": "experimental"
-          },
-          "name": "ON_DEMAND"
-        },
-        {
-          "docs": {
-            "stability": "experimental"
-          },
-          "name": "SPOT"
-        }
-      ],
-      "name": "Market",
-      "symbolId": "src/emr/market:Market"
-    },
-    "@packyak/aws-cdk.MountOptions": {
+    "@packyak/aws-cdk.MountFileSystemOptions": {
       "assembly": "@packyak/aws-cdk",
       "datatype": true,
       "docs": {
         "stability": "experimental"
       },
-      "fqn": "@packyak/aws-cdk.MountOptions",
+      "fqn": "@packyak/aws-cdk.MountFileSystemOptions",
       "kind": "interface",
       "locationInModule": {
-        "filename": "src/emr/cluster.ts",
-        "line": 84
+        "filename": "src/workspace/workspace.ts",
+        "line": 12
       },
-      "name": "MountOptions",
+      "name": "MountFileSystemOptions",
       "properties": [
         {
           "abstract": true,
@@ -7476,8 +8371,8 @@
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 88
+            "filename": "src/workspace/workspace.ts",
+            "line": 16
           },
           "name": "gid",
           "type": {
@@ -7491,8 +8386,8 @@
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 85
+            "filename": "src/workspace/workspace.ts",
+            "line": 13
           },
           "name": "mountPoint",
           "type": {
@@ -7506,8 +8401,8 @@
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 87
+            "filename": "src/workspace/workspace.ts",
+            "line": 15
           },
           "name": "uid",
           "type": {
@@ -7521,8 +8416,8 @@
           },
           "immutable": true,
           "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 86
+            "filename": "src/workspace/workspace.ts",
+            "line": 14
           },
           "name": "username",
           "type": {
@@ -7530,7 +8425,7 @@
           }
         }
       ],
-      "symbolId": "src/emr/cluster:MountOptions"
+      "symbolId": "src/workspace/workspace:MountFileSystemOptions"
     },
     "@packyak/aws-cdk.NessieECSCatalog": {
       "assembly": "@packyak/aws-cdk",
@@ -7905,6 +8800,217 @@
         }
       ],
       "symbolId": "src/workspace/group:PosixGroup"
+    },
+    "@packyak/aws-cdk.PrimaryInstanceGroup": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.PrimaryInstanceGroup",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/instance-group.ts",
+        "line": 7
+      },
+      "name": "PrimaryInstanceGroup",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-instancetype",
+            "stability": "experimental",
+            "summary": "The Amazon EC2 instance type for all instances in the instance group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 80
+          },
+          "name": "instanceType",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.InstanceType"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-autoscalingpolicy",
+            "stability": "experimental",
+            "summary": "`AutoScalingPolicy` is a subproperty of the [InstanceGroupConfig](https://docs.aws.amazon.com//AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig-instancegroupconfig.html) property type that specifies the constraints and rules of an automatic scaling policy in Amazon EMR . The automatic scaling policy defines how an instance group dynamically adds and terminates EC2 instances in response to the value of a CloudWatch metric. Only core and task instance groups can use automatic scaling policies. For more information, see [Using Automatic Scaling in Amazon EMR](https://docs.aws.amazon.com//emr/latest/ManagementGuide/emr-automatic-scaling.html) ."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 33
+          },
+          "name": "autoScalingPolicy",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.aws_emr.CfnCluster.AutoScalingPolicyProperty"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "This is the maximum price you are willing to pay for Spot Instances. Specify `OnDemandPrice` to set the amount equal to the On-Demand price, or specify an amount in USD.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-bidprice",
+            "stability": "experimental",
+            "summary": "If specified, indicates that the instance group uses Spot Instances."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 41
+          },
+          "name": "bidPrice",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "The list of configurations supplied for an Amazon EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-configurations",
+            "stability": "experimental",
+            "summary": "> Amazon EMR releases 4.x or later."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 49
+          },
+          "name": "configurations",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.Configuration"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-customamiid",
+            "stability": "experimental",
+            "summary": "The custom AMI ID to use for the provisioned instance group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 55
+          },
+          "name": "customAmi",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.IMachineImage"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- No EBS block devices",
+            "stability": "experimental",
+            "summary": "EBS {@link EbsBlockDevice}s to attach to an instance in an {@link InstanceFleet }."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 61
+          },
+          "name": "ebsBlockDevices",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.EbsBlockDevice"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "true",
+            "remarks": "This\noptimization provides the best performance for your EBS volumes by minimizing\ncontention between Amazon EBS I/O and other traffic from your instance.\n\n**Note**:\n> For Current Generation Instance types, EBS-optimization is enabled by default at no additional cost. For Previous Generation Instances types, EBS-optimization prices are on the Previous Generation Pricing Page.",
+            "see": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html",
+            "stability": "experimental",
+            "summary": "An Amazon EBS–optimized instance uses an optimized configuration stack and provides additional, dedicated capacity for Amazon EBS I/O."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 74
+          },
+          "name": "ebsOptimized",
+          "optional": true,
+          "type": {
+            "primitive": "boolean"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "1",
+            "remarks": "TODO: I need to validate if there can be more than 1 primary instance group.",
+            "stability": "experimental",
+            "summary": "Number of instances in the Primary {@link InstanceGroup}."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 15
+          },
+          "name": "instanceCount",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-market",
+            "stability": "experimental",
+            "summary": "Market type of the Amazon EC2 instances used to create a cluster node."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 86
+          },
+          "name": "market",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.InstanceMarket"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-name",
+            "stability": "experimental",
+            "summary": "Friendly name given to the instance group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 92
+          },
+          "name": "name",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        }
+      ],
+      "symbolId": "src/emr/instance-group:PrimaryInstanceGroup"
     },
     "@packyak/aws-cdk.PythonPoetryArgs": {
       "assembly": "@packyak/aws-cdk",
@@ -8526,8 +9632,8 @@
       "fqn": "@packyak/aws-cdk.ScaleDownBehavior",
       "kind": "enum",
       "locationInModule": {
-        "filename": "src/emr/cluster.ts",
-        "line": 63
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 17
       },
       "members": [
         {
@@ -8544,41 +9650,7 @@
         }
       ],
       "name": "ScaleDownBehavior",
-      "symbolId": "src/emr/cluster:ScaleDownBehavior"
-    },
-    "@packyak/aws-cdk.ScalingUnit": {
-      "assembly": "@packyak/aws-cdk",
-      "docs": {
-        "stability": "experimental"
-      },
-      "fqn": "@packyak/aws-cdk.ScalingUnit",
-      "kind": "enum",
-      "locationInModule": {
-        "filename": "src/emr/cluster.ts",
-        "line": 68
-      },
-      "members": [
-        {
-          "docs": {
-            "stability": "experimental"
-          },
-          "name": "INSTANCES"
-        },
-        {
-          "docs": {
-            "stability": "experimental"
-          },
-          "name": "INSTANCE_FLEET_UNITS"
-        },
-        {
-          "docs": {
-            "stability": "experimental"
-          },
-          "name": "VCPU"
-        }
-      ],
-      "name": "ScalingUnit",
-      "symbolId": "src/emr/cluster:ScalingUnit"
+      "symbolId": "src/emr/managed-scaling:ScaleDownBehavior"
     },
     "@packyak/aws-cdk.SparkVersion": {
       "assembly": "@packyak/aws-cdk",
@@ -8814,6 +9886,38 @@
       ],
       "symbolId": "src/streamlit-site:StreamlitSiteProps"
     },
+    "@packyak/aws-cdk.TimeoutAction": {
+      "assembly": "@packyak/aws-cdk",
+      "docs": {
+        "see": "https://docs.aws.amazon.com/emr/latest/APIReference/API_SpotProvisioningSpecification.html",
+        "stability": "experimental",
+        "summary": "Action to take when provisioning a Cluster and Spot Instances are not available."
+      },
+      "fqn": "@packyak/aws-cdk.TimeoutAction",
+      "kind": "enum",
+      "locationInModule": {
+        "filename": "src/emr/instance-fleet.ts",
+        "line": 96
+      },
+      "members": [
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Specifies that if no Spot Instances are available, On-Demand Instances should be provisioned to fulfill any remaining Spot capacity."
+          },
+          "name": "SWITCH_TO_ON_DEMAND"
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Terminates the Cluster if Spot Instances are not available."
+          },
+          "name": "TERMINATE_CLUSTER"
+        }
+      ],
+      "name": "TimeoutAction",
+      "symbolId": "src/emr/instance-fleet:TimeoutAction"
+    },
     "@packyak/aws-cdk.TransportMode": {
       "assembly": "@packyak/aws-cdk",
       "docs": {
@@ -8848,6 +9952,130 @@
       ],
       "name": "TransportMode",
       "symbolId": "src/emr/jdbc:TransportMode"
+    },
+    "@packyak/aws-cdk.UniformCluster": {
+      "assembly": "@packyak/aws-cdk",
+      "base": "@packyak/aws-cdk.Cluster",
+      "docs": {
+        "see": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-instances-guidelines.html",
+        "stability": "experimental",
+        "summary": "Creates an EMR Cluster that is comprised of {@link InstanceGroup}s."
+      },
+      "fqn": "@packyak/aws-cdk.UniformCluster",
+      "initializer": {
+        "docs": {
+          "stability": "experimental"
+        },
+        "locationInModule": {
+          "filename": "src/emr/uniform-cluster.ts",
+          "line": 40
+        },
+        "parameters": [
+          {
+            "name": "scope",
+            "type": {
+              "fqn": "constructs.Construct"
+            }
+          },
+          {
+            "name": "id",
+            "type": {
+              "primitive": "string"
+            }
+          },
+          {
+            "name": "props",
+            "type": {
+              "fqn": "@packyak/aws-cdk.UniformClusterProps"
+            }
+          }
+        ]
+      },
+      "kind": "class",
+      "locationInModule": {
+        "filename": "src/emr/uniform-cluster.ts",
+        "line": 39
+      },
+      "name": "UniformCluster",
+      "symbolId": "src/emr/uniform-cluster:UniformCluster"
+    },
+    "@packyak/aws-cdk.UniformClusterProps": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.UniformClusterProps",
+      "interfaces": [
+        "@packyak/aws-cdk.BaseClusterProps"
+      ],
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/uniform-cluster.ts",
+        "line": 5
+      },
+      "name": "UniformClusterProps",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-coreinstancegroup",
+            "stability": "experimental",
+            "summary": "Describes the EC2 instances and instance configurations for core {@link InstanceGroup}s."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/uniform-cluster.ts",
+            "line": 17
+          },
+          "name": "coreInstanceGroup",
+          "type": {
+            "fqn": "@packyak/aws-cdk.InstanceGroup"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-masterinstancegroup",
+            "stability": "experimental",
+            "summary": "Describes the EC2 instances and instance configurations for the primary {@link InstanceGroup}."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/uniform-cluster.ts",
+            "line": 11
+          },
+          "name": "primaryInstanceGroup",
+          "type": {
+            "fqn": "@packyak/aws-cdk.PrimaryInstanceGroup"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "These task {@link InstanceGroup}s are added to the cluster as part of the cluster launch.\nEach task {@link InstanceGroup} must have a unique name specified so that CloudFormation\ncan differentiate between the task {@link InstanceGroup}s.\n\n> After creating the cluster, you can only modify the mutable properties of `InstanceGroupConfig` , which are `AutoScalingPolicy` and `InstanceCount` . Modifying any other property results in cluster replacement.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-jobflowinstancesconfig.html#cfn-emr-cluster-jobflowinstancesconfig-taskinstancegroups",
+            "stability": "experimental",
+            "summary": "Describes the EC2 instances and instance configurations for task {@link InstanceGroup}s."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/uniform-cluster.ts",
+            "line": 29
+          },
+          "name": "taskInstanceGroups",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "@packyak/aws-cdk.InstanceGroup"
+              },
+              "kind": "array"
+            }
+          }
+        }
+      ],
+      "symbolId": "src/emr/uniform-cluster:UniformClusterProps"
     },
     "@packyak/aws-cdk.UserProfile": {
       "assembly": "@packyak/aws-cdk",
@@ -9049,7 +10277,7 @@
         },
         "locationInModule": {
           "filename": "src/workspace/workspace.ts",
-          "line": 62
+          "line": 69
         },
         "parameters": [
           {
@@ -9078,7 +10306,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/workspace/workspace.ts",
-        "line": 43
+        "line": 50
       },
       "methods": [
         {
@@ -9088,7 +10316,7 @@
           },
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 100
+            "line": 107
           },
           "name": "addHome",
           "parameters": [
@@ -9112,7 +10340,7 @@
           },
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 93
+            "line": 100
           },
           "name": "allowFrom",
           "parameters": [
@@ -9138,7 +10366,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 57
+            "line": 64
           },
           "name": "connections",
           "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
@@ -9154,7 +10382,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 47
+            "line": 54
           },
           "name": "fileSystem",
           "type": {
@@ -9170,7 +10398,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/workspace/workspace.ts",
-            "line": 53
+            "line": 60
           },
           "name": "ssm",
           "type": {
@@ -9193,12 +10421,12 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/workspace/workspace.ts",
-        "line": 33
+        "line": 40
       },
       "name": "WorkspaceProps",
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
   "version": "0.4.8",
-  "fingerprint": "QH0sKL0PNBneIEgaxQXYI8wc34yDx4zTVuC/aZFwH2o="
+  "fingerprint": "86Jxo/xLQB8AOL4onwOzLqGMdsFebPH53AihKOqzQ6c="
 }

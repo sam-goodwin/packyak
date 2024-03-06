@@ -497,7 +497,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     this.bootstrapActions.push(action);
   }
 
-  protected getInstanceGroupConfig(
+  private getInstanceGroupConfig(
     instanceGroup: InstanceGroup,
   ): CfnCluster.InstanceGroupConfigProperty {
     return {
@@ -514,7 +514,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     };
   }
 
-  protected getInstanceFleetConfig(
+  private getInstanceFleetConfig(
     instanceFleet: InstanceFleet,
   ): CfnCluster.InstanceFleetConfigProperty {
     const timeoutDuration = instanceFleet.timeoutDuration?.toMinutes() ?? 60;
@@ -569,7 +569,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     };
   }
 
-  protected getEbsConfigurations(instance: {
+  private getEbsConfigurations(instance: {
     readonly ebsBlockDevices?: EbsBlockDevice[];
     readonly ebsOptimized?: boolean;
   }) {
