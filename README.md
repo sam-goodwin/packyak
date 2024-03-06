@@ -2,6 +2,9 @@
 
 [![PyPI version](https://badge.fury.io/py/packyak.svg)](https://badge.fury.io/py/packyak)
 
+> [!NOTE]
+> Still in active development.
+
 # PackYak
 
 PackYak is an open source platform for building versioned Data Lakehouses in AWS with Python and the AWS CDK.
