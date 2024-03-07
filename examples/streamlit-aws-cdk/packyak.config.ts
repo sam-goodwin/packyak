@@ -16,7 +16,7 @@ import {
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
-import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
+import { App, Duration, RemovalPolicy, Stack } from "aws-cdk-lib/core";
 
 const stage = process.env.STAGE ?? "personal";
 const removalPolicy = RemovalPolicy.DESTROY;
@@ -95,39 +95,44 @@ const sparkFleet = new FleetCluster(stack, "SparkFleet", {
   managedScalingPolicy: {
     computeLimits: {
       unitType: ComputeUnit.INSTANCE_FLEET_UNITS,
-      minimumCapacityUnits: 10,
+      minimumCapacityUnits: 0,
       maximumCapacityUnits: 100,
     },
   },
   primaryInstanceFleet: {
     name: "primary",
+    targetOnDemandCapacity: 1,
     instanceTypes: [
       {
         instanceType: m5n8xlarge,
+        weightedCapacity: 1,
       },
     ],
   },
   coreInstanceFleet: {
     name: "core",
+    targetOnDemandCapacity: 1,
     instanceTypes: [
       {
         instanceType: m5n8xlarge,
+        weightedCapacity: 1,
       },
     ],
+    timeoutDuration: Duration.minutes(5),
   },
   taskInstanceFleets: [
     {
       name: "memory-intensive-spot",
       allocationStrategy: AllocationStrategy.PRICE_CAPACITY_OPTIMIZED,
       // we want at least 10 spot m5n8xlarge
-      targetSpotCapacity: 10 * 10,
+      targetSpotCapacity: 10,
       targetOnDemandCapacity: 0,
       instanceTypes: [
         {
           instanceType: m5n8xlarge,
           bidPriceAsPercentageOfOnDemandPrice: 10,
           // if we can get it at 1/10th the price, give us 10x the capacity
-          weightedCapacity: 10,
+          weightedCapacity: 1,
         },
         {
           instanceType: m5n8xlarge,
@@ -148,6 +153,7 @@ const sparkFleet = new FleetCluster(stack, "SparkFleet", {
 
 // spark.mount(workspace.ssm);
 sparkFleet.mount(sam);
+sparkUniform.mount(sam);
 
 const sparkSQL = sparkFleet.jdbc({
   port: 10000,

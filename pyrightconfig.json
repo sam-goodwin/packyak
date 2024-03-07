@@ -13,5 +13,6 @@
   "reportUnknownMemberType": false,
   "reportUnusedImport": false,
   "reportOptionalMemberAccess": false,
-  "reportMissingTypeStubs": false
+  "reportMissingTypeStubs": false,
+  "reportPrivateImportUsage": false
 }
