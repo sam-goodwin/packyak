@@ -39,6 +39,7 @@
     "botocore",
     "certificatemanager",
     "dagster",
+    "dask",
     "dedupe",
     "Fargate",
     "Gids",
@@ -67,6 +68,7 @@
     "VCPU",
     "virtualenv",
     "Weaviate",
-    "xlarge"
+    "xlarge",
+    "Zarr"
   ],
 }

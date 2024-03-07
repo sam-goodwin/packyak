@@ -519,7 +519,9 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
   ): CfnCluster.InstanceFleetConfigProperty {
     const timeoutDuration = instanceFleet.timeoutDuration?.toMinutes() ?? 60;
     if (timeoutDuration < 5 || timeoutDuration > 1440) {
-      throw new Error("timeoutDuration must be between 5 and 1440 minutes");
+      throw new Error(
+        `timeoutDuration, ${timeoutDuration}, must be between 5 and 1440 minutes`,
+      );
     }
     // check timeoutDuration is a whole minute
     if (timeoutDuration % 1 !== 0) {
@@ -532,6 +534,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       targetSpotCapacity: instanceFleet?.targetSpotCapacity,
       launchSpecifications: {
         onDemandSpecification: {
+          // only supports LOWEST_PRICE
           allocationStrategy: AllocationStrategy.LOWEST_PRICE,
         },
         spotSpecification: {
@@ -542,7 +545,8 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
           timeoutDurationMinutes: timeoutDuration,
           allocationStrategy:
             instanceFleet?.allocationStrategy ??
-            AllocationStrategy.LOWEST_PRICE,
+            // recommended strategy by AWS
+            AllocationStrategy.PRICE_CAPACITY_OPTIMIZED,
         },
       },
       instanceTypeConfigs: instanceFleet.instanceTypes.map(

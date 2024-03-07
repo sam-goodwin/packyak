@@ -48,7 +48,7 @@ export interface InstanceFleet {
   /**
    * The allocation strategy to use when provisioning Spot Instances.
    *
-   * @default AllocationStrategy.LOWEST_PRICE
+   * @default AllocationStrategy.PRICE_CAPACITY_OPTIMIZED
    */
   readonly allocationStrategy?: AllocationStrategy;
   /**
@@ -77,14 +77,63 @@ export interface InstanceFleet {
 }
 
 /**
+ * When you use allocation strategy, your On-Demand Instances use the lowest-price strategy.
+ * This launches the lowest-priced instances first.
+ *
+ * When you launch On-Demand Instances, you can use open or targeted capacity reservations
+ * in your accounts. You can use open capacity reservations for primary, core, and task nodes.
+ *
+ * You might experience insufficient capacity with On-Demand Instances with allocation
+ * strategy for instance fleets. We recommend that you specify a larger number of instance
+ * types to diversify and reduce the chance of experiencing insufficient capacity.
+ *
+ * For more information, see [Use capacity reservations with instance fleets](https://docs.aws.amazon.com/emr/latest/ManagementGuide/on-demand-capacity-reservations.html).
  *
  * @see https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-fleet.html#emr-instance-fleet-allocation-strategy
  * @see https://docs.aws.amazon.com/emr/latest/ManagementGuide/managed-scaling-allocation-strategy.html
  */
 export enum AllocationStrategy {
+  /**
+   * The capacity-optimized allocation strategy launches Spot Instances into the
+   * most available pools with the lowest chance of interruption in the near term.
+   *
+   * This is a good option for workloads that might have a higher cost of
+   * interruption associated with work that gets restarted.
+   */
   CAPACITY_OPTIMIZED = "capacity-optimized",
+  /**
+   * The price-capacity optimized allocation strategy launches Spot instances from
+   * the Spot instance pools that have the highest capacity available and the
+   * lowest price for the number of instances that are launching.
+   *
+   * As a result, the price-capacity optimized strategy typically has a higher chance
+   * of getting Spot capacity, and delivers lower interruption rates.
+   *
+   * @recommended
+   */
   PRICE_CAPACITY_OPTIMIZED = "price-capacity-optimized",
+  /**
+   * With the diversified allocation strategy, Amazon EC2 distributes Spot Instances
+   * across all Spot capacity pools.
+   */
   DIVERSIFIED = "diversified",
+  /**
+   * The lowest-price allocation strategy launches Spot Instances from the lowest
+   * priced pool that has available capacity.
+   *
+   * If the lowest-priced pool doesn't have available capacity, the Spot Instances
+   * come from the next lowest priced pool that has available capacity.
+   *
+   * If a pool runs out of capacity before it fulfills your requested capacity,
+   * the Amazon EC2 fleet draws from the next lowest priced pool to continue to
+   * fulfill your request.
+   *
+   * To ensure that your desired capacity is met, you might receive Spot Instances
+   * from several pools.
+   *
+   * Because this strategy only considers instance price, and does not consider
+   * capacity availability, it might lead to high interruption rates.
+   */
   LOWEST_PRICE = "lowest-price",
 }
 
