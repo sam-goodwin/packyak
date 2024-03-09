@@ -5,9 +5,6 @@ set -e
 extra_args=$*
 version=$(node -p "require('./package.json').version")
 
-pnpm run clean
-pnpm run build
-
 script_dir=$(dirname -- "${BASH_SOURCE[0]}")
 echo "Script directory: $script_dir"
 
@@ -16,6 +13,9 @@ if [[ " $extra_args " =~ " --no-bump " ]]; then
 else
     env node $script_dir/bump.mjs ${extra_args}
 fi
+
+pnpm run clean
+pnpm run build
 
 if [ "$BUMP_ROOT" == "true" ]; then
     poetry build && poetry publish

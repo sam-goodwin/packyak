@@ -5,7 +5,20 @@ from packyak.cli.new import new
 from packyak.cli.run import run
 from packyak.cli.ssh import ssh
 from packyak.cli.synth import synth
+from packyak.cli.logs import logs
+from packyak.cli.instances import instances
 
-__all__ = ["cli", "new", "ssh", "synth", "run", "materialize", "list"]
+
+__all__ = [
+    "cli",
+    "new",
+    "ssh",
+    "synth",
+    "run",
+    "materialize",
+    "list",
+    "logs",
+    "instances",
+]
 
 cli()
