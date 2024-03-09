@@ -489,10 +489,6 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
               classification: "spark-defaults",
               configurationProperties: {
                 // configure spark to use the virtual environment
-                // "spark.pyspark.python": "python3",
-                // "spark.pyspark.virtualenv.enabled": "true",
-                // "spark.pyspark.virtualenv.type": "native",
-                // "spark.pyspark.virtualenv.bin.path": "/usr/bin/virtualenv",
                 "spark.driver.extraJavaOptions": toCLIArgs(
                   this.extraJavaOptions,
                 ),
@@ -503,6 +499,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
             {
               classification: "yarn-site",
               configurationProperties: {
+                "yarn.node-labels.enabled": "true",
                 "yarn.nodemanager.linux-container-executor.cgroups.mount":
                   "true",
                 "yarn.nodemanager.linux-container-executor.cgroups.mount-path":
@@ -518,10 +515,6 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                 ...(enableGpuAcceleration
                   ? {
                       "yarn.nodemanager.resource-plugins": "yarn.io/gpu",
-                      "yarn.nodemanager.resource-plugins.gpu.allowed-gpu-devices":
-                        "auto",
-                      "yarn.nodemanager.resource-plugins.gpu.path-to-discovery-executables":
-                        "/usr/bin",
                     }
                   : {}),
               },
@@ -780,6 +773,16 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     const isGpuInstance =
       instanceType.startsWith("p") || instanceType.startsWith("g");
     if (isGpuInstance) {
+      return [
+        {
+          classification: "yarn-site",
+          configurationProperties: {
+            "yarn.nodemanager.resource-plugins.gpu.allowed-gpu-devices": "auto",
+            "yarn.nodemanager.resource-plugins.gpu.path-to-discovery-executables":
+              "/usr/bin",
+          },
+        },
+      ];
       // TODO:
     }
     return undefined;
