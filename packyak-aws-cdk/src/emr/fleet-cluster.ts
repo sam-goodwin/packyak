@@ -1,6 +1,7 @@
 import { Construct } from "constructs";
 import { type BaseClusterProps, Cluster } from "./cluster";
 import type { InstanceFleet } from "./instance-fleet";
+import { ComputeUnit } from "./managed-scaling";
 
 export interface FleetClusterProps extends BaseClusterProps {
   /**
@@ -38,6 +39,16 @@ export interface FleetClusterProps extends BaseClusterProps {
  */
 export class FleetCluster extends Cluster {
   constructor(scope: Construct, id: string, props: FleetClusterProps) {
+    if (props.managedScalingPolicy) {
+      if (
+        props.managedScalingPolicy.computeLimits.unitType !==
+        ComputeUnit.INSTANCE_FLEET_UNITS
+      ) {
+        throw new Error(
+          `If you are using a FleetCluster, you must use INSTANCE_FLEET_UNITS as the ComputeLimitsUnitType`,
+        );
+      }
+    }
     super(scope, id, props);
   }
 }

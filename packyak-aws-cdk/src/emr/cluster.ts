@@ -4,6 +4,7 @@ import {
   IVpc,
   Port,
   SecurityGroup,
+  type InstanceType,
 } from "aws-cdk-lib/aws-ec2";
 import type { IAccessPoint, IFileSystem } from "aws-cdk-lib/aws-efs";
 import { CfnCluster } from "aws-cdk-lib/aws-emr";
@@ -127,6 +128,45 @@ export interface BaseClusterProps {
    * Mount a shared filesystem to the EMR cluster
    */
   readonly home?: Workspace;
+  /**
+   * By default, we enable GPU detection and registration with the YARN Node Manager.
+   *
+   * If disabled, you won't be able to provision GPU (P or G) EC2 instance types.
+   *
+   * @default true
+   * @see https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html
+   */
+  readonly enableGpuAcceleration?: boolean;
+  /**
+   * Enable the Spark Rapids plugin.
+   *
+   * @default false
+   * @see https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-rapids.html
+   */
+  readonly enableSparkRapids?: boolean;
+  /**
+   * Enable the XGBoost spark library.
+   *
+   * @default false
+   * @see https://docs.nvidia.com/spark-rapids/user-guide/latest/getting-started/aws-emr.html
+   */
+  readonly enableXGBoost?: boolean;
+  /**
+   * Disable the bootstrap script that mounts cgroups and configures Yarn to use
+   * them to isolate each container's resources.
+   *
+   * Can't be disabled if GPU support is enabled.
+   *
+   * @default false
+   * @see https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html
+   */
+  readonly disableYarnCGroups?: boolean;
+  /**
+   * Enable Docker support on the cluster.
+   *
+   * @default true
+   */
+  readonly enableDocker?: boolean;
 }
 
 export interface ClusterProps extends BaseClusterProps {
@@ -291,6 +331,10 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       removalPolicy: props.removalPolicy ?? RemovalPolicy.DESTROY,
     });
 
+    const awsAccount = Stack.of(this).account;
+    const awsRegion = Stack.of(this).region;
+    const enableDocker = props.enableDocker ?? true;
+    const enableGpuAcceleration = props.enableGpuAcceleration ?? true;
     const isUniformCluster =
       props.primaryInstanceGroup ||
       props.coreInstanceGroup ||
@@ -304,6 +348,38 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       throw new Error(
         "Cannot specify both Instance Groups and Instance Fleets for Primary, Core and Task nodes. You must use either a UniformCluster or a FleetCluster.",
       );
+    }
+
+    if (props.disableYarnCGroups && enableGpuAcceleration) {
+      throw new Error(
+        "You cannot enable GPU support without also enabling YARN cgroups. Set `disableYarnCGroups: false` to re-enable YARN cgroups.",
+      );
+    }
+    if (props.enableSparkRapids) {
+      if (this.release.majorVersion < 6) {
+        throw new Error(
+          `The Spark Rapids plugin is not supported in EMR ${this.release.label}. You must >= 6.x`,
+        );
+      }
+    }
+    if (props.enableXGBoost && !props.enableSparkRapids) {
+      throw new Error(
+        "You cannot enable the XGBoost plugin without also enabling the Spark Rapids plugin.",
+      );
+    }
+    if (enableGpuAcceleration) {
+      if (this.release.majorVersion < 6) {
+        throw new Error(
+          // TODO: confirm that 5 is not supported
+          `GPUs are not supported in EMR ${this.release.label}. You must >= 6.x`,
+        );
+      }
+    }
+    if (!props.disableYarnCGroups) {
+      this.mountYarnCGroups();
+    }
+    if (enableDocker && enableGpuAcceleration) {
+      this.installNVidiaContainerToolkit();
     }
 
     // this constructs a globally unique identifier for the cluster for use in ResourceTag IAM policies
@@ -413,15 +489,139 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
               classification: "spark-defaults",
               configurationProperties: {
                 // configure spark to use the virtual environment
-                "spark.pyspark.python": "python3",
-                "spark.pyspark.virtualenv.enabled": "true",
-                "spark.pyspark.virtualenv.type": "native",
-                "spark.pyspark.virtualenv.bin.path": "/usr/bin/virtualenv",
+                // "spark.pyspark.python": "python3",
+                // "spark.pyspark.virtualenv.enabled": "true",
+                // "spark.pyspark.virtualenv.type": "native",
+                // "spark.pyspark.virtualenv.bin.path": "/usr/bin/virtualenv",
                 "spark.driver.extraJavaOptions": toCLIArgs(
                   this.extraJavaOptions,
                 ),
               },
             },
+            // this is in the docs for gpus, but seems like a best practice default config
+            // -> use c-groups to isolate containers from each other
+            {
+              classification: "yarn-site",
+              configurationProperties: {
+                "yarn.nodemanager.linux-container-executor.cgroups.mount":
+                  "true",
+                "yarn.nodemanager.linux-container-executor.cgroups.mount-path":
+                  this.release.majorVersion === 7
+                    ? // EMR 7
+                      "/yarn-cgroup"
+                    : // EMR 6
+                      "/sys/fs/cgroup",
+                "yarn.nodemanager.linux-container-executor.cgroups.hierarchy":
+                  "yarn",
+                "yarn.nodemanager.container-executor.class":
+                  "org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor",
+                ...(enableGpuAcceleration
+                  ? {
+                      "yarn.nodemanager.resource-plugins": "yarn.io/gpu",
+                      "yarn.nodemanager.resource-plugins.gpu.allowed-gpu-devices":
+                        "auto",
+                      "yarn.nodemanager.resource-plugins.gpu.path-to-discovery-executables":
+                        "/usr/bin",
+                    }
+                  : {}),
+              },
+            },
+            {
+              classification: "container-executor",
+              configurationProperties: {},
+              configurations: combineConfigurations([
+                // required for device isolation of non-docker yarn containers
+                {
+                  classification: "cgroups",
+                  configurationProperties: {
+                    root:
+                      this.release.majorVersion === 7
+                        ? "/yarn-cgroup"
+                        : // EMR 6
+                          "/sys/fs/cgroup",
+                    "yarn-hierarchy": "yarn",
+                  },
+                },
+                enableDocker
+                  ? {
+                      // TODO: support more configuration
+                      // see: https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-site/DockerContainers.html
+                      classification: "docker",
+                      configurationProperties: {
+                        // by default, trust all container registries in the account/region pair
+                        "docker.privileged-containers.registries": `local,${awsAccount}.dkr.ecr.${awsRegion}.amazonaws.com`,
+                        "docker.trusted.registries": `local,${awsAccount}.dkr.ecr.${awsRegion}.amazonaws.com`,
+                        ...(enableGpuAcceleration
+                          ? {
+                              "docker.allowed.runtimes": "nvidia",
+                            }
+                          : {}),
+                      },
+                    }
+                  : undefined,
+              ]),
+            },
+            enableGpuAcceleration
+              ? [
+                  {
+                    classification: "yarn-site",
+                    configurationProperties: {
+                      "yarn.resource-types": "yarn.io/gpu",
+                    },
+                  },
+                  {
+                    classification: "capacity-scheduler",
+                    configurationProperties: {
+                      "yarn.scheduler.capacity.resource-calculator":
+                        "org.apache.hadoop.yarn.util.resource.DominantResourceCalculator",
+                    },
+                  },
+                  {
+                    classification: "container-executor",
+                    configurationProperties: {},
+                    configurations: [
+                      {
+                        classification: "gpu",
+                        configurationProperties: {
+                          "module.enabled": "true",
+                        },
+                      },
+                    ],
+                  },
+                ]
+              : undefined,
+            // @see https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-rapids.html
+            props.enableSparkRapids
+              ? [
+                  {
+                    classification: "spark",
+                    configurationProperties: {
+                      enableSparkRapids: "true",
+                    },
+                  },
+                  {
+                    classification: "spark-defaults",
+                    configurationProperties: {
+                      "spark.plugins": "com.nvidia.spark.SQLPlugin",
+                      "spark.executor.resource.gpu.discoveryScript":
+                        "/usr/lib/spark/scripts/gpu/getGpusResources.sh",
+                      "spark.executor.extraLibraryPath":
+                        "/usr/local/cuda/targets/x86_64-linux/lib:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/compat/lib:/usr/local/cuda/lib:/usr/local/cuda/lib64:/usr/lib/hadoop/lib/native:/usr/lib/hadoop-lzo/lib/native:/docker/usr/lib/hadoop/lib/native:/docker/usr/lib/hadoop-lzo/lib/native",
+                    },
+                  },
+                ]
+              : undefined,
+            // @see https://docs.nvidia.com/spark-rapids/user-guide/latest/getting-started/aws-emr.html#submit-spark-jobs-to-an-emr-cluster-accelerated-by-gpus
+            props.enableXGBoost
+              ? {
+                  classification: "spark-defaults",
+                  configurationProperties: {
+                    "spark.submit.pyFiles":
+                      // note: spark_3.0 is used for all spark versions on EMR right now
+                      "/usr/lib/spark/jars/xgboost4j-spark_3.0-1.4.2-0.3.0.jar",
+                  },
+                }
+              : undefined,
             ...this.configurations,
           ),
       }),
@@ -505,9 +705,10 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       instanceType: instanceGroup.instanceType.toString(),
       customAmiId: instanceGroup.customAmi?.getImage(this).imageId,
       market: instanceGroup.market,
-      configurations: instanceGroup.configurations?.length
-        ? combineConfigurations(...instanceGroup.configurations)
-        : undefined,
+      configurations: combineConfigurations(
+        instanceGroup.configurations,
+        this.getInstanceConfigurations(instanceGroup.instanceType),
+      ),
       ebsConfiguration: this.getEbsConfigurations(instanceGroup),
       bidPrice: instanceGroup.bidPrice,
       autoScalingPolicy: instanceGroup.autoScalingPolicy,
@@ -524,6 +725,14 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     // check timeoutDuration is a whole minute
     if (timeoutDuration % 1 !== 0) {
       throw new Error("timeoutDuration must be a whole number of minutes");
+    }
+    const targetOnDemandCapacity = instanceFleet.targetOnDemandCapacity ?? 0;
+    const targetSpotCapacity = instanceFleet.targetSpotCapacity ?? 0;
+
+    if (targetOnDemandCapacity + targetSpotCapacity == 0) {
+      throw new Error(
+        "targetOnDemandCapacity and targetSpotCapacity cannot both be 0",
+      );
     }
 
     return {
@@ -555,19 +764,25 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
               instance.bidPriceAsPercentageOfOnDemandPrice,
             bidPrice: instance.bidPrice,
             ebsConfiguration: this.getEbsConfigurations(instance),
-            // TODO: support customizing different configs like yarn, spark, etc. for individual fleet instance types
-            // configurations: [
-            //   {
-            //     classification: "yarn-site",
-            //     configurationProperties: {
-            //       "yarn.nodemanager.resource.cpu-vcores": "2",
-            //       "yarn.nodemanager.resource.memory-mb": "4096",
-            //     },
-            //   },
-            // ],
+            configurations: combineConfigurations(
+              ...(instance.configurations ?? []),
+              ...(this.getInstanceConfigurations(instance.instanceType) ?? []),
+            ),
           }) satisfies CfnCluster.InstanceTypeConfigProperty,
       ),
     };
+  }
+
+  private getInstanceConfigurations(
+    instance: InstanceType,
+  ): Configuration[] | undefined {
+    const instanceType = instance.toString().toLocaleLowerCase();
+    const isGpuInstance =
+      instanceType.startsWith("p") || instanceType.startsWith("g");
+    if (isGpuInstance) {
+      // TODO:
+    }
+    return undefined;
   }
 
   private getEbsConfigurations(instance: {
@@ -608,8 +823,44 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     );
   }
 
+  private isYarnCGroupsMounted: boolean | undefined;
+
+  /**
+   * Mounts YARN cgroups if not already mounted.
+   */
+  public mountYarnCGroups() {
+    if (this.isYarnCGroupsMounted) {
+      return;
+    }
+    this.isYarnCGroupsMounted = true;
+    this.addBootstrapAction({
+      name: "Mount Yarn cgroups",
+      script: this.getScript("mount-yarn-cgroups.sh"),
+      args: ["--emr-version", this.release.majorVersion.toString()],
+    });
+  }
+
+  private isNVidiaContainerInstalled: boolean | undefined;
+
+  /**
+   * Install the NVidia Container Toolkit, register it with Docker and restart the Daemon.
+   */
+  public installNVidiaContainerToolkit() {
+    if (this.isNVidiaContainerInstalled) {
+      return;
+    }
+    this.isNVidiaContainerInstalled = true;
+    this.addBootstrapAction({
+      name: "Install NVIDIA Container Toolkit",
+      script: this.getScript("install-nvidia-container-toolkit.sh"),
+    });
+  }
+
   private isGitHubCLIInstalled: boolean | undefined;
 
+  /**
+   * Install the GitHub CLI on the EMR cluster.
+   */
   public installGitHubCLI() {
     if (this.isGitHubCLIInstalled) {
       return;

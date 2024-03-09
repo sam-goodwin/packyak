@@ -1,6 +1,7 @@
 import { Construct } from "constructs";
 import { type BaseClusterProps, Cluster } from "./cluster";
 import type { InstanceGroup, PrimaryInstanceGroup } from "./instance-group";
+import { ComputeUnit } from "./managed-scaling";
 
 export interface UniformClusterProps extends BaseClusterProps {
   /**
@@ -38,6 +39,16 @@ export interface UniformClusterProps extends BaseClusterProps {
  */
 export class UniformCluster extends Cluster {
   constructor(scope: Construct, id: string, props: UniformClusterProps) {
+    if (props.managedScalingPolicy) {
+      if (
+        props.managedScalingPolicy.computeLimits.unitType ===
+        ComputeUnit.INSTANCE_FLEET_UNITS
+      ) {
+        throw new Error(
+          `Uniform Clusters must use either Instances or VCPU as ComputeLimitsUnitType`,
+        );
+      }
+    }
     super(scope, id, props);
   }
 }

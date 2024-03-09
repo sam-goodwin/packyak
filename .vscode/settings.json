@@ -38,6 +38,7 @@
     "boto",
     "botocore",
     "certificatemanager",
+    "cgroups",
     "dagster",
     "dedupe",
     "Fargate",

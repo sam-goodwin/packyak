@@ -1,6 +1,7 @@
 import type { Duration } from "aws-cdk-lib/core";
 import type { InstanceType, IMachineImage } from "aws-cdk-lib/aws-ec2";
 import type { EbsBlockDevice } from "./block-device";
+import { Configuration } from "./configuration";
 
 export interface InstanceFleet {
   /**
@@ -156,4 +157,8 @@ export interface InstanceTypeConfig {
    * @see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-optimized.html
    */
   readonly ebsOptimized?: boolean;
+  /**
+   * Optional extra configurations to apply to the instances in the fleet.
+   */
+  readonly configurations?: Configuration[];
 }
