@@ -1,16 +1,11 @@
 from typing import Any
-import boto3
 from dataclasses import dataclass
 from enum import Enum
 import gzip
-import io
-from typing import Optional, List
-import asyncio
-import aioboto3
-from aiobotocore.session import get_session
-from types_aiobotocore_s3.type_defs import ObjectTypeDef
-
+from typing import List
 from packyak.cli.node_type import NodeType
+
+from aiobotocore.session import get_session
 
 session = get_session()
 
