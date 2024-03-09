@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "packyak"
-version = "0.4.17"
+version = "0.4.18"
 description = "Infrastructure for AI applications and machine learning pipelines"
 authors = ["sam <sam@eventual.ai>"]
 readme = "README.md"
@@ -11,7 +11,7 @@ yak = "packyak.cli:cli"
 packyak = "packyak.cli:cli"
 
 [tool.poetry.dependencies]
-types-aiobotocore = { extras = ["essential"], version = "^2.9.0" }
+types-aiobotocore = { extras = ["essential", "emr"], version = "^2.9.0" }
 types-boto3 = "^1.0.2"
 aioboto3 = "^12.1.0"
 aiobotocore = { version = "2.8.0", extras = ["boto3"] }
