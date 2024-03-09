@@ -3,17 +3,25 @@ import {
   Domain,
   DynamoDBNessieVersionStore,
   NessieECSCatalog,
-  Cluster,
+  UniformCluster,
   Workspace,
+  AllocationStrategy,
+  ComputeUnit,
+  FleetCluster,
 } from "@packyak/aws-cdk";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
+import {
+  InstanceClass,
+  InstanceSize,
+  InstanceType,
+  Vpc,
+} from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { App, RemovalPolicy, Stack } from "aws-cdk-lib/core";
 
 const stage = process.env.STAGE ?? "personal";
 const removalPolicy = RemovalPolicy.DESTROY;
 
-const lakeHouseName = `packyak-example-${stage}`;
+const lakeHouseName = `sam-test-${stage}`;
 
 const app = new App();
 
@@ -46,8 +54,12 @@ const sam = workspace.addHome({
   uid: "2001",
 });
 
-const spark = new Cluster(stack, "SparkCluster", {
-  clusterName: "example",
+const m5xlarge = InstanceType.of(InstanceClass.M5, InstanceSize.XLARGE);
+const g54xlarge = InstanceType.of(InstanceClass.G5, InstanceSize.XLARGE4);
+
+const spark = new UniformCluster(stack, "UniformCluster", {
+  removalPolicy,
+  clusterName: "spark-uniform",
   vpc,
   catalogs: {
     spark_catalog: myCatalog,
@@ -56,32 +68,101 @@ const spark = new Cluster(stack, "SparkCluster", {
     "-Djdk.httpclient.allowRestrictedHeaders": "host",
   },
   enableSSMAgent: true,
+  enableDocker: true,
+  enableGpuAcceleration: true,
+  managedScalingPolicy: {
+    computeLimits: {
+      unitType: ComputeUnit.VCPU,
+      minimumCapacityUnits: 1,
+      maximumCapacityUnits: 100,
+    },
+  },
+  primaryInstanceGroup: {
+    instanceType: m5xlarge,
+  },
+  coreInstanceGroup: {
+    instanceType: g54xlarge,
+    instanceCount: 1,
+  },
 });
+
+// const sparkFleet = new FleetCluster(stack, "SparkFleet", {
+//   clusterName: "spark-fleet",
+//   vpc,
+//   catalogs: {
+//     spark_catalog: myCatalog,
+//   },
+//   extraJavaOptions: {
+//     "-Djdk.httpclient.allowRestrictedHeaders": "host",
+//   },
+//   enableSSMAgent: true,
+//   managedScalingPolicy: {
+//     computeLimits: {
+//       unitType: ComputeUnit.INSTANCE_FLEET_UNITS,
+//       minimumCapacityUnits: 1,
+//       maximumCapacityUnits: 100,
+//     },
+//   },
+//   primaryInstanceFleet: {
+//     name: "primary",
+//     targetOnDemandCapacity: 1,
+//     instanceTypes: [
+//       {
+//         instanceType: m5xlarge,
+//       },
+//     ],
+//   },
+//   coreInstanceFleet: {
+//     name: "core",
+//     targetOnDemandCapacity: 1,
+//     instanceTypes: [
+//       {
+//         instanceType: m5xlarge,
+//       },
+//     ],
+//   },
+//   taskInstanceFleets: [
+//     {
+//       name: "memory-intensive-spot",
+//       allocationStrategy: AllocationStrategy.PRICE_CAPACITY_OPTIMIZED,
+//       targetSpotCapacity: 1,
+//       targetOnDemandCapacity: 0,
+//       instanceTypes: [
+//         {
+//           instanceType: m5xlarge,
+//           // if we can get it at 1/2th the price, give us 2x the capacity
+//           bidPriceAsPercentageOfOnDemandPrice: 50,
+//           weightedCapacity: 5,
+//         },
+//       ],
+//     },
+//   ],
+// });
 
 // spark.mount(workspace.ssm);
 spark.mount(sam);
 
-const sparkSQL = spark.jdbc({
-  port: 10000,
-});
+// const sparkSQL = spark.jdbc({
+//   port: 10000,
+// });
 
-const domain = new Domain(stack, "Domain", {
-  domainName: `streamlit-example-aws-cdk-${stage}`,
-  vpc,
-  authMode: AuthMode.IAM,
-  removalPolicy,
-});
+// const domain = new Domain(stack, "Domain", {
+//   domainName: `streamlit-example-aws-cdk-${stage}`,
+//   vpc,
+//   authMode: AuthMode.IAM,
+//   removalPolicy,
+// });
 
-domain.addUserProfile("sam");
+// domain.addUserProfile("sam");
 
-// allow the SageMaker domain to connect to the Spark's JDBC Hive service
-sparkSQL.allowFrom(domain);
+// // allow the SageMaker domain to connect to the Spark's JDBC Hive service
+// sparkSQL.allowFrom(domain);
 
-// allow the SageMaker domain to connect to the Spark's Ivy service
-spark.allowLivyFrom(domain);
+// // allow the SageMaker domain to connect to the Spark's Ivy service
+// spark.allowLivyFrom(domain);
 
-// allow the SageMaker domain to start a session on the Spark cluster
-spark.grantStartSSMSession(domain);
+// // allow the SageMaker domain to start a session on the Spark cluster
+// spark.grantStartSSMSession(domain);
 
 // spark.connections.allowFrom(domain.sageMakerSg, Port.tcp(443));
 

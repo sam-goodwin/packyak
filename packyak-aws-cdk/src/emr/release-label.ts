@@ -23,4 +23,8 @@ export class ReleaseLabel {
     readonly pythonVersion: PythonVersion,
     readonly scalaVersion: ScalaVersion,
   ) {}
+
+  public get majorVersion(): number {
+    return Number(this.label.split("-")[1].split(".")[0]);
+  }
 }
