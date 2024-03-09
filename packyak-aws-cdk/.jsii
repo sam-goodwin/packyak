@@ -4947,7 +4947,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 695
+            "line": 688
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -4970,7 +4970,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 683
+            "line": 676
           },
           "name": "addConfig",
           "parameters": [
@@ -4995,7 +4995,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 672
+            "line": 665
           },
           "name": "addStep",
           "parameters": [
@@ -5017,7 +5017,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1072
+            "line": 1075
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -5038,7 +5038,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 819
+            "line": 822
           },
           "name": "enableSSMAgent"
         },
@@ -5050,7 +5050,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1033
+            "line": 1036
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -5073,7 +5073,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 864
+            "line": 867
           },
           "name": "installGitHubCLI"
         },
@@ -5084,7 +5084,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 848
+            "line": 851
           },
           "name": "installNVidiaContainerToolkit"
         },
@@ -5097,7 +5097,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 661
+            "line": 654
           },
           "name": "jdbc",
           "parameters": [
@@ -5124,7 +5124,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 880
+            "line": 883
           },
           "name": "mount",
           "parameters": [
@@ -5146,7 +5146,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 903
+            "line": 906
           },
           "name": "mountAccessPoint",
           "parameters": [
@@ -5177,7 +5177,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 923
+            "line": 926
           },
           "name": "mountFileSystem",
           "parameters": [
@@ -5208,7 +5208,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 831
+            "line": 834
           },
           "name": "mountYarnCGroups"
         }
@@ -10603,6 +10603,6 @@
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.9",
-  "fingerprint": "4rgxVBTzfB/j0ZIu4VjzRE/3u27p+OsTkos0QMXEodk="
+  "version": "0.4.10",
+  "fingerprint": "DcfGTeulocQVN3E+4rnkJUmxIyQt/ZWbcFDeHMRbpGE="
 }
