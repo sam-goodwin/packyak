@@ -1,37 +1,44 @@
-[tool.poetry]
-name = "packyak"
-version = "0.4.19"
-description = "Infrastructure for AI applications and machine learning pipelines"
-authors = ["sam <sam@eventual.ai>"]
-readme = "README.md"
-include = ["py.typed"]
 
 [tool.poetry.scripts]
 yak = "packyak.cli:cli"
 packyak = "packyak.cli:cli"
 
-[tool.poetry.dependencies]
-types-aiobotocore = { extras = ["essential", "emr"], version = "^2.9.0" }
-types-boto3 = "^1.0.2"
-aioboto3 = "^12.1.0"
-aiobotocore = { version = "2.8.0", extras = ["boto3"] }
-aws-lambda-typing = "^2.18.0"
-boto3-stubs = { extras = [
-    "essential",
-    "sts",
-    "ssm",
-    "emr",
-], version = "^1.34.15" }
-pandas = ">2"
-pandera = "*"
-pydantic = "^2.5.3"
-python = "^3.10"
-pandas-stubs = ">2"
-aiofiles = "^23.2.1"
-pyspark = { extras = ["pandas-on-spark"], version = "^3.5.0" }
-click = "^8.1.7"
-tabulate = "^0.9.0"
-findspark = "^2.0.1"
+[project]
+name = "packyak"
+version = "0.4.19"
+description = "Infrastructure for AI applications and machine learning pipelines"
+authors = [{ name = "Sam Goodwin", email = "sam@packyak.ai" }]
+readme = "README.md"
+include = ["py.typed"]
+requires-python = ">= 3.10"
+dependencies = [
+    "types-aiobotocore[essential,emr]>=2.9.0",
+    "types-boto3>=1.0.2",
+    "aioboto3>=12.3.0",
+    "aws-lambda-typing>=2.18.0",
+    "boto3-stubs[essential, sts, ssm, emr]>=1.34.15",
+    "pandas>2",
+    "pandera",
+    "pydantic>=2.5.3",
+    "pandas-stubs>2",
+    "aiofiles>=23.2.1",
+    "pyspark[pandas-on-spark]>=3.5.0",
+    "click>=8.1.7",
+    "tabulate>=0.9.0",
+    "findspark>=2.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "matplotlib>=3.8.2",
+    "pylint>=3.0.3",
+    "pyright>=1.1.351",
+    "requests>=2.31.0",
+    "ruff>=0.1.11",
+    "streamlit>=1.29.0",
+    "pynessie>=0.66.0",
+    "ipykernel>=6.29.2",
+]
 
 [tool.poetry.group.dev.dependencies]
 matplotlib = "^3.8.2"
