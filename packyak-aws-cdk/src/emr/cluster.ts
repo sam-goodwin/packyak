@@ -399,7 +399,12 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       this.mountYarnCGroups();
     }
     if (this.enableDocker && enableGpuAcceleration) {
-      this.installNVidiaContainerToolkit();
+      // we need the nvidia container toolkit to use docker and GPUs
+      // but, we can't install the toolkit before installing the nvidia drivers
+      // because the devices won't be registered properly
+      // EMR installs the nvidia drivers AFTER running bootstrap scripts, so
+      // the only way around this is to install the drivers as part of the bootstrap
+      this.installNvidiaDrivers();
     }
 
     // this constructs a globally unique identifier for the cluster for use in ResourceTag IAM policies
@@ -871,19 +876,23 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     });
   }
 
-  private isNVidiaContainerInstalled: boolean | undefined;
+  /**
+   * Install the NVidia drivers on the EMR cluster.
+   */
+  public installNvidiaDrivers() {
+    this.addBootstrapAction({
+      name: "Install NVIDIA Drivers",
+      script: this.getScript("install-nvidia-drivers.sh"),
+    });
+  }
 
   /**
-   * Install the NVidia Container Toolkit, register it with Docker and restart the Daemon.
+   * Setup Hadoop Users on the EMR cluster.
    */
-  public installNVidiaContainerToolkit() {
-    if (this.isNVidiaContainerInstalled) {
-      return;
-    }
-    this.isNVidiaContainerInstalled = true;
+  public setupHadoopUsers() {
     this.addBootstrapAction({
-      name: "Install NVIDIA Container Toolkit",
-      script: this.getScript("install-nvidia-container-toolkit.sh"),
+      name: "Setup Hadoop Users",
+      script: this.getScript("setup-hadoop-users.sh"),
     });
   }
 
