@@ -4144,7 +4144,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 163
+            "line": 154
           },
           "name": "disableYarnCGroups",
           "optional": true,
@@ -4162,29 +4162,9 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 169
+            "line": 160
           },
           "name": "enableDocker",
-          "optional": true,
-          "type": {
-            "primitive": "boolean"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "true",
-            "remarks": "If disabled, you won't be able to provision GPU (P or G) EC2 instance types.",
-            "see": "https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html",
-            "stability": "experimental",
-            "summary": "By default, we enable GPU detection and registration with the YARN Node Manager."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 139
-          },
-          "name": "enableGpuAcceleration",
           "optional": true,
           "type": {
             "primitive": "boolean"
@@ -4201,7 +4181,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 146
+            "line": 137
           },
           "name": "enableSparkRapids",
           "optional": true,
@@ -4238,7 +4218,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 153
+            "line": 144
           },
           "name": "enableXGBoost",
           "optional": true,
@@ -4905,7 +4885,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/cluster.ts",
-          "line": 254
+          "line": 248
         },
         "parameters": [
           {
@@ -4935,7 +4915,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 232
+        "line": 223
       },
       "methods": [
         {
@@ -4947,7 +4927,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 688
+            "line": 711
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -4970,7 +4950,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 676
+            "line": 699
           },
           "name": "addConfig",
           "parameters": [
@@ -4995,7 +4975,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 665
+            "line": 688
           },
           "name": "addStep",
           "parameters": [
@@ -5017,7 +4997,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1075
+            "line": 1103
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -5038,7 +5018,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 822
+            "line": 850
           },
           "name": "enableSSMAgent"
         },
@@ -5050,7 +5030,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1036
+            "line": 1064
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -5073,7 +5053,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 867
+            "line": 895
           },
           "name": "installGitHubCLI"
         },
@@ -5084,7 +5064,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 851
+            "line": 879
           },
           "name": "installNVidiaContainerToolkit"
         },
@@ -5097,7 +5077,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 654
+            "line": 677
           },
           "name": "jdbc",
           "parameters": [
@@ -5124,7 +5104,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 883
+            "line": 911
           },
           "name": "mount",
           "parameters": [
@@ -5146,7 +5126,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 906
+            "line": 934
           },
           "name": "mountAccessPoint",
           "parameters": [
@@ -5177,7 +5157,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 926
+            "line": 954
           },
           "name": "mountFileSystem",
           "parameters": [
@@ -5208,7 +5188,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 834
+            "line": 862
           },
           "name": "mountYarnCGroups"
         }
@@ -5223,7 +5203,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 237
+            "line": 228
           },
           "name": "connections",
           "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
@@ -5238,7 +5218,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 235
+            "line": 226
           },
           "name": "coreSg",
           "type": {
@@ -5252,7 +5232,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 239
+            "line": 230
           },
           "name": "extraJavaOptions",
           "type": {
@@ -5272,7 +5252,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 238
+            "line": 229
           },
           "name": "grantPrincipal",
           "overrides": "aws-cdk-lib.aws_iam.IGrantable",
@@ -5287,7 +5267,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 241
+            "line": 232
           },
           "name": "instanceProfile",
           "type": {
@@ -5301,7 +5281,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 240
+            "line": 231
           },
           "name": "jobFlowRole",
           "type": {
@@ -5315,7 +5295,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 234
+            "line": 225
           },
           "name": "primarySg",
           "type": {
@@ -5329,7 +5309,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 233
+            "line": 224
           },
           "name": "release",
           "type": {
@@ -5343,7 +5323,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 252
+            "line": 246
           },
           "name": "resource",
           "protected": true,
@@ -5358,7 +5338,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 236
+            "line": 227
           },
           "name": "serviceAccessSg",
           "type": {
@@ -5372,7 +5352,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 242
+            "line": 233
           },
           "name": "serviceRole",
           "type": {
@@ -5386,7 +5366,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 250
+            "line": 244
           },
           "name": "taskInstanceFleets",
           "protected": true,
@@ -5406,7 +5386,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 249
+            "line": 243
           },
           "name": "taskInstanceGroups",
           "protected": true,
@@ -5435,7 +5415,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 172
+        "line": 163
       },
       "name": "ClusterProps",
       "properties": [
@@ -5449,7 +5429,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 200
+            "line": 191
           },
           "name": "coreInstanceFleet",
           "optional": true,
@@ -5467,7 +5447,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 193
+            "line": 184
           },
           "name": "coreInstanceGroup",
           "optional": true,
@@ -5485,7 +5465,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 186
+            "line": 177
           },
           "name": "primaryInstanceFleet",
           "optional": true,
@@ -5503,7 +5483,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 179
+            "line": 170
           },
           "name": "primaryInstanceGroup",
           "optional": true,
@@ -5522,7 +5502,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 226
+            "line": 217
           },
           "name": "taskInstanceFleets",
           "optional": true,
@@ -5546,7 +5526,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 213
+            "line": 204
           },
           "name": "taskInstanceGroups",
           "optional": true,
@@ -7938,11 +7918,28 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 80
+            "line": 86
           },
           "name": "instanceType",
           "type": {
             "fqn": "aws-cdk-lib.aws_ec2.InstanceType"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-name",
+            "stability": "experimental",
+            "summary": "Friendly name given to the instance group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 33
+          },
+          "name": "name",
+          "type": {
+            "primitive": "string"
           }
         },
         {
@@ -7955,7 +7952,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 33
+            "line": 39
           },
           "name": "autoScalingPolicy",
           "optional": true,
@@ -7974,7 +7971,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 41
+            "line": 47
           },
           "name": "bidPrice",
           "optional": true,
@@ -7993,7 +7990,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 49
+            "line": 55
           },
           "name": "configurations",
           "optional": true,
@@ -8016,7 +8013,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 55
+            "line": 61
           },
           "name": "customAmi",
           "optional": true,
@@ -8034,7 +8031,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 61
+            "line": 67
           },
           "name": "ebsBlockDevices",
           "optional": true,
@@ -8059,7 +8056,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 74
+            "line": 80
           },
           "name": "ebsOptimized",
           "optional": true,
@@ -8077,30 +8074,12 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 86
+            "line": 92
           },
           "name": "market",
           "optional": true,
           "type": {
             "fqn": "@packyak/aws-cdk.InstanceMarket"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-name",
-            "stability": "experimental",
-            "summary": "Friendly name given to the instance group."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/instance-group.ts",
-            "line": 92
-          },
-          "name": "name",
-          "optional": true,
-          "type": {
-            "primitive": "string"
           }
         }
       ],
@@ -8987,11 +8966,28 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 80
+            "line": 86
           },
           "name": "instanceType",
           "type": {
             "fqn": "aws-cdk-lib.aws_ec2.InstanceType"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-name",
+            "stability": "experimental",
+            "summary": "Friendly name given to the instance group."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/instance-group.ts",
+            "line": 33
+          },
+          "name": "name",
+          "type": {
+            "primitive": "string"
           }
         },
         {
@@ -9004,7 +9000,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 33
+            "line": 39
           },
           "name": "autoScalingPolicy",
           "optional": true,
@@ -9023,7 +9019,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 41
+            "line": 47
           },
           "name": "bidPrice",
           "optional": true,
@@ -9042,7 +9038,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 49
+            "line": 55
           },
           "name": "configurations",
           "optional": true,
@@ -9065,7 +9061,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 55
+            "line": 61
           },
           "name": "customAmi",
           "optional": true,
@@ -9083,7 +9079,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 61
+            "line": 67
           },
           "name": "ebsBlockDevices",
           "optional": true,
@@ -9108,7 +9104,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 74
+            "line": 80
           },
           "name": "ebsOptimized",
           "optional": true,
@@ -9145,30 +9141,12 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/instance-group.ts",
-            "line": 86
+            "line": 92
           },
           "name": "market",
           "optional": true,
           "type": {
             "fqn": "@packyak/aws-cdk.InstanceMarket"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-name",
-            "stability": "experimental",
-            "summary": "Friendly name given to the instance group."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/instance-group.ts",
-            "line": 92
-          },
-          "name": "name",
-          "optional": true,
-          "type": {
-            "primitive": "string"
           }
         }
       ],
@@ -10603,6 +10581,6 @@
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.10",
-  "fingerprint": "DcfGTeulocQVN3E+4rnkJUmxIyQt/ZWbcFDeHMRbpGE="
+  "version": "0.4.11",
+  "fingerprint": "zu09rhChQRFXL1nXGxLNdGWJ0ZvUNKgK6PU9halYJac="
 }

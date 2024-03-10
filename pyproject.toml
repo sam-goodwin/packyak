@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "packyak"
-version = "0.4.19"
+version = "0.4.20"
 description = "Infrastructure for AI applications and machine learning pipelines"
 authors = ["sam <sam@eventual.ai>"]
 readme = "README.md"
