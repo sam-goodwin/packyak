@@ -80,7 +80,7 @@ class EMR:
 
     async def try_get_primary_node_instance_id(self, cluster_id: str) -> str | None:
         async with session.create_client("emr") as emr:
-            response = await emr.list_instance_groups(ClusterId=cluster_id)
+            response = await emr.list_instance_groups(ClusterId=cluster_id)  # type: ignore
             for group in response["InstanceGroups"]:
                 if "InstanceGroupType" not in group:
                     raise Exception("No instance group type")
@@ -109,33 +109,19 @@ class EMR:
 
     async def list_clusters(
         self,
-        active_only: bool = True,
+        states: List[ClusterStatus] = [
+            ClusterStatus.STARTING,
+            ClusterStatus.BOOTSTRAPPING,
+            ClusterStatus.RUNNING,
+            ClusterStatus.WAITING,
+        ],
     ) -> List[Cluster]:
         """
         List EMR clusters based on their states asynchronously.
 
-        :param active_only: If True, only active clusters are listed. Otherwise, all clusters are listed.
+        :param states: A list of ClusterStatus values to filter the clusters by their current state.
         :return: A list of Cluster objects representing the EMR clusters.
         """
-
-        states = (
-            [
-                ClusterStatus.STARTING,
-                ClusterStatus.BOOTSTRAPPING,
-                ClusterStatus.RUNNING,
-                ClusterStatus.WAITING,
-            ]
-            if active_only
-            else [
-                ClusterStatus.STARTING,
-                ClusterStatus.BOOTSTRAPPING,
-                ClusterStatus.RUNNING,
-                ClusterStatus.WAITING,
-                ClusterStatus.TERMINATING,
-                ClusterStatus.TERMINATED,
-                ClusterStatus.TERMINATED_WITH_ERRORS,
-            ]
-        )
 
         async with session.create_client("emr") as emr:
             response = await emr.list_clusters(
@@ -146,16 +132,14 @@ class EMR:
         def parse_cluster_status(cluster: Any) -> ClusterStatus:
             return ClusterStatus(cluster["Status"]["State"])
 
-        def fail(msg: str):
-            raise Exception(msg)
-
         return [
             Cluster(
-                cluster_id=cluster.get("Id", fail("No cluster ID")),
-                cluster_name=cluster.get("Name", fail("No cluster name")),
+                cluster_id=cluster.get("Id"),  # type: ignore
+                cluster_name=cluster.get("Name"),  # type: ignore
                 cluster_status=parse_cluster_status(cluster),
             )
             for cluster in clusters
+            if "Id" in cluster and "Name" in cluster and "Status" in cluster
         ]
 
     _bucket_name_cache = {}

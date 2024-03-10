@@ -7,6 +7,8 @@ from packyak.cli.run import run
 from packyak.cli.materialize import materialize
 from packyak.cli.logs import logs
 from packyak.cli.instances import instances
+from packyak.cli.clusters import clusters
+
 
 __all__ = [
     "cli",
@@ -18,4 +20,5 @@ __all__ = [
     "list",
     "logs",
     "instances",
+    "clusters",
 ]

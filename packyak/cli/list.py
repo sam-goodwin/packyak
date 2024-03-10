@@ -1,4 +1,4 @@
-import click
+import asyncclick as click
 import os
 from tabulate import tabulate
 
@@ -11,14 +11,14 @@ from packyak.util.emr import EMR
     "--profile", type=str, help="AWS CLI profile to use when authenticating to SSM"
 )
 @click.option("-v", "--verbose", type=str, is_flag=True)
-def list(profile: str | None, verbose: bool = False):
+async def list(profile: str | None, verbose: bool = False):
     if profile is not None:
         os.environ["AWS_PROFILE"] = profile
 
     emr = EMR()
 
     try:
-        clusters = emr.list_clusters(active_only=True)
+        clusters = await emr.list_clusters()
         if len(clusters) > 0:
             print(
                 tabulate(

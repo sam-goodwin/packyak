@@ -1,6 +1,5 @@
-import asyncio
 from typing import Any
-import click
+import asyncclick as click
 import subprocess
 import time
 import boto3
@@ -41,7 +40,7 @@ session = get_session()
     "--profile", type=str, help="AWS CLI profile to use when authenticating to SSM"
 )
 @click.option("--user", type=str, help="POSIX username to log in as. Defaults to root.")
-def ssh(
+async def ssh(
     instance_id: str,
     ssh_key: str = "~/.ssh/id_rsa",
     # todo: what port forwarding to i need for VS Code Remote SSH
@@ -68,139 +67,132 @@ def ssh(
         if verbose:
             print(message)
 
-    async def ssh(instance_id: str, user: str | None):
-        if instance_id.startswith("j"):
-            log(
-                f"Instance ID {instance_id} looks like an EMR cluster ID. Resolving the Primary node."
-            )
-            instance_id = await emr.get_primary_node_instance_id(cluster_id=instance_id)
-            log(f"Resolved primary node: {instance_id}")
+    if instance_id.startswith("j"):
+        log(
+            f"Instance ID {instance_id} looks like an EMR cluster ID. Resolving the Primary node."
+        )
+        instance_id = await emr.get_primary_node_instance_id(cluster_id=instance_id)
+        log(f"Resolved primary node: {instance_id}")
 
-        if user is None:
-            async with session.create_client("sts") as sts_client:
-                caller_identity = await sts_client.get_caller_identity()
+    if user is None:
+        async with session.create_client("sts") as sts_client:
+            caller_identity = await sts_client.get_caller_identity()
 
-            user_id = caller_identity.get("UserId", "")
-            user = user_id.split(":")[1] if ":" in user_id else "root"
-        log(f"Logging in as {user}")
+        user_id = caller_identity.get("UserId", "")
+        user = user_id.split(":")[1] if ":" in user_id else "root"
+    log(f"Logging in as {user}")
 
-        log(f"{time.ctime()} sm-connect-ssh-proxy: Connecting to: {instance_id}")
-        # print(f"{time.ctime()} sm-connect-ssh-proxy: Extra args: {extra_ssh_args}")
+    log(f"{time.ctime()} sm-connect-ssh-proxy: Connecting to: {instance_id}")
+    # print(f"{time.ctime()} sm-connect-ssh-proxy: Extra args: {extra_ssh_args}")
 
-        async with session.create_client("ssm") as ssm_client:
-            instance_info = await ssm_client.describe_instance_information(
-                Filters=[{"Key": "InstanceIds", "Values": [instance_id]}]
-            )
-            if not instance_info["InstanceInformationList"]:
-                log("No instance information found.")
-                instance_status = "Offline"
-            else:
-                instance_status = instance_info["InstanceInformationList"][0][
-                    "PingStatus"
-                ]
-            log(f"Instance status: {instance_status}")
+    async with session.create_client("ssm") as ssm_client:
+        instance_info = await ssm_client.describe_instance_information(
+            Filters=[{"Key": "InstanceIds", "Values": [instance_id]}]
+        )
+        if not instance_info["InstanceInformationList"]:
+            log("No instance information found.")
+            instance_status = "Offline"
+        else:
+            instance_status = instance_info["InstanceInformationList"][0]["PingStatus"]
+        log(f"Instance status: {instance_status}")
 
-            if instance_status != "Online":
-                log("Error: Instance is offline.")
-                return
+        if instance_status != "Online":
+            log("Error: Instance is offline.")
+            return
 
-            async with aiofiles.open(os.path.expanduser(f"{ssh_key}.pub"), "r") as file:
-                ssh_pub_key = (await file.read()).strip()
+        async with aiofiles.open(os.path.expanduser(f"{ssh_key}.pub"), "r") as file:
+            ssh_pub_key = (await file.read()).strip()
 
-            current_region = boto3.session.Session().region_name
-            log(f"Will use AWS Region: {current_region}")
+        current_region = boto3.session.Session().region_name
+        log(f"Will use AWS Region: {current_region}")
 
-            aws_cli_version = subprocess.check_output(
-                ["aws", "--version"], stderr=subprocess.STDOUT
-            ).decode()
-            log(f"AWS CLI version (should be v2): {aws_cli_version}")
+        aws_cli_version = subprocess.check_output(
+            ["aws", "--version"], stderr=subprocess.STDOUT
+        ).decode()
+        log(f"AWS CLI version (should be v2): {aws_cli_version}")
 
-            ssh_dir = "/root/.ssh/" if user == "root" else f"/home/{user}/.ssh/"
+        ssh_dir = "/root/.ssh/" if user == "root" else f"/home/{user}/.ssh/"
 
-            commands = [
-                # f'echo "{ssh_pub_key}" > /etc/ssh/authorized_keys',
-                f"mkdir -p {ssh_dir}",
-                f'echo "{ssh_pub_key}" > {ssh_dir}/authorized_keys',
-            ]
-            log(f"Sending command to instance: {commands}")
-            send_command_response = await ssm_client.send_command(
-                InstanceIds=[instance_id],
-                DocumentName="AWS-RunShellScript",
-                Comment="Copy public key for SSH helper",
-                Parameters={"commands": commands},
-                TimeoutSeconds=30,
-            )
-            command_id = send_command_response["Command"]["CommandId"]
-            log(f"Got command ID: {command_id}")
+        commands = [
+            # f'echo "{ssh_pub_key}" > /etc/ssh/authorized_keys',
+            f"mkdir -p {ssh_dir}",
+            f'echo "{ssh_pub_key}" > {ssh_dir}/authorized_keys',
+        ]
+        log(f"Sending command to instance: {commands}")
+        send_command_response = await ssm_client.send_command(
+            InstanceIds=[instance_id],
+            DocumentName="AWS-RunShellScript",
+            Comment="Copy public key for SSH helper",
+            Parameters={"commands": commands},
+            TimeoutSeconds=30,
+        )
+        command_id = send_command_response["Command"]["CommandId"]
+        log(f"Got command ID: {command_id}")
 
-            # time.sleep(5)  # Wait a bit to prevent InvocationDoesNotExist error
+        # time.sleep(5)  # Wait a bit to prevent InvocationDoesNotExist error
 
-            for _ in range(15):
-                try:
-                    output = await ssm_client.get_command_invocation(
-                        CommandId=command_id, InstanceId=instance_id
-                    )
-                    log(f"Command status: {output['Status']}")
-                    if output["Status"] not in ["Pending", "InProgress"]:
-                        log(
-                            f"Command output: {output.get('StandardOutputContent', '')}"
-                        )
-                        if output.get("StandardErrorContent"):
-                            log(f"Command error: {output['StandardErrorContent']}")
-                        break
-                except ssm_client.exceptions.InvocationDoesNotExist:
-                    pass
-                time.sleep(0.1)
+        for _ in range(15):
+            try:
+                output = await ssm_client.get_command_invocation(
+                    CommandId=command_id, InstanceId=instance_id
+                )
+                log(f"Command status: {output['Status']}")
+                if output["Status"] not in ["Pending", "InProgress"]:
+                    log(f"Command output: {output.get('StandardOutputContent', '')}")
+                    if output.get("StandardErrorContent"):
+                        log(f"Command error: {output['StandardErrorContent']}")
+                    break
+            except ssm_client.exceptions.InvocationDoesNotExist:
+                pass
+            time.sleep(0.1)
 
-            if output["Status"] != "Success":  # type: ignore
-                log("Error: Command didn't finish successfully in time")
-                return
+        if output["Status"] != "Success":  # type: ignore
+            log("Error: Command didn't finish successfully in time")
+            return
 
-            log(f"{time.ctime()} sm-connect-ssh-proxy: Starting SSH over SSM proxy")
+        log(f"{time.ctime()} sm-connect-ssh-proxy: Starting SSH over SSM proxy")
 
-            proxy_command = (
-                "aws ssm start-session "
-                + "--reason 'PackYak SSH' "
-                + f"--region '{current_region}' "
-                + f"--target '{instance_id}' "
-                + "--document-name AWS-StartSSHSession "
-                + "--parameters portNumber=%p"
-            )
+        proxy_command = (
+            "aws ssm start-session "
+            + "--reason 'PackYak SSH' "
+            + f"--region '{current_region}' "
+            + f"--target '{instance_id}' "
+            + "--document-name AWS-StartSSHSession "
+            + "--parameters portNumber=%p"
+        )
 
-            # Start with the base SSH command
-            command = ["ssh", "-4"]
+        # Start with the base SSH command
+        command = ["ssh", "-4"]
 
-            # Add each SSH option prefixed by '-o'
-            for option in [
-                f"User={user}",
-                f"IdentityFile={ssh_key}",
-                "IdentitiesOnly=yes",
-                f"ProxyCommand={proxy_command}",
-                "ServerAliveInterval=15",
-                "ServerAliveCountMax=3",
-                "PasswordAuthentication=no",
-                "StrictHostKeyChecking=no",
-                "UserKnownHostsFile=/dev/null",
-            ]:
-                command.extend(["-o", option])
+        # Add each SSH option prefixed by '-o'
+        for option in [
+            f"User={user}",
+            f"IdentityFile={ssh_key}",
+            "IdentitiesOnly=yes",
+            f"ProxyCommand={proxy_command}",
+            "ServerAliveInterval=15",
+            "ServerAliveCountMax=3",
+            "PasswordAuthentication=no",
+            "StrictHostKeyChecking=no",
+            "UserKnownHostsFile=/dev/null",
+        ]:
+            command.extend(["-o", option])
 
-            # Add each port forward prefixed by '-L'
-            for port in port_forwards:
-                command.extend(["-L", port])
+        # Add each port forward prefixed by '-L'
+        for port in port_forwards:
+            command.extend(["-L", port])
 
-            # Finally, add the instance ID
-            command.append(instance_id)
+        # Finally, add the instance ID
+        command.append(instance_id)
 
-            log(" ".join(command))  # Debugging: log the command
+        log(" ".join(command))  # Debugging: log the command
 
-            # Execute the command
-            process = subprocess.run(
-                command,
-                check=True,
-            )
-            return process.stdout, process.stderr
-
-    asyncio.run(ssh(instance_id, user))
+        # Execute the command
+        process = subprocess.run(
+            command,
+            check=True,
+        )
+        return process.stdout, process.stderr
 
 
 class Host:

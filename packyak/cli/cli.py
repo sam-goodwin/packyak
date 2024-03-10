@@ -1,4 +1,4 @@
-import click
+import asyncclick as click
 
 
 @click.group()

@@ -1,4 +1,4 @@
-import click
+import asyncclick as click
 from packyak.cli.cli import cli
 from packyak.util.git import get_git_branch
 from packyak.synth import synth as _synth
@@ -27,7 +27,7 @@ import asyncio
     help="AWS CLI profile to use when authenticating to SSM",
 )
 @cli.command()
-def synth(
+async def synth(
     config: str,
     branch: str,
     profile: str | None,
@@ -52,11 +52,6 @@ def synth(
         raise ImportError(
             f"Could not load module {config}. Please ensure the loader is available."
         )
-    asyncio.run(async_synth())
-
-
-async def async_synth():
-    # Your async code here
     packyak_spec = await _synth()  # Assuming _synth can be an async function
     os.makedirs(".packyak", exist_ok=True)
     async with aio.open(os.path.join(".packyak", "manifest.json"), "w") as f:

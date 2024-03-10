@@ -1,4 +1,4 @@
-import click
+import asyncclick as click
 
 from packyak.cli.cli import cli
 

@@ -1,4 +1,4 @@
-import click
+import asyncclick as click
 from packyak.cli.cli import cli
 from packyak.util.emr import EMR
 import asyncio
@@ -6,11 +6,10 @@ import os
 
 
 @cli.command()
-@click.option(
-    "--cluster-id",
+@click.argument(
+    "cluster_id",
     required=True,
     type=str,
-    help="The unique identifier of the EMR cluster.",
 )
 @click.option(
     "--instance-id",
@@ -31,7 +30,7 @@ import os
     is_flag=True,
     help="Retrieve and display the content of the log files.",
 )
-def logs(
+async def logs(
     cluster_id: str,
     instance_id: str,
     profile: str | None,
@@ -45,24 +44,21 @@ def logs(
         os.environ["AWS_PROFILE"] = profile
     emr = EMR()
 
-    async def list_and_print_logs():
-        logs = await emr.list_logs(cluster_id, instance_id)
-        import fnmatch
+    logs = await emr.list_logs(cluster_id, instance_id)
+    import fnmatch
 
-        filtered_logs = logs
-        if log_files:
-            filtered_logs = []
-            for log_file_pattern in log_files:
-                filtered_logs.extend(fnmatch.filter(logs, log_file_pattern))
+    filtered_logs = logs
+    if log_files:
+        filtered_logs = []
+        for log_file_pattern in log_files:
+            filtered_logs.extend(fnmatch.filter(logs, log_file_pattern))
 
-        if get:
-            log_text = await asyncio.gather(
-                *[emr.get_log_text(cluster_id, log) for log in filtered_logs]
-            )
-            for text in log_text:
-                print(text)
-        else:
-            for log in filtered_logs:
-                print(log)
-
-    asyncio.run(list_and_print_logs())
+    if get:
+        log_text = await asyncio.gather(
+            *[emr.get_log_text(cluster_id, log) for log in filtered_logs]
+        )
+        for text in log_text:
+            print(text)
+    else:
+        for log in filtered_logs:
+            print(log)

@@ -7,6 +7,7 @@ from packyak.cli.ssh import ssh
 from packyak.cli.synth import synth
 from packyak.cli.logs import logs
 from packyak.cli.instances import instances
+from packyak.cli.clusters import clusters
 
 
 __all__ = [
@@ -19,6 +20,7 @@ __all__ = [
     "list",
     "logs",
     "instances",
+    "clusters",
 ]
 
 cli()
