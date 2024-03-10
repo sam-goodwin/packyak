@@ -129,15 +129,6 @@ export interface BaseClusterProps {
    */
   readonly home?: Workspace;
   /**
-   * By default, we enable GPU detection and registration with the YARN Node Manager.
-   *
-   * If disabled, you won't be able to provision GPU (P or G) EC2 instance types.
-   *
-   * @default true
-   * @see https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html
-   */
-  readonly enableGpuAcceleration?: boolean;
-  /**
    * Enable the Spark Rapids plugin.
    *
    * @default false
@@ -245,6 +236,9 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
   private readonly bootstrapActions: BootstrapAction[];
   private readonly configurations: Configuration[];
   private readonly clusterID: string;
+  private readonly enableSparkRapids: boolean | undefined;
+  private readonly enableXGBoost: boolean | undefined;
+  private readonly enableDocker: boolean;
 
   protected readonly taskInstanceGroups: InstanceGroup[];
   protected readonly taskInstanceFleets: InstanceFleet[];
@@ -333,12 +327,30 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
 
     const awsAccount = Stack.of(this).account;
     const awsRegion = Stack.of(this).region;
-    const enableDocker = props.enableDocker ?? true;
-    const enableGpuAcceleration = props.enableGpuAcceleration ?? true;
+    this.enableDocker = props.enableDocker ?? true;
+    const enableGpuAcceleration = [
+      ...(props.primaryInstanceGroup
+        ? [props.primaryInstanceGroup.instanceType]
+        : []),
+      ...(props.coreInstanceGroup
+        ? [props.coreInstanceGroup.instanceType]
+        : []),
+      ...(props.taskInstanceGroups?.flatMap((group) => [group.instanceType]) ??
+        []),
+      ...(props.primaryInstanceFleet?.instanceTypes.map(
+        (type) => type.instanceType,
+      ) ?? []),
+      ...(props.coreInstanceFleet?.instanceTypes.map(
+        (type) => type.instanceType,
+      ) ?? []),
+      ...(props.taskInstanceFleets?.flatMap((fleet) =>
+        fleet.instanceTypes.map((type) => type.instanceType),
+      ) ?? []),
+    ].some((instanceType) => isGPUInstance(instanceType));
     const isUniformCluster =
-      props.primaryInstanceGroup ||
-      props.coreInstanceGroup ||
-      props.taskInstanceGroups;
+      !!props.primaryInstanceGroup ||
+      !!props.coreInstanceGroup ||
+      !!props.taskInstanceGroups;
     const isFleetCluster =
       props.primaryInstanceFleet ||
       props.coreInstanceFleet ||
@@ -355,18 +367,6 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
         "You cannot enable GPU support without also enabling YARN cgroups. Set `disableYarnCGroups: false` to re-enable YARN cgroups.",
       );
     }
-    if (props.enableSparkRapids) {
-      if (this.release.majorVersion < 6) {
-        throw new Error(
-          `The Spark Rapids plugin is not supported in EMR ${this.release.label}. You must >= 6.x`,
-        );
-      }
-    }
-    if (props.enableXGBoost && !props.enableSparkRapids) {
-      throw new Error(
-        "You cannot enable the XGBoost plugin without also enabling the Spark Rapids plugin.",
-      );
-    }
     if (enableGpuAcceleration) {
       if (this.release.majorVersion < 6) {
         throw new Error(
@@ -375,10 +375,30 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
         );
       }
     }
+    if (props.enableSparkRapids) {
+      if (this.release.majorVersion < 6) {
+        throw new Error(
+          `The Spark Rapids plugin is not supported in EMR ${this.release.label}. You must >= 6.x`,
+        );
+      }
+      if (!enableGpuAcceleration) {
+        throw new Error(
+          "You cannot enable the Spark Rapids plugin because none of the Instance Types are GPU instances.",
+        );
+      }
+    }
+    if (props.enableXGBoost && !props.enableSparkRapids) {
+      throw new Error(
+        "You cannot enable the XGBoost plugin without also enabling the Spark Rapids plugin.",
+      );
+    }
+    this.enableSparkRapids = props.enableSparkRapids;
+    this.enableXGBoost = props.enableXGBoost;
+
     if (!props.disableYarnCGroups) {
       this.mountYarnCGroups();
     }
-    if (enableDocker && enableGpuAcceleration) {
+    if (this.enableDocker && enableGpuAcceleration) {
       this.installNVidiaContainerToolkit();
     }
 
@@ -512,11 +532,13 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                   "yarn",
                 "yarn.nodemanager.container-executor.class":
                   "org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor",
-                ...(enableGpuAcceleration
-                  ? {
-                      "yarn.nodemanager.resource-plugins": "yarn.io/gpu",
-                    }
-                  : {}),
+
+                // I think this is causing non-GPU Core instances to fail, moving to the per instances group config
+                // ...(enableGpuAcceleration
+                //   ? {
+                //       "yarn.nodemanager.resource-plugins": "yarn.io/gpu",
+                //     }
+                //   : {}),
               },
             },
             {
@@ -535,7 +557,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                     "yarn-hierarchy": "yarn",
                   },
                 },
-                enableDocker
+                this.enableDocker
                   ? {
                       // TODO: support more configuration
                       // see: https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-site/DockerContainers.html
@@ -584,7 +606,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                 ]
               : undefined,
             // @see https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-rapids.html
-            props.enableSparkRapids
+            this.enableSparkRapids
               ? [
                   {
                     classification: "spark",
@@ -596,6 +618,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                     classification: "spark-defaults",
                     configurationProperties: {
                       "spark.plugins": "com.nvidia.spark.SQLPlugin",
+                      // TODO: do these need to be on the executor nodes that have GPUs only or can it be global?
                       "spark.executor.resource.gpu.discoveryScript":
                         "/usr/lib/spark/scripts/gpu/getGpusResources.sh",
                       "spark.executor.extraLibraryPath":
@@ -605,12 +628,12 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                 ]
               : undefined,
             // @see https://docs.nvidia.com/spark-rapids/user-guide/latest/getting-started/aws-emr.html#submit-spark-jobs-to-an-emr-cluster-accelerated-by-gpus
-            props.enableXGBoost
+            this.enableXGBoost
               ? {
                   classification: "spark-defaults",
                   configurationProperties: {
                     "spark.submit.pyFiles":
-                      // note: spark_3.0 is used for all spark versions on EMR right now
+                      // note: spark_3.0 is used for all spark versions on EMR right now, this could be confusing if you look at it - it does not need to match the spark version, e.g. spark_3.5
                       "/usr/lib/spark/jars/xgboost4j-spark_3.0-1.4.2-0.3.0.jar",
                   },
                 }
@@ -694,6 +717,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     instanceGroup: InstanceGroup,
   ): CfnCluster.InstanceGroupConfigProperty {
     return {
+      name: instanceGroup.name,
       instanceCount: instanceGroup.instanceCount,
       instanceType: instanceGroup.instanceType.toString(),
       customAmiId: instanceGroup.customAmi?.getImage(this).imageId,
@@ -769,17 +793,21 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
   private getInstanceConfigurations(
     instance: InstanceType,
   ): Configuration[] | undefined {
-    const instanceType = instance.toString().toLocaleLowerCase();
-    const isGpuInstance =
-      instanceType.startsWith("p") || instanceType.startsWith("g");
-    if (isGpuInstance) {
+    if (isGPUInstance(instance)) {
       return [
         {
           classification: "yarn-site",
           configurationProperties: {
+            "yarn.nodemanager.resource-plugins": "yarn.io/gpu",
             "yarn.nodemanager.resource-plugins.gpu.allowed-gpu-devices": "auto",
             "yarn.nodemanager.resource-plugins.gpu.path-to-discovery-executables":
               "/usr/bin",
+            ...(this.enableDocker
+              ? {
+                  "yarn.nodemanager.resource-plugins.gpu.docker-plugin":
+                    "nvidia-docker-v2",
+                }
+              : {}),
           },
         },
       ];
@@ -1150,4 +1178,11 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     this.serviceAccessSg.connections.allowTo(this.primarySg, Port.tcp(8443));
     this.serviceAccessSg.connections.allowTo(this.coreSg, Port.tcp(8443));
   }
+}
+
+function isGPUInstance(instanceType: InstanceType): boolean {
+  const instanceTypeString = instanceType.toString().toLowerCase();
+  return (
+    instanceTypeString.startsWith("p") || instanceTypeString.startsWith("g")
+  );
 }

@@ -2,7 +2,6 @@ import os
 import asyncclick as click
 from packyak.cli.cli import cli
 from packyak.util.git import get_git_branch
-from packyak.synth import synth
 
 
 @cli.command()
@@ -32,6 +31,4 @@ def materialize(
     branch: str = get_git_branch(),
     profile: str | None = None,
 ):
-    spec = synth(root)
-
     pass
