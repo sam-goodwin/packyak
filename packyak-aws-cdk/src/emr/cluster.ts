@@ -404,7 +404,10 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       // because the devices won't be registered properly
       // EMR installs the nvidia drivers AFTER running bootstrap scripts, so
       // the only way around this is to install the drivers as part of the bootstrap
-      this.installNvidiaDrivers();
+      // TODO: disable this, it shouldn't be needed actually
+      //
+      // NOTE: this actually seems to be causing problems
+      // this.installNvidiaDrivers();
     }
 
     // this constructs a globally unique identifier for the cluster for use in ResourceTag IAM policies
