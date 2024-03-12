@@ -11,3 +11,5 @@ lib
 node_modules
 tmp*
 custom
+.DS_Store
+

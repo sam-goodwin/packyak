@@ -399,15 +399,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       this.mountYarnCGroups();
     }
     if (this.enableDocker && enableGpuAcceleration) {
-      // we need the nvidia container toolkit to use docker and GPUs
-      // but, we can't install the toolkit before installing the nvidia drivers
-      // because the devices won't be registered properly
-      // EMR installs the nvidia drivers AFTER running bootstrap scripts, so
-      // the only way around this is to install the drivers as part of the bootstrap
-      // TODO: disable this, it shouldn't be needed actually
-      //
-      // NOTE: this actually seems to be causing problems
-      // this.installNvidiaDrivers();
+      this.installNvidiaContainerToolkit();
     }
 
     // this constructs a globally unique identifier for the cluster for use in ResourceTag IAM policies
@@ -754,7 +746,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     const targetOnDemandCapacity = instanceFleet.targetOnDemandCapacity ?? 0;
     const targetSpotCapacity = instanceFleet.targetSpotCapacity ?? 0;
 
-    if (targetOnDemandCapacity + targetSpotCapacity == 0) {
+    if (targetOnDemandCapacity + targetSpotCapacity === 0) {
       throw new Error(
         "targetOnDemandCapacity and targetSpotCapacity cannot both be 0",
       );
@@ -886,6 +878,16 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     this.addBootstrapAction({
       name: "Install NVIDIA Drivers",
       script: this.getScript("install-nvidia-drivers.sh"),
+    });
+  }
+
+  /**
+   * Install the NVidia drivers on the EMR cluster.
+   */
+  public installNvidiaContainerToolkit() {
+    this.addBootstrapAction({
+      name: "Install NVIDIA Container Toolkit",
+      script: this.getScript("install-nvidia-container-toolkit.sh"),
     });
   }
 
