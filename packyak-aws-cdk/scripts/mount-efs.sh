@@ -70,35 +70,6 @@ sudo mkdir -p ${MOUNT_POINT}/.ssh
 sudo chown ${USERNAME}:${GROUP_ID} ${MOUNT_POINT}/.ssh
 sudo chmod 750 ${MOUNT_POINT}/.ssh
 
-#####
-# Resolve this EC2 machine's Subnet and find the most appropriate EFS MountTarget
-#####
-# see: https://aws.amazon.com/about-aws/whats-new/2021/03/amazon-emr-now-supports-amazon-ec2-instance-metadata-service-v2/
-TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" -s)
-INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id -H "X-aws-ec2-metadata-token: $TOKEN")
-MAC=$(curl -s http://169.254.169.254/latest/meta-data/mac -H "X-aws-ec2-metadata-token: $TOKEN")
-# Fetch the instance's subnet ID using the instance metadata service
-SUBNET=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/$MAC/subnet-id -H "X-aws-ec2-metadata-token: $TOKEN")
-MOUNT_TARGETS=$(aws efs describe-mount-targets --file-system-id $FILE_SYSTEM_ID --output json)
-MOUNT_TARGET_IP=$(python -c "
-file_system_id = '$FILE_SYSTEM_ID'
-subnet_id = '$SUBNET'
-mount_targets = ${MOUNT_TARGETS}['MountTargets']
-if not mount_targets or len(mount_targets) == 0:
-    print(file_system_id)
-else:
-    matching_targets = [mt for mt in mount_targets if mt['SubnetId'] == subnet_id]
-    if matching_targets:
-        print(matching_targets[0]['IpAddress'])
-    else:
-        print(mount_targets[0]['IpAddress'])
-")
-
-PARAMS=""
-
-if [ ! -z "$MOUNT_TARGET_IP" ]; then
-  PARAMS="mounttargetip=$MOUNT_TARGET_IP"
-fi
 if [ ! -z "${ACCESS_POINT_ID}" ]; then
   PARAMS="$PARAMS,accesspoint=${ACCESS_POINT_ID}"
 fi
