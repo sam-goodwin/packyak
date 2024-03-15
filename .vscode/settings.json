@@ -4,8 +4,6 @@
     ".pycache": true,
     ".ruff_cache": true
   },
-  
-  
   "editor.formatOnSave": true,
   "prettier.resolveGlobalModules": false,
   "editor.indentSize": 2,
@@ -14,11 +12,11 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "biomejs.biome",
-    "editor.indentSize": 2
+    "editor.indentSize": 2,
   },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome",
-    "editor.indentSize": 2
+    "editor.indentSize": 2,
   },
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",

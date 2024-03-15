@@ -56,6 +56,7 @@ const sam = workspace.addHome({
 
 const m5_xlarge = InstanceType.of(InstanceClass.M5, InstanceSize.XLARGE);
 const g5_4xlarge = InstanceType.of(InstanceClass.G5, InstanceSize.XLARGE4);
+// const g5_12xlarge = InstanceType.of(InstanceClass.G5, InstanceSize.XLARGE12);
 
 const spark = new UniformCluster(stack, "UniformCluster", {
   removalPolicy,
@@ -67,6 +68,7 @@ const spark = new UniformCluster(stack, "UniformCluster", {
   extraJavaOptions: {
     "-Djdk.httpclient.allowRestrictedHeaders": "host",
   },
+  installGitHubCLI: true,
   enableSSMAgent: true,
   enableDocker: true,
   managedScalingPolicy: {

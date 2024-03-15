@@ -566,11 +566,6 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                         // by default, trust all container registries in the account/region pair
                         "docker.privileged-containers.registries": `local,${awsAccount}.dkr.ecr.${awsRegion}.amazonaws.com`,
                         "docker.trusted.registries": `local,${awsAccount}.dkr.ecr.${awsRegion}.amazonaws.com`,
-                        ...(enableGpuAcceleration
-                          ? {
-                              "docker.allowed.runtimes": "nvidia",
-                            }
-                          : {}),
                       },
                     }
                   : undefined,
@@ -794,6 +789,115 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     instance: InstanceType,
   ): Configuration[] | undefined {
     if (isGPUInstance(instance)) {
+      const nvidiaK80 = {
+        "p2.xlarge": 1,
+        "p2.8xlarge": 8,
+        "p2.16xlarge": 16,
+      };
+      const nvidiaTeslaV100 = {
+        "p3.2xlarge": 1,
+        "p3.8xlarge": 4,
+        "p3.16xlarge": 8,
+        "p3dn.24xlarge": 8,
+      };
+      const nvidiaA100 = {
+        "p4d.24xlarge	": 8,
+        "p4de.24xlarge": 8,
+      };
+      const nvidiaH100 = {
+        "p5.48xlarge": 8,
+      };
+      const nvidiaTeslaM60 = {
+        "g3s.xlarge": 1,
+        "g3.4xlarge": 1,
+        "g3.8xlarge": 2,
+        "g3.16xlarge": 4,
+      };
+      // const amdRadeonProV520 = {
+      //   "g4ad.xlarge": 1,
+      //   "g4ad.2xlarge": 1,
+      //   "g4ad.4xlarge": 1,
+      //   "g4ad.8xlarge": 2,
+      //   "g4ad.16xlarge": 4,
+      // };
+      const nvidiaT4 = {
+        "g4dn.xlarge": 1,
+        "g4dn.2xlarge": 1,
+        "g4dn.4xlarge": 1,
+        "g4dn.8xlarge": 1,
+        "g4dn.16xlarge": 1,
+        "g4dn.12xlarge": 4,
+        "g4dn.metal": 8,
+      };
+      const nvidiaA10G = {
+        "g5.xlarge": 1,
+        "g5.2xlarge": 1,
+        "g5.4xlarge": 1,
+        "g5.8xlarge": 1,
+        "g5.16xlarge": 1,
+        "g5.12xlarge": 4,
+        "g5.24xlarge": 4,
+        "g5.48xlarge": 8,
+      };
+      const nvidiaT4G = {
+        "g5g.xlarge": 1,
+        "g5g.2xlarge": 1,
+        "g5g.4xlarge": 1,
+        "g5g.8xlarge": 1,
+        "g5g.16xlarge": 2,
+        "g5g.metal": 2,
+      };
+
+      // const trainium = {
+      //   "trn1.2xlarge": 1,
+      //   "trn1.32xlarge": 16,
+      //   "trn1n.32xlarge": 16,
+      // };
+      // TODO: support configuring non-NVIDA chips
+      // const inferentia2 = {
+      //   "inf2.xlarge": 1,
+      //   "inf2.8xlarge": 1,
+      //   "inf2.24xlarge": 6,
+      //   "inf2.48xlarge": 12,
+      // };
+      // const inferentia1 = {
+      //   "inf1.xlarge": 1,
+      //   "inf1.2xlarge": 1,
+      //   "inf1.6xlarge": 4,
+      //   "inf1.24xlarge": 16,
+      // };
+      // const gaudi = {
+      //   "dl1.24xlarge": 8,
+      // };
+      // const qualcommAI100 = {
+      //   "dl2q.24xlarge": 8,
+      // };
+      const gpuMappings = {
+        // ...amdRadeonProV520,
+        ...nvidiaK80,
+        ...nvidiaTeslaV100,
+        ...nvidiaA100,
+        ...nvidiaH100,
+        ...nvidiaTeslaM60,
+        ...nvidiaT4,
+        ...nvidiaA10G,
+        ...nvidiaT4G,
+        // ...trainium,
+        // ...inferentia2,
+        // ...inferentia1,
+        // ...gaudi,
+        // ...qualcommAI100,
+      };
+      const it = instance.toString();
+      if (!(it in gpuMappings)) {
+        throw new Error(`Instance type ${it} does not support GPU`);
+      }
+      const numDevices = gpuMappings[it as keyof typeof gpuMappings];
+      const gpuDevicesList = Array.from(
+        { length: numDevices },
+        (_, index) => `/dev/nvidia${index}`,
+      ).join(",");
+
       return [
         {
           classification: "yarn-site",
@@ -809,6 +913,19 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                 }
               : {}),
           },
+        },
+        {
+          classification: "container-executor",
+          configurationProperties: {},
+          configurations: [
+            {
+              classification: "docker",
+              configurationProperties: {
+                "docker.allowed.runtimes": "nvidia",
+                "docker.allowed.devices": `/dev/nvidiactl,/dev/nvidia-uvm,/dev/nvidia-uvm-tools,${gpuDevicesList}`,
+              },
+            },
+          ],
         },
       ];
       // TODO:
