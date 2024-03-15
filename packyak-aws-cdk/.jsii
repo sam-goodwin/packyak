@@ -4927,7 +4927,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 711
+            "line": 706
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -4950,7 +4950,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 699
+            "line": 694
           },
           "name": "addConfig",
           "parameters": [
@@ -4975,7 +4975,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 688
+            "line": 683
           },
           "name": "addStep",
           "parameters": [
@@ -4997,7 +4997,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1117
+            "line": 1234
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -5018,7 +5018,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 850
+            "line": 967
           },
           "name": "enableSSMAgent"
         },
@@ -5030,7 +5030,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1078
+            "line": 1195
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -5053,7 +5053,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 909
+            "line": 1026
           },
           "name": "installGitHubCLI"
         },
@@ -5064,7 +5064,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 887
+            "line": 1004
           },
           "name": "installNvidiaContainerToolkit"
         },
@@ -5075,7 +5075,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 877
+            "line": 994
           },
           "name": "installNvidiaDrivers"
         },
@@ -5088,7 +5088,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 677
+            "line": 672
           },
           "name": "jdbc",
           "parameters": [
@@ -5115,7 +5115,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 925
+            "line": 1042
           },
           "name": "mount",
           "parameters": [
@@ -5137,7 +5137,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 948
+            "line": 1065
           },
           "name": "mountAccessPoint",
           "parameters": [
@@ -5168,7 +5168,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 968
+            "line": 1085
           },
           "name": "mountFileSystem",
           "parameters": [
@@ -5199,7 +5199,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 862
+            "line": 979
           },
           "name": "mountYarnCGroups"
         },
@@ -5210,7 +5210,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 897
+            "line": 1014
           },
           "name": "setupHadoopUsers"
         }
@@ -10603,6 +10603,6 @@
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.14",
-  "fingerprint": "48W+EmEr6DMQNVBD55S85qgXD+byPNI39hqjE7LVilE="
+  "version": "0.4.15",
+  "fingerprint": "mhq8jRvCbS5dK1LxMKnHycs0NK1cc5q3JG3Im1+Vjgc="
 }
