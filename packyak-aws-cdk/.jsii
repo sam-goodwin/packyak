@@ -4090,6 +4090,52 @@
         {
           "abstract": true,
           "docs": {
+            "default": "- trust the `local` registry and all container registries in the account/region pair",
+            "stability": "experimental",
+            "summary": "Additional registries to allow privileged containers from."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 162
+          },
+          "name": "additionalPrivilegedRegistries",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "primitive": "string"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- trust the `local` registry and all container registries in the account/region pair",
+            "stability": "experimental",
+            "summary": "Additional registries to trust for Docker containers."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 156
+          },
+          "name": "additionalTrustedRegistries",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "primitive": "string"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
             "default": "- No bootstrap actions",
             "stability": "experimental"
           },
@@ -4135,26 +4181,6 @@
         {
           "abstract": true,
           "docs": {
-            "default": "false",
-            "remarks": "Can't be disabled if GPU support is enabled.",
-            "see": "https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html",
-            "stability": "experimental",
-            "summary": "Disable the bootstrap script that mounts cgroups and configures Yarn to use them to isolate each container's resources."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/cluster.ts",
-            "line": 154
-          },
-          "name": "disableYarnCGroups",
-          "optional": true,
-          "type": {
-            "primitive": "boolean"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
             "default": "true",
             "stability": "experimental",
             "summary": "Enable Docker support on the cluster."
@@ -4162,7 +4188,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 160
+            "line": 150
           },
           "name": "enableDocker",
           "optional": true,
@@ -4885,7 +4911,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/cluster.ts",
-          "line": 248
+          "line": 250
         },
         "parameters": [
           {
@@ -4915,7 +4941,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 223
+        "line": 225
       },
       "methods": [
         {
@@ -4927,7 +4953,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 706
+            "line": 712
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -4950,7 +4976,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 694
+            "line": 700
           },
           "name": "addConfig",
           "parameters": [
@@ -4975,7 +5001,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 683
+            "line": 689
           },
           "name": "addStep",
           "parameters": [
@@ -4997,7 +5023,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1234
+            "line": 1240
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -5018,7 +5044,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 967
+            "line": 973
           },
           "name": "enableSSMAgent"
         },
@@ -5030,7 +5056,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1195
+            "line": 1201
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -5053,7 +5079,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1026
+            "line": 1032
           },
           "name": "installGitHubCLI"
         },
@@ -5064,7 +5090,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1004
+            "line": 1010
           },
           "name": "installNvidiaContainerToolkit"
         },
@@ -5075,7 +5101,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 994
+            "line": 1000
           },
           "name": "installNvidiaDrivers"
         },
@@ -5088,7 +5114,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 672
+            "line": 678
           },
           "name": "jdbc",
           "parameters": [
@@ -5115,7 +5141,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1042
+            "line": 1048
           },
           "name": "mount",
           "parameters": [
@@ -5137,7 +5163,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1065
+            "line": 1071
           },
           "name": "mountAccessPoint",
           "parameters": [
@@ -5168,7 +5194,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1085
+            "line": 1091
           },
           "name": "mountFileSystem",
           "parameters": [
@@ -5199,7 +5225,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 979
+            "line": 985
           },
           "name": "mountYarnCGroups"
         },
@@ -5210,7 +5236,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1014
+            "line": 1020
           },
           "name": "setupHadoopUsers"
         }
@@ -5225,7 +5251,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 228
+            "line": 230
           },
           "name": "connections",
           "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
@@ -5240,7 +5266,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 226
+            "line": 228
           },
           "name": "coreSg",
           "type": {
@@ -5254,7 +5280,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 230
+            "line": 232
           },
           "name": "extraJavaOptions",
           "type": {
@@ -5274,7 +5300,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 229
+            "line": 231
           },
           "name": "grantPrincipal",
           "overrides": "aws-cdk-lib.aws_iam.IGrantable",
@@ -5289,7 +5315,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 232
+            "line": 234
           },
           "name": "instanceProfile",
           "type": {
@@ -5303,7 +5329,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 231
+            "line": 233
           },
           "name": "jobFlowRole",
           "type": {
@@ -5317,7 +5343,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 225
+            "line": 227
           },
           "name": "primarySg",
           "type": {
@@ -5331,7 +5357,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 224
+            "line": 226
           },
           "name": "release",
           "type": {
@@ -5345,7 +5371,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 246
+            "line": 248
           },
           "name": "resource",
           "protected": true,
@@ -5360,7 +5386,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 227
+            "line": 229
           },
           "name": "serviceAccessSg",
           "type": {
@@ -5374,7 +5400,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 233
+            "line": 235
           },
           "name": "serviceRole",
           "type": {
@@ -5388,7 +5414,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 244
+            "line": 246
           },
           "name": "taskInstanceFleets",
           "protected": true,
@@ -5408,7 +5434,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 243
+            "line": 245
           },
           "name": "taskInstanceGroups",
           "protected": true,
@@ -5437,7 +5463,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 163
+        "line": 165
       },
       "name": "ClusterProps",
       "properties": [
@@ -5451,7 +5477,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 191
+            "line": 193
           },
           "name": "coreInstanceFleet",
           "optional": true,
@@ -5469,7 +5495,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 184
+            "line": 186
           },
           "name": "coreInstanceGroup",
           "optional": true,
@@ -5487,7 +5513,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 177
+            "line": 179
           },
           "name": "primaryInstanceFleet",
           "optional": true,
@@ -5505,7 +5531,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 170
+            "line": 172
           },
           "name": "primaryInstanceGroup",
           "optional": true,
@@ -5524,7 +5550,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 217
+            "line": 219
           },
           "name": "taskInstanceFleets",
           "optional": true,
@@ -5548,7 +5574,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 204
+            "line": 206
           },
           "name": "taskInstanceGroups",
           "optional": true,
@@ -9455,7 +9481,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/release-label.ts",
-          "line": 20
+          "line": 21
         },
         "parameters": [
           {
@@ -9499,6 +9525,22 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/release-label.ts",
+            "line": 18
+          },
+          "name": "EMR_6",
+          "static": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.ReleaseLabel"
+          }
+        },
+        {
+          "const": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/release-label.ts",
             "line": 12
           },
           "name": "EMR_6_15_0",
@@ -9531,7 +9573,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/release-label.ts",
-            "line": 18
+            "line": 19
           },
           "name": "LATEST",
           "static": true,
@@ -9546,7 +9588,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/release-label.ts",
-            "line": 21
+            "line": 22
           },
           "name": "label",
           "type": {
@@ -9560,7 +9602,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/release-label.ts",
-            "line": 27
+            "line": 28
           },
           "name": "majorVersion",
           "type": {
@@ -9574,7 +9616,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/release-label.ts",
-            "line": 23
+            "line": 24
           },
           "name": "pythonVersion",
           "type": {
@@ -9588,7 +9630,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/release-label.ts",
-            "line": 24
+            "line": 25
           },
           "name": "scalaVersion",
           "type": {
@@ -9602,7 +9644,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/release-label.ts",
-            "line": 22
+            "line": 23
           },
           "name": "sparkVersion",
           "type": {
@@ -10603,6 +10645,6 @@
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.15",
-  "fingerprint": "mhq8jRvCbS5dK1LxMKnHycs0NK1cc5q3JG3Im1+Vjgc="
+  "version": "0.4.16",
+  "fingerprint": "hWpArlE4IwGZdkC7bRDPvWXFW3111JPgmNWFhhkPdOk="
 }
