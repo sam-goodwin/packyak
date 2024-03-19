@@ -70,3 +70,12 @@ docker run --rm \
 
 docker run -e NVIDIA_VISIBLE_DEVICES="/dev/nvidia-uvm,/dev/nvidia-uvm-tools,/dev/nvidia-modeset,/dev/nvidiactl,/dev/nvidia0" -it 210070991806.dkr.ecr.us-east-1.amazonaws.com/orion-analysis:artemis-dask nvidia-smi
 docker run -e NVIDIA_VISIBLE_DEVICES="0" -it 210070991806.dkr.ecr.us-east-1.amazonaws.com/orion-analysis:artemis-dask nvidia-smi
+
+
+yarn jar /usr/lib/hadoop-yarn/hadoop-yarn-applications-distributedshell.jar \
+       -jar /usr/lib/hadoop-yarn/hadoop-yarn-applications-distributedshell.jar \
+       -shell_env YARN_CONTAINER_RUNTIME_TYPE=docker \
+       -shell_env YARN_CONTAINER_RUNTIME_DOCKER_IMAGE=ubuntu \
+       -shell_command nvidia-smi \
+       -container_resources memory-mb=3072,vcores=1,yarn.io/gpu=1 \
+       -num_containers 1

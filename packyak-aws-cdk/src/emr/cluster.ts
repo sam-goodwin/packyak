@@ -143,21 +143,23 @@ export interface BaseClusterProps {
    */
   readonly enableXGBoost?: boolean;
   /**
-   * Disable the bootstrap script that mounts cgroups and configures Yarn to use
-   * them to isolate each container's resources.
-   *
-   * Can't be disabled if GPU support is enabled.
-   *
-   * @default false
-   * @see https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html
-   */
-  readonly disableYarnCGroups?: boolean;
-  /**
    * Enable Docker support on the cluster.
    *
    * @default true
    */
   readonly enableDocker?: boolean;
+  /**
+   * Additional registries to trust for Docker containers.
+   *
+   * @default - trust the `local` registry and all container registries in the account/region pair
+   */
+  readonly additionalTrustedRegistries?: string[];
+  /**
+   * Additional registries to allow privileged containers from.
+   *
+   * @default - trust the `local` registry and all container registries in the account/region pair
+   */
+  readonly additionalPrivilegedRegistries?: string[];
 }
 
 export interface ClusterProps extends BaseClusterProps {
@@ -362,11 +364,6 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       );
     }
 
-    if (props.disableYarnCGroups && enableGpuAcceleration) {
-      throw new Error(
-        "You cannot enable GPU support without also enabling YARN cgroups. Set `disableYarnCGroups: false` to re-enable YARN cgroups.",
-      );
-    }
     if (enableGpuAcceleration) {
       if (this.release.majorVersion < 6) {
         throw new Error(
@@ -395,9 +392,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     this.enableSparkRapids = props.enableSparkRapids;
     this.enableXGBoost = props.enableXGBoost;
 
-    if (!props.disableYarnCGroups) {
-      this.mountYarnCGroups();
-    }
+    this.mountYarnCGroups();
     if (this.enableDocker && enableGpuAcceleration) {
       this.installNvidiaContainerToolkit();
     }
@@ -424,10 +419,13 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       serviceRole: this.serviceRole.roleArn,
       releaseLabel: props.releaseLabel?.label ?? ReleaseLabel.LATEST.label,
       applications: [
-        { name: Application.AMAZON_CLOUDWATCH_AGENT },
+        this.release.majorVersion >= 7
+          ? // Only available on EMR 7: https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-AmazonCloudWatchAgent.html
+            { name: Application.AMAZON_CLOUDWATCH_AGENT }
+          : undefined,
         { name: Application.LIVY },
         { name: Application.SPARK },
-      ],
+      ].filter((app) => app !== undefined) as CfnCluster.ApplicationProperty[],
       steps: Lazy.any({
         produce: () => this.steps,
       }),
@@ -564,8 +562,16 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
                       classification: "docker",
                       configurationProperties: {
                         // by default, trust all container registries in the account/region pair
-                        "docker.privileged-containers.registries": `local,${awsAccount}.dkr.ecr.${awsRegion}.amazonaws.com`,
-                        "docker.trusted.registries": `local,${awsAccount}.dkr.ecr.${awsRegion}.amazonaws.com`,
+                        "docker.trusted.registries": [
+                          "local",
+                          `${awsAccount}.dkr.ecr.${awsRegion}.amazonaws.com`,
+                          ...(props.additionalTrustedRegistries ?? []),
+                        ].join(","),
+                        "docker.privileged-containers.registries": [
+                          "local",
+                          `${awsAccount}.dkr.ecr.${awsRegion}.amazonaws.com`,
+                          ...(props.additionalPrivilegedRegistries ?? []),
+                        ].join(","),
                       },
                     }
                   : undefined,

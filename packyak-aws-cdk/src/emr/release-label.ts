@@ -15,6 +15,7 @@ export class ReleaseLabel {
     new PythonVersion("3.7"),
     new ScalaVersion("2.12.17"),
   );
+  public static readonly EMR_6 = this.EMR_6_15_0;
   public static readonly LATEST = this.EMR_7_0_0;
 
   constructor(

@@ -11,4 +11,8 @@ sudo yum install -y nvidia-container-toolkit
 
 sudo nvidia-ctk runtime configure --runtime=docker
 
+# (CRITICAL) this set the value "no-cgroups = false" in /etc/nvidia-container-runtime/config.toml
+# without this YARN docker containers will fail with "Failed to initialize NVML: Unknown Error"
+sudo nvidia-ctk config --set nvidia-container-cli.no-cgroups=false -i
+
 sudo systemctl restart docker

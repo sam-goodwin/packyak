@@ -1,13 +1,10 @@
 import {
-  AuthMode,
-  Domain,
   DynamoDBNessieVersionStore,
   NessieECSCatalog,
   UniformCluster,
   Workspace,
-  AllocationStrategy,
   ComputeUnit,
-  FleetCluster,
+  ReleaseLabel,
 } from "@packyak/aws-cdk";
 import {
   InstanceClass,
@@ -71,6 +68,7 @@ const spark = new UniformCluster(stack, "UniformCluster", {
   installGitHubCLI: true,
   enableSSMAgent: true,
   enableDocker: true,
+  additionalTrustedRegistries: ["library", "centos"],
   managedScalingPolicy: {
     computeLimits: {
       unitType: ComputeUnit.VCPU,
@@ -83,7 +81,7 @@ const spark = new UniformCluster(stack, "UniformCluster", {
     instanceType: m5_xlarge,
   },
   coreInstanceGroup: {
-    name: "core-cpu",
+    name: "core-gpu",
     instanceType: g5_4xlarge,
     instanceCount: 1,
   },

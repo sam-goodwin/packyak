@@ -28,6 +28,23 @@ check_variable USERNAME
 check_variable GROUP_ID
 check_variable USER_ID
 
+
+# EMR 6 is having problems with parallel yum operations (for unknown reasons), we'll loop until the lock is released
+max_wait_seconds=60
+start_time=$(date +%s)
+
+while sudo fuser /var/run/yum.pid >/dev/null 2>&1; do
+    current_time=$(date +%s)
+    elapsed_seconds=$((current_time - start_time))
+    if [[ $elapsed_seconds -ge $max_wait_seconds ]]; then
+        echo "Yum lock could not be acquired within $max_wait_seconds seconds. Exiting."
+        exit 1
+    fi
+    echo "Yum lock is held by another process. Retrying in 1 seconds"
+    sleep 1
+done
+
+sudo yum update -y
 sudo yum check-update -y
 sudo yum upgrade -y
 sudo yum install -y amazon-efs-utils nfs-utils
