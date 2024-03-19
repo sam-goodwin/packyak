@@ -1,0 +1,20 @@
+{
+	"name": "examples-clear-linux",
+	"version": "0.1.0",
+	"description": "Deploy a cluster of Clear Linux machines running cloud-hypervisor",
+	"scripts": {
+		"synth": "cdk synth --quiet",
+		"dev": "cdk deploy --require-approval never",
+		"deploy": "cdk deploy --require-approval never"
+	},
+	"dependencies": {
+		"@packyak/aws-cdk": "workspace:^"
+	},
+	"devDependencies": {
+		"aws-cdk": "2.126.0",
+		"aws-cdk-lib": "2.126.0",
+		"ts-node": "^10.9.2",
+		"tsx": "^4.7.0",
+		"typescript": "^5"
+	}
+}

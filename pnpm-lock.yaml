@@ -57,6 +57,28 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
+  examples/clear-linux:
+    dependencies:
+      '@packyak/aws-cdk':
+        specifier: workspace:^
+        version: link:../../packyak-aws-cdk
+    devDependencies:
+      aws-cdk:
+        specifier: 2.126.0
+        version: 2.126.0
+      aws-cdk-lib:
+        specifier: 2.126.0
+        version: 2.126.0(constructs@10.3.0)
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.11.0)(typescript@5.3.3)
+      tsx:
+        specifier: ^4.7.0
+        version: 4.7.0
+      typescript:
+        specifier: ^5
+        version: 5.3.3
+
   examples/streamlit-aws-cdk:
     dependencies:
       '@packyak/aws-cdk':
@@ -8768,7 +8790,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240314
+      typescript: 5.5.0-dev.20240316
     dev: true
 
   /dset@3.1.3:
@@ -13918,8 +13940,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240314:
-    resolution: {integrity: sha512-8yyAVbLSgGrydN7CZWeP+GZ5zkEBh45r0LswVPgxNDjBuDx9VuKtp+ws+Ri122iwfy8vGr5b486IjeeVM49Crw==}
+  /typescript@5.5.0-dev.20240316:
+    resolution: {integrity: sha512-pA1B+Y6sESEbRysnkS6A4yNqIp0KveaiEKYDke+VDIBFBED2KZ/eH44Cmw877lUjBS5cwXRE20YzEwyMbAlITQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
