@@ -75,6 +75,13 @@ else
     sudo usermod -aG ${USERNAME} yarn
 fi
 
+# create a local directory on the EBS device owned by the user
+# this will not be persisted across sessions but gives a directory
+# for users to store latency-sensitive files
+LOCAL_DIR=/mnt/${USERNAME}
+sudo mkdir -p $LOCAL_DIR
+sudo chown ${USERNAME}:${GROUP_ID} $LOCAL_DIR
+
 # TODO: add ssh pub keys, set them up in the bootstrap
 # TODO: remove ssm-user from the sudoers file
 # result: now i can't log in as tyler by adding my ssh key ..
