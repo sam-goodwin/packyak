@@ -3923,6 +3923,43 @@
       ],
       "symbolId": "src/sagemaker/domain:AddUserProfileProps"
     },
+    "@packyak/aws-cdk.AdjustmentType": {
+      "assembly": "@packyak/aws-cdk",
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.AdjustmentType",
+      "kind": "enum",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 167
+      },
+      "members": [
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "The number of Amazon EC2 instances to add or remove each time the scaling activity is triggered."
+          },
+          "name": "CHANGE_IN_CAPACITY"
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "The percentage of the current instance group size to add or remove each time the scaling activity is triggered."
+          },
+          "name": "PERCENT_CHANGE_IN_CAPACITY"
+        },
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "The exact number of Amazon EC2 instances to add or remove each time the scaling activity is triggered."
+          },
+          "name": "EXACT_CAPACITY"
+        }
+      ],
+      "name": "AdjustmentType",
+      "symbolId": "src/emr/managed-scaling:AdjustmentType"
+    },
     "@packyak/aws-cdk.AllocationStrategy": {
       "assembly": "@packyak/aws-cdk",
       "docs": {
@@ -4019,6 +4056,90 @@
       ],
       "name": "AuthMode",
       "symbolId": "src/sagemaker/domain:AuthMode"
+    },
+    "@packyak/aws-cdk.AutoScalingPolicy": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.AutoScalingPolicy",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 60
+      },
+      "name": "AutoScalingPolicy",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "Automatic scaling activity will not cause an instance group to grow above or below these limits.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-autoscalingpolicy.html#cfn-emr-cluster-autoscalingpolicy-constraints",
+            "stability": "experimental",
+            "summary": "The upper and lower Amazon EC2 instance limits for an automatic scaling policy."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 68
+          },
+          "name": "constraints",
+          "type": {
+            "union": {
+              "types": [
+                {
+                  "fqn": "aws-cdk-lib.IResolvable"
+                },
+                {
+                  "fqn": "@packyak/aws-cdk.ScalingConstraints"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-autoscalingpolicy.html#cfn-emr-cluster-autoscalingpolicy-rules",
+            "stability": "experimental",
+            "summary": "The scale-in and scale-out rules that comprise the automatic scaling policy."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 74
+          },
+          "name": "rules",
+          "type": {
+            "union": {
+              "types": [
+                {
+                  "fqn": "aws-cdk-lib.IResolvable"
+                },
+                {
+                  "collection": {
+                    "elementtype": {
+                      "union": {
+                        "types": [
+                          {
+                            "fqn": "aws-cdk-lib.IResolvable"
+                          },
+                          {
+                            "fqn": "@packyak/aws-cdk.ScalingRule"
+                          }
+                        ]
+                      }
+                    },
+                    "kind": "array"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "symbolId": "src/emr/managed-scaling:AutoScalingPolicy"
     },
     "@packyak/aws-cdk.BaseClusterProps": {
       "assembly": "@packyak/aws-cdk",
@@ -4897,6 +5018,212 @@
       ],
       "symbolId": "src/emr/bootstrap-action:BootstrapAction"
     },
+    "@packyak/aws-cdk.CloudWatchAlarmDefinition": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "remarks": "Scaling activity begins when you satisfy the defined alarm conditions.",
+        "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html",
+        "stability": "external",
+        "summary": "`CloudWatchAlarmDefinition` is a subproperty of the `ScalingTrigger` property, which determines when to trigger an automatic scaling activity."
+      },
+      "fqn": "@packyak/aws-cdk.CloudWatchAlarmDefinition",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 246
+      },
+      "name": "CloudWatchAlarmDefinition",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html#cfn-emr-cluster-cloudwatchalarmdefinition-comparisonoperator",
+            "stability": "external",
+            "summary": "Determines how the metric specified by `MetricName` is compared to the value specified by `Threshold` ."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 252
+          },
+          "name": "comparisonOperator",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html#cfn-emr-cluster-cloudwatchalarmdefinition-metricname",
+            "stability": "external",
+            "summary": "The name of the CloudWatch metric that is watched to determine an alarm condition."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 272
+          },
+          "name": "metricName",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "CloudWatch metrics for Amazon EMR are emitted every five minutes (300 seconds), so if you specify a CloudWatch metric, specify `300` .",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html#cfn-emr-cluster-cloudwatchalarmdefinition-period",
+            "stability": "external",
+            "summary": "The period, in seconds, over which the statistic is applied."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 288
+          },
+          "name": "period",
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html#cfn-emr-cluster-cloudwatchalarmdefinition-threshold",
+            "stability": "external",
+            "summary": "The value against which the specified statistic is compared."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 302
+          },
+          "name": "threshold",
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html#cfn-emr-cluster-cloudwatchalarmdefinition-dimensions",
+            "stability": "external",
+            "summary": "A CloudWatch metric dimension."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 258
+          },
+          "name": "dimensions",
+          "optional": true,
+          "type": {
+            "union": {
+              "types": [
+                {
+                  "fqn": "aws-cdk-lib.IResolvable"
+                },
+                {
+                  "collection": {
+                    "elementtype": {
+                      "union": {
+                        "types": [
+                          {
+                            "fqn": "aws-cdk-lib.IResolvable"
+                          },
+                          {
+                            "fqn": "@packyak/aws-cdk.MetricDimension"
+                          }
+                        ]
+                      }
+                    },
+                    "kind": "array"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "The default value is `1` .",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html#cfn-emr-cluster-cloudwatchalarmdefinition-evaluationperiods",
+            "stability": "external",
+            "summary": "The number of periods, in five-minute increments, during which the alarm condition must exist before the alarm triggers automatic scaling activity."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 266
+          },
+          "name": "evaluationPeriods",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "The default is `AWS/ElasticMapReduce` .",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html#cfn-emr-cluster-cloudwatchalarmdefinition-namespace",
+            "stability": "external",
+            "summary": "The namespace for the CloudWatch metric."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 280
+          },
+          "name": "namespace",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "The default is `AVERAGE` .",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html#cfn-emr-cluster-cloudwatchalarmdefinition-statistic",
+            "stability": "external",
+            "summary": "The statistic to apply to the metric associated with the alarm."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 296
+          },
+          "name": "statistic",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "The value specified for `Unit` must correspond to the units specified in the CloudWatch metric.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-cloudwatchalarmdefinition.html#cfn-emr-cluster-cloudwatchalarmdefinition-unit",
+            "stability": "external",
+            "summary": "The unit of measure associated with the CloudWatch metric being watched."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 310
+          },
+          "name": "unit",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        }
+      ],
+      "symbolId": "src/emr/managed-scaling:CloudWatchAlarmDefinition"
+    },
     "@packyak/aws-cdk.Cluster": {
       "assembly": "@packyak/aws-cdk",
       "base": "aws-cdk-lib.Resource",
@@ -5600,19 +5927,22 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/managed-scaling.ts",
-        "line": 11
+        "line": 14
       },
       "name": "ComputeLimits",
       "properties": [
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "remarks": "It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. Managed scaling activities are not allowed beyond this boundary. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-computelimits.html#cfn-emr-cluster-computelimits-maximumcapacityunits",
+            "stability": "experimental",
+            "summary": "The upper boundary of Amazon EC2 units."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/managed-scaling.ts",
-            "line": 14
+            "line": 22
           },
           "name": "maximumCapacityUnits",
           "type": {
@@ -5622,12 +5952,15 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "remarks": "It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. Managed scaling activities are not allowed beyond this boundary. The limit only applies to the core and task nodes. The master node cannot be scaled after initial configuration.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-computelimits.html#cfn-emr-cluster-computelimits-minimumcapacityunits",
+            "stability": "experimental",
+            "summary": "The lower boundary of Amazon EC2 units."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/managed-scaling.ts",
-            "line": 13
+            "line": 46
           },
           "name": "minimumCapacityUnits",
           "type": {
@@ -5637,16 +5970,56 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-computelimits.html#cfn-emr-cluster-computelimits-unittype",
+            "stability": "experimental",
+            "summary": "The unit type used for specifying a managed scaling policy."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/managed-scaling.ts",
-            "line": 12
+            "line": 52
           },
           "name": "unitType",
           "type": {
             "fqn": "@packyak/aws-cdk.ComputeUnit"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. The core units are not allowed to scale beyond this boundary. The parameter is used to split capacity allocation between core and task nodes.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-computelimits.html#cfn-emr-cluster-computelimits-maximumcorecapacityunits",
+            "stability": "experimental",
+            "summary": "The upper boundary of Amazon EC2 units for core node type in a cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 30
+          },
+          "name": "maximumCoreCapacityUnits",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "It is measured through vCPU cores or instances for instance groups and measured through units for instance fleets. The On-Demand units are not allowed to scale beyond this boundary. The parameter is used to split capacity allocation between On-Demand and Spot Instances.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-computelimits.html#cfn-emr-cluster-computelimits-maximumondemandcapacityunits",
+            "stability": "experimental",
+            "summary": "The upper boundary of On-Demand Amazon EC2 units."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 38
+          },
+          "name": "maximumOnDemandCapacityUnits",
+          "optional": true,
+          "type": {
+            "primitive": "number"
           }
         }
       ],
@@ -5661,7 +6034,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/emr/managed-scaling.ts",
-        "line": 1
+        "line": 4
       },
       "members": [
         {
@@ -8005,7 +8378,7 @@
           "name": "autoScalingPolicy",
           "optional": true,
           "type": {
-            "fqn": "aws-cdk-lib.aws_emr.CfnCluster.AutoScalingPolicyProperty"
+            "fqn": "@packyak/aws-cdk.AutoScalingPolicy"
           }
         },
         {
@@ -8517,7 +8890,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/managed-scaling.ts",
-        "line": 7
+        "line": 10
       },
       "name": "ManagedScalingPolicy",
       "properties": [
@@ -8529,7 +8902,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/managed-scaling.ts",
-            "line": 8
+            "line": 11
           },
           "name": "computeLimits",
           "type": {
@@ -8538,6 +8911,60 @@
         }
       ],
       "symbolId": "src/emr/managed-scaling:ManagedScalingPolicy"
+    },
+    "@packyak/aws-cdk.MetricDimension": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "remarks": "`MetricDimension` specifies a CloudWatch dimension, which is specified with a `Key` `Value` pair. The key is known as a `Name` in CloudWatch. By default, Amazon EMR uses one dimension whose `Key` is `JobFlowID` and `Value` is a variable representing the cluster ID, which is `${emr.clusterId}` . This enables the automatic scaling rule for EMR to bootstrap when the cluster ID becomes available during cluster creation.",
+        "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-metricdimension.html",
+        "stability": "external",
+        "summary": "`MetricDimension` is a subproperty of the `CloudWatchAlarmDefinition` property type."
+      },
+      "fqn": "@packyak/aws-cdk.MetricDimension",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 322
+      },
+      "name": "MetricDimension",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-metricdimension.html#cfn-emr-cluster-metricdimension-key",
+            "stability": "external",
+            "summary": "The dimension name."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 328
+          },
+          "name": "key",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-metricdimension.html#cfn-emr-cluster-metricdimension-value",
+            "stability": "external",
+            "summary": "The dimension value."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 334
+          },
+          "name": "value",
+          "type": {
+            "primitive": "string"
+          }
+        }
+      ],
+      "symbolId": "src/emr/managed-scaling:MetricDimension"
     },
     "@packyak/aws-cdk.MountFileSystemOptions": {
       "assembly": "@packyak/aws-cdk",
@@ -9053,7 +9480,7 @@
           "name": "autoScalingPolicy",
           "optional": true,
           "type": {
-            "fqn": "aws-cdk-lib.aws_emr.CfnCluster.AutoScalingPolicyProperty"
+            "fqn": "@packyak/aws-cdk.AutoScalingPolicy"
           }
         },
         {
@@ -9851,7 +10278,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/emr/managed-scaling.ts",
-        "line": 17
+        "line": 55
       },
       "members": [
         {
@@ -9869,6 +10296,357 @@
       ],
       "name": "ScaleDownBehavior",
       "symbolId": "src/emr/managed-scaling:ScaleDownBehavior"
+    },
+    "@packyak/aws-cdk.ScalingAction": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingaction.html",
+        "stability": "external",
+        "summary": "`ScalingAction` determines the type of adjustment the automatic scaling activity makes when triggered, and the periodicity of the adjustment."
+      },
+      "fqn": "@packyak/aws-cdk.ScalingAction",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 150
+      },
+      "name": "ScalingAction",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingaction.html#cfn-emr-cluster-scalingaction-simplescalingpolicyconfiguration",
+            "stability": "external",
+            "summary": "The type of adjustment the automatic scaling activity makes when triggered, and the periodicity of the adjustment."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 164
+          },
+          "name": "simpleScalingPolicyConfiguration",
+          "type": {
+            "union": {
+              "types": [
+                {
+                  "fqn": "aws-cdk-lib.IResolvable"
+                },
+                {
+                  "fqn": "@packyak/aws-cdk.SimpleScalingPolicy"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "Instance groups use the market type specified for the group.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingaction.html#cfn-emr-cluster-scalingaction-market",
+            "stability": "external",
+            "summary": "Not available for instance groups."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 158
+          },
+          "name": "market",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.InstanceMarket"
+          }
+        }
+      ],
+      "symbolId": "src/emr/managed-scaling:ScalingAction"
+    },
+    "@packyak/aws-cdk.ScalingConstraints": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "remarks": "`ScalingConstraints` defines the upper and lower EC2 instance limits for an automatic scaling policy. Automatic scaling activities triggered by automatic scaling rules will not cause an instance group to grow above or shrink below these limits.",
+        "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingconstraints.html",
+        "stability": "external",
+        "summary": "`ScalingConstraints` is a subproperty of the `AutoScalingPolicy` property type."
+      },
+      "fqn": "@packyak/aws-cdk.ScalingConstraints",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 86
+      },
+      "name": "ScalingConstraints",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "Scale-out activities will not add instances beyond this boundary.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingconstraints.html#cfn-emr-cluster-scalingconstraints-maxcapacity",
+            "stability": "external",
+            "summary": "The upper boundary of Amazon EC2 instances in an instance group beyond which scaling activities are not allowed to grow."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 94
+          },
+          "name": "maxCapacity",
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "Scale-in activities will not terminate instances below this boundary.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingconstraints.html#cfn-emr-cluster-scalingconstraints-mincapacity",
+            "stability": "external",
+            "summary": "The lower boundary of Amazon EC2 instances in an instance group below which scaling activities are not allowed to shrink."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 102
+          },
+          "name": "minCapacity",
+          "type": {
+            "primitive": "number"
+          }
+        }
+      ],
+      "symbolId": "src/emr/managed-scaling:ScalingConstraints"
+    },
+    "@packyak/aws-cdk.ScalingRule": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "remarks": "`ScalingRule` defines the scale-in or scale-out rules for scaling activity, including the CloudWatch metric alarm that triggers activity, how EC2 instances are added or removed, and the periodicity of adjustments. The automatic scaling policy for an instance group can comprise one or more automatic scaling rules.",
+        "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingrule.html",
+        "stability": "external",
+        "summary": "`ScalingRule` is a subproperty of the `AutoScalingPolicy` property type."
+      },
+      "fqn": "@packyak/aws-cdk.ScalingRule",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 114
+      },
+      "name": "ScalingRule",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingrule.html#cfn-emr-cluster-scalingrule-action",
+            "stability": "external",
+            "summary": "The conditions that trigger an automatic scaling activity."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 120
+          },
+          "name": "action",
+          "type": {
+            "union": {
+              "types": [
+                {
+                  "fqn": "aws-cdk-lib.IResolvable"
+                },
+                {
+                  "fqn": "@packyak/aws-cdk.ScalingAction"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "Rule names must be unique within a scaling policy.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingrule.html#cfn-emr-cluster-scalingrule-name",
+            "stability": "external",
+            "summary": "The name used to identify an automatic scaling rule."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 134
+          },
+          "name": "name",
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingrule.html#cfn-emr-cluster-scalingrule-trigger",
+            "stability": "external",
+            "summary": "The CloudWatch alarm definition that determines when automatic scaling activity is triggered."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 140
+          },
+          "name": "trigger",
+          "type": {
+            "union": {
+              "types": [
+                {
+                  "fqn": "aws-cdk-lib.IResolvable"
+                },
+                {
+                  "fqn": "@packyak/aws-cdk.ScalingTrigger"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingrule.html#cfn-emr-cluster-scalingrule-description",
+            "stability": "external",
+            "summary": "A friendly, more verbose description of the automatic scaling rule."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 126
+          },
+          "name": "description",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        }
+      ],
+      "symbolId": "src/emr/managed-scaling:ScalingRule"
+    },
+    "@packyak/aws-cdk.ScalingTrigger": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "remarks": "`ScalingTrigger` determines the conditions that trigger an automatic scaling activity.",
+        "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingtrigger.html",
+        "stability": "external",
+        "summary": "`ScalingTrigger` is a subproperty of the `ScalingRule` property type."
+      },
+      "fqn": "@packyak/aws-cdk.ScalingTrigger",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 226
+      },
+      "name": "ScalingTrigger",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "When the defined alarm conditions are met along with other trigger parameters, scaling activity begins.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-scalingtrigger.html#cfn-emr-cluster-scalingtrigger-cloudwatchalarmdefinition",
+            "stability": "external",
+            "summary": "The definition of a CloudWatch metric alarm."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 234
+          },
+          "name": "cloudWatchAlarmDefinition",
+          "type": {
+            "union": {
+              "types": [
+                {
+                  "fqn": "aws-cdk-lib.IResolvable"
+                },
+                {
+                  "fqn": "@packyak/aws-cdk.CloudWatchAlarmDefinition"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "symbolId": "src/emr/managed-scaling:ScalingTrigger"
+    },
+    "@packyak/aws-cdk.SimpleScalingPolicy": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "remarks": "`SimpleScalingPolicyConfiguration` determines how an automatic scaling action adds or removes instances, the cooldown period, and the number of EC2 instances that are added each time the CloudWatch metric alarm condition is satisfied.",
+        "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-simplescalingpolicyconfiguration.html",
+        "stability": "external",
+        "summary": "`SimpleScalingPolicyConfiguration` is a subproperty of the `ScalingAction` property type."
+      },
+      "fqn": "@packyak/aws-cdk.SimpleScalingPolicy",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/emr/managed-scaling.ts",
+        "line": 191
+      },
+      "name": "SimpleScalingPolicy",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "A positive value adds to the instance group's Amazon EC2 instance count while a negative number removes instances. If `AdjustmentType` is set to `EXACT_CAPACITY` , the number should only be a positive integer. If `AdjustmentType` is set to `PERCENT_CHANGE_IN_CAPACITY` , the value should express the percentage as an integer. For example, -20 indicates a decrease in 20% increments of cluster capacity.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-simplescalingpolicyconfiguration.html#cfn-emr-cluster-simplescalingpolicyconfiguration-scalingadjustment",
+            "stability": "external",
+            "summary": "The amount by which to scale in or scale out, based on the specified `AdjustmentType` ."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 214
+          },
+          "name": "scalingAdjustment",
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "AdjustmentType.CHANGE_IN_CAPACITY",
+            "remarks": "`CHANGE_IN_CAPACITY` indicates that the Amazon EC2 instance count increments or decrements by `ScalingAdjustment` , which should be expressed as an integer. `PERCENT_CHANGE_IN_CAPACITY` indicates the instance count increments or decrements by the percentage specified by `ScalingAdjustment` , which should be expressed as an integer. For example, 20 indicates an increase in 20% increments of cluster capacity. `EXACT_CAPACITY` indicates the scaling activity results in an instance group with the number of Amazon EC2 instances specified by `ScalingAdjustment` , which should be expressed as a positive integer.",
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-simplescalingpolicyconfiguration.html#cfn-emr-cluster-simplescalingpolicyconfiguration-adjustmenttype",
+            "stability": "external",
+            "summary": "The way in which Amazon EC2 instances are added (if `ScalingAdjustment` is a positive number) or terminated (if `ScalingAdjustment` is a negative number) each time the scaling activity is triggered."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 200
+          },
+          "name": "adjustmentType",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.AdjustmentType"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "see": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-simplescalingpolicyconfiguration.html#cfn-emr-cluster-simplescalingpolicyconfiguration-cooldown",
+            "stability": "external",
+            "summary": "The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/managed-scaling.ts",
+            "line": 206
+          },
+          "name": "coolDown",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        }
+      ],
+      "symbolId": "src/emr/managed-scaling:SimpleScalingPolicy"
     },
     "@packyak/aws-cdk.SparkVersion": {
       "assembly": "@packyak/aws-cdk",
@@ -10646,5 +11424,5 @@
     }
   },
   "version": "0.4.17",
-  "fingerprint": "aFtnvaQUEuPqV5OcvS/IIkpFRwRMR+g+zlZCFxqM1/M="
+  "fingerprint": "YnKu0mbvoHJL/1bqLop044A2ux0dOLEjk7BlHjY5U1s="
 }

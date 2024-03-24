@@ -1,8 +1,8 @@
-import type { CfnCluster } from "aws-cdk-lib/aws-emr";
 import type { IMachineImage, InstanceType } from "aws-cdk-lib/aws-ec2";
 import type { InstanceMarket } from "./instance-market";
 import type { Configuration } from "./configuration";
 import { EbsBlockDevice } from "./block-device";
+import { AutoScalingPolicy } from "./managed-scaling";
 
 export interface PrimaryInstanceGroup extends BaseInstanceGroup {
   /**
@@ -36,7 +36,7 @@ interface BaseInstanceGroup {
    *
    * @see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-emr-cluster-instancegroupconfig.html#cfn-emr-cluster-instancegroupconfig-autoscalingpolicy
    */
-  readonly autoScalingPolicy?: CfnCluster.AutoScalingPolicyProperty;
+  readonly autoScalingPolicy?: AutoScalingPolicy;
   /**
    * If specified, indicates that the instance group uses Spot Instances.
    *
