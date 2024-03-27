@@ -66,7 +66,7 @@ export class NessieECSCatalog extends BaseNessieCatalog implements IGrantable {
       },
       cpu: props?.cpu ?? 256,
       memoryLimitMiB: props?.memoryLimitMiB ?? 512,
-      publicLoadBalancer: true,
+      publicLoadBalancer: props?.publicLoadBalancer,
       certificate: props?.dns?.certificate,
       domainName: props?.dns?.domainName,
       domainZone: props?.dns?.hostedZone,
