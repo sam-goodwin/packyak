@@ -1,4 +1,5 @@
 export * from "./bind";
+export * from "./dagster";
 export * from "./dns-configuration";
 export * from "./emr/block-device";
 export * from "./emr/bootstrap-action";
