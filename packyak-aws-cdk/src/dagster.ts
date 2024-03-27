@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { IConnectable, Port, Vpc } from "aws-cdk-lib/aws-ec2";
+import { IConnectable, IVpc, Port } from "aws-cdk-lib/aws-ec2";
 import {
   DatabaseClusterEngine,
   Credentials,
@@ -18,7 +18,7 @@ export interface DagsterServiceProps {
    *
    * You must specify either {@link vpc} or {@link cluster}.
    */
-  readonly vpc?: Vpc;
+  readonly vpc?: IVpc;
   /**
    * The ECS cluster to deploy the service to.
    *

@@ -6528,7 +6528,7 @@
           "name": "vpc",
           "optional": true,
           "type": {
-            "fqn": "aws-cdk-lib.aws_ec2.Vpc"
+            "fqn": "aws-cdk-lib.aws_ec2.IVpc"
           }
         }
       ],
@@ -11744,6 +11744,6 @@
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.21",
-  "fingerprint": "j94e3mCZmR4DUkx7aXtN1LMKMhcKSxTx8LmRkxtT3wk="
+  "version": "0.4.22",
+  "fingerprint": "cQoqni6d5Tk0sfXm8Y7y6LRTpOGoUcYlhpCLK94vHrw="
 }
