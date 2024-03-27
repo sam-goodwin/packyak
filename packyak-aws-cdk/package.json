@@ -1,14 +1,18 @@
 {
   "name": "@packyak/aws-cdk",
   "description": "AWS CDK Constructs for the PackYak Lakehouse Platform",
-  "version": "0.4.20",
+  "version": "0.4.21",
   "author": "Sam Goodwin",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/sam-goodwin/packyak"
   },
-  "keywords": ["packyak", "aws-cdk", "lakehouse"],
+  "keywords": [
+    "packyak",
+    "aws-cdk",
+    "lakehouse"
+  ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "typesVersions": {
@@ -29,7 +33,12 @@
       "types": "./lib/index.d.ts"
     }
   },
-  "files": ["bin", "lib", "scripts", ".jsii"],
+  "files": [
+    "bin",
+    "lib",
+    "scripts",
+    ".jsii"
+  ],
   "scripts": {
     "build": "jsii && jsii-pacmak",
     "publish:pypi": ". .env && TWINE_USERNAME=$TWINE_USERNAME TWINE_PASSWORD=$TWINE_PASSWORD pnpm publib-pypi lib.jsii/python",
@@ -92,7 +101,10 @@
       "python": {
         "module": "packyak_aws_cdk",
         "distName": "packyak-aws-cdk",
-        "classifiers": ["Framework :: AWS CDK", "Framework :: AWS CDK :: 1"]
+        "classifiers": [
+          "Framework :: AWS CDK",
+          "Framework :: AWS CDK :: 1"
+        ]
       }
     },
     "outdir": "lib.jsii",

@@ -9,10 +9,10 @@
     "packyak": "./bin/packyak.mjs"
   },
   "dependencies": {
-    "@aws-cdk/aws-glue-alpha": "2.126.0-alpha.0",
-    "@aws-cdk/aws-lambda-python-alpha": "2.126.0-alpha.0",
-    "@aws-cdk/aws-sagemaker-alpha": "2.126.0-alpha.0",
-    "aws-cdk-lib": "2.126.0",
+    "@aws-cdk/aws-glue-alpha": "2.134.0-alpha.0",
+    "@aws-cdk/aws-lambda-python-alpha": "2.134.0-alpha.0",
+    "@aws-cdk/aws-sagemaker-alpha": "2.134.0-alpha.0",
+    "aws-cdk-lib": "2.134.0",
     "constructs": "^10.3.0"
   },
   "dependencyClosure": {
@@ -3299,19 +3299,6 @@
             }
           }
         },
-        "aws-cdk-lib.aws_ssmguiconnect": {
-          "targets": {
-            "dotnet": {
-              "package": "Amazon.CDK.AWS.SSMGuiConnect"
-            },
-            "java": {
-              "package": "software.amazon.awscdk.services.ssmguiconnect"
-            },
-            "python": {
-              "module": "aws_cdk.aws_ssmguiconnect"
-            }
-          }
-        },
         "aws-cdk-lib.aws_ssmincidents": {
           "targets": {
             "dotnet": {
@@ -4376,6 +4363,30 @@
         {
           "abstract": true,
           "docs": {
+            "default": "- no environment variables",
+            "remarks": "Environment variables are written to `/mnt/packyak/.bashrc` and need to be sourced from there.",
+            "stability": "experimental",
+            "summary": "Environment variables to make available to the EMR cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 170
+          },
+          "name": "environment",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "primitive": "string"
+              },
+              "kind": "map"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
             "stability": "experimental",
             "summary": "Extra java options to include in the Spark context by default."
           },
@@ -5238,7 +5249,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/cluster.ts",
-          "line": 250
+          "line": 260
         },
         "parameters": [
           {
@@ -5268,7 +5279,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 225
+        "line": 235
       },
       "methods": [
         {
@@ -5280,7 +5291,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 712
+            "line": 726
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -5303,7 +5314,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 700
+            "line": 714
           },
           "name": "addConfig",
           "parameters": [
@@ -5328,7 +5339,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 689
+            "line": 703
           },
           "name": "addStep",
           "parameters": [
@@ -5350,7 +5361,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1240
+            "line": 1269
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -5371,7 +5382,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 973
+            "line": 987
           },
           "name": "enableSSMAgent"
         },
@@ -5383,7 +5394,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1201
+            "line": 1230
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -5406,7 +5417,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1032
+            "line": 1061
           },
           "name": "installGitHubCLI"
         },
@@ -5417,7 +5428,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1010
+            "line": 1039
           },
           "name": "installNvidiaContainerToolkit"
         },
@@ -5428,7 +5439,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1000
+            "line": 1029
           },
           "name": "installNvidiaDrivers"
         },
@@ -5441,7 +5452,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 678
+            "line": 692
           },
           "name": "jdbc",
           "parameters": [
@@ -5468,7 +5479,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1048
+            "line": 1077
           },
           "name": "mount",
           "parameters": [
@@ -5490,7 +5501,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1071
+            "line": 1100
           },
           "name": "mountAccessPoint",
           "parameters": [
@@ -5521,7 +5532,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1091
+            "line": 1120
           },
           "name": "mountFileSystem",
           "parameters": [
@@ -5552,7 +5563,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 985
+            "line": 1014
           },
           "name": "mountYarnCGroups"
         },
@@ -5563,9 +5574,38 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1020
+            "line": 1049
           },
           "name": "setupHadoopUsers"
+        },
+        {
+          "docs": {
+            "remarks": "Environment variables are written to `/mnt/packyak/.bashrc` and need to be sourced from there.",
+            "stability": "experimental",
+            "summary": "Write environment variables to the EMR cluster."
+          },
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 1001
+          },
+          "name": "writeEnvironmentVariables",
+          "parameters": [
+            {
+              "docs": {
+                "summary": "the environment variables to write."
+              },
+              "name": "variables",
+              "type": {
+                "collection": {
+                  "elementtype": {
+                    "primitive": "string"
+                  },
+                  "kind": "map"
+                }
+              }
+            }
+          ],
+          "protected": true
         }
       ],
       "name": "Cluster",
@@ -5578,7 +5618,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 230
+            "line": 240
           },
           "name": "connections",
           "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
@@ -5593,7 +5633,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 228
+            "line": 238
           },
           "name": "coreSg",
           "type": {
@@ -5607,7 +5647,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 232
+            "line": 242
           },
           "name": "extraJavaOptions",
           "type": {
@@ -5627,7 +5667,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 231
+            "line": 241
           },
           "name": "grantPrincipal",
           "overrides": "aws-cdk-lib.aws_iam.IGrantable",
@@ -5642,7 +5682,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 234
+            "line": 244
           },
           "name": "instanceProfile",
           "type": {
@@ -5656,7 +5696,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 233
+            "line": 243
           },
           "name": "jobFlowRole",
           "type": {
@@ -5670,7 +5710,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 227
+            "line": 237
           },
           "name": "primarySg",
           "type": {
@@ -5684,7 +5724,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 226
+            "line": 236
           },
           "name": "release",
           "type": {
@@ -5698,7 +5738,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 248
+            "line": 258
           },
           "name": "resource",
           "protected": true,
@@ -5713,7 +5753,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 229
+            "line": 239
           },
           "name": "serviceAccessSg",
           "type": {
@@ -5727,7 +5767,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 235
+            "line": 245
           },
           "name": "serviceRole",
           "type": {
@@ -5741,7 +5781,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 246
+            "line": 256
           },
           "name": "taskInstanceFleets",
           "protected": true,
@@ -5761,7 +5801,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 245
+            "line": 255
           },
           "name": "taskInstanceGroups",
           "protected": true,
@@ -5790,7 +5830,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 165
+        "line": 175
       },
       "name": "ClusterProps",
       "properties": [
@@ -5804,7 +5844,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 193
+            "line": 203
           },
           "name": "coreInstanceFleet",
           "optional": true,
@@ -5822,7 +5862,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 186
+            "line": 196
           },
           "name": "coreInstanceGroup",
           "optional": true,
@@ -5840,7 +5880,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 179
+            "line": 189
           },
           "name": "primaryInstanceFleet",
           "optional": true,
@@ -5858,7 +5898,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 172
+            "line": 182
           },
           "name": "primaryInstanceGroup",
           "optional": true,
@@ -5877,7 +5917,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 219
+            "line": 229
           },
           "name": "taskInstanceFleets",
           "optional": true,
@@ -5901,7 +5941,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 206
+            "line": 216
           },
           "name": "taskInstanceGroups",
           "optional": true,
@@ -6193,6 +6233,306 @@
         }
       ],
       "symbolId": "src/dns-configuration:DNSConfiguration"
+    },
+    "@packyak/aws-cdk.DagsterDatabaseProps": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.DagsterDatabaseProps",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/dagster.ts",
+        "line": 40
+      },
+      "name": "DagsterDatabaseProps",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- A name is automatically generated.",
+            "stability": "experimental",
+            "summary": "An optional identifier for the cluster."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 52
+          },
+          "name": "clusterIdentifier",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- A username of 'admin' and SecretsManager-generated password",
+            "stability": "experimental",
+            "summary": "Credentials for the administrative user."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 46
+          },
+          "name": "credentials",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.aws_rds.Credentials"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- 5432",
+            "stability": "experimental",
+            "summary": "The port to connect to the database on."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 70
+          },
+          "name": "port",
+          "optional": true,
+          "type": {
+            "primitive": "number"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- No readers are created.",
+            "stability": "experimental",
+            "summary": "The readers instances to use for the database."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 64
+          },
+          "name": "readers",
+          "optional": true,
+          "type": {
+            "collection": {
+              "elementtype": {
+                "fqn": "aws-cdk-lib.aws_rds.IClusterInstance"
+              },
+              "kind": "array"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- A serverless instance is created.",
+            "stability": "experimental",
+            "summary": "The writer instance to use for the database."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 58
+          },
+          "name": "writer",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.aws_rds.IClusterInstance"
+          }
+        }
+      ],
+      "symbolId": "src/dagster:DagsterDatabaseProps"
+    },
+    "@packyak/aws-cdk.DagsterService": {
+      "assembly": "@packyak/aws-cdk",
+      "base": "constructs.Construct",
+      "docs": {
+        "remarks": "This class allows for the easy setup of a Dagster service with a connected Aurora Postgres database\nwithin an ECS cluster. It abstracts away the complexity of directly dealing with AWS CDK constructs\nfor creating and configuring the ECS service, database, and necessary permissions.",
+        "stability": "experimental",
+        "summary": "Represents a Dagster service deployment in AWS, encapsulating the necessary AWS resources."
+      },
+      "fqn": "@packyak/aws-cdk.DagsterService",
+      "initializer": {
+        "docs": {
+          "stability": "experimental"
+        },
+        "locationInModule": {
+          "filename": "src/dagster.ts",
+          "line": 84
+        },
+        "parameters": [
+          {
+            "name": "scope",
+            "type": {
+              "fqn": "constructs.Construct"
+            }
+          },
+          {
+            "name": "id",
+            "type": {
+              "primitive": "string"
+            }
+          },
+          {
+            "name": "props",
+            "type": {
+              "fqn": "@packyak/aws-cdk.DagsterServiceProps"
+            }
+          }
+        ]
+      },
+      "kind": "class",
+      "locationInModule": {
+        "filename": "src/dagster.ts",
+        "line": 80
+      },
+      "methods": [
+        {
+          "docs": {
+            "stability": "experimental",
+            "summary": "Allow a connectable to access the database."
+          },
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 131
+          },
+          "name": "allowDBAccessFrom",
+          "parameters": [
+            {
+              "docs": {
+                "summary": "The connectable to allow access from."
+              },
+              "name": "connectable",
+              "type": {
+                "fqn": "aws-cdk-lib.aws_ec2.IConnectable"
+              }
+            }
+          ]
+        }
+      ],
+      "name": "DagsterService",
+      "properties": [
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 81
+          },
+          "name": "database",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_rds.DatabaseCluster"
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 82
+          },
+          "name": "databaseSecret",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_secretsmanager.ISecret"
+          }
+        }
+      ],
+      "symbolId": "src/dagster:DagsterService"
+    },
+    "@packyak/aws-cdk.DagsterServiceProps": {
+      "assembly": "@packyak/aws-cdk",
+      "datatype": true,
+      "docs": {
+        "stability": "experimental"
+      },
+      "fqn": "@packyak/aws-cdk.DagsterServiceProps",
+      "kind": "interface",
+      "locationInModule": {
+        "filename": "src/dagster.ts",
+        "line": 15
+      },
+      "name": "DagsterServiceProps",
+      "properties": [
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "You must specify either {@link vpc} or {@link cluster}.",
+            "stability": "experimental",
+            "summary": "The ECS cluster to deploy the service to."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 27
+          },
+          "name": "cluster",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ecs.Cluster"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "The database to deploy to."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 31
+          },
+          "name": "database",
+          "optional": true,
+          "type": {
+            "fqn": "@packyak/aws-cdk.DagsterDatabaseProps"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- The database is not removed automatically.",
+            "stability": "experimental",
+            "summary": "The removal policy to use for the database and service."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 37
+          },
+          "name": "removalPolicy",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.RemovalPolicy"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "remarks": "You must specify either {@link vpc} or {@link cluster}.",
+            "stability": "experimental",
+            "summary": "The VPC to deploy the service to."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/dagster.ts",
+            "line": 21
+          },
+          "name": "vpc",
+          "optional": true,
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.Vpc"
+          }
+        }
+      ],
+      "symbolId": "src/dagster:DagsterServiceProps"
     },
     "@packyak/aws-cdk.DefaultUserSettings": {
       "assembly": "@packyak/aws-cdk",
@@ -10711,7 +11051,7 @@
         },
         "locationInModule": {
           "filename": "src/streamlit-site.ts",
-          "line": 62
+          "line": 54
         },
         "parameters": [
           {
@@ -10737,7 +11077,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/streamlit-site.ts",
-        "line": 58
+        "line": 50
       },
       "name": "StreamlitSite",
       "properties": [
@@ -10748,7 +11088,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/streamlit-site.ts",
-            "line": 59
+            "line": 51
           },
           "name": "service",
           "type": {
@@ -10762,7 +11102,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/streamlit-site.ts",
-            "line": 60
+            "line": 52
           },
           "name": "url",
           "type": {
@@ -10785,7 +11125,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/streamlit-site.ts",
-        "line": 19
+        "line": 18
       },
       "name": "StreamlitSiteProps",
       "properties": [
@@ -10799,7 +11139,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/streamlit-site.ts",
-            "line": 30
+            "line": 29
           },
           "name": "home",
           "type": {
@@ -10816,31 +11156,12 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/streamlit-site.ts",
-            "line": 36
+            "line": 35
           },
           "name": "dockerfile",
           "optional": true,
           "type": {
             "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "default": "/_stcore/health",
-            "see": "https://docs.streamlit.io/knowledge-base/tutorials/deploy/docker",
-            "stability": "experimental",
-            "summary": "Override the {@link HealthCheck} for this Streamlit site."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/streamlit-site.ts",
-            "line": 49
-          },
-          "name": "healthCheck",
-          "optional": true,
-          "type": {
-            "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.HealthCheck"
           }
         },
         {
@@ -10853,7 +11174,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/streamlit-site.ts",
-            "line": 42
+            "line": 41
           },
           "name": "platform",
           "optional": true,
@@ -10871,7 +11192,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/streamlit-site.ts",
-            "line": 55
+            "line": 47
           },
           "name": "pythonPoetryArgs",
           "optional": true,
@@ -11423,6 +11744,6 @@
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.20",
-  "fingerprint": "Kzn1W1LBs+KCEGzNMqH7m9WZepd0ftbdrAizpmysb78="
+  "version": "0.4.21",
+  "fingerprint": "j94e3mCZmR4DUkx7aXtN1LMKMhcKSxTx8LmRkxtT3wk="
 }
