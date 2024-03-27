@@ -1,14 +1,16 @@
 import { Construct } from "constructs";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
+import { IConnectable, Port, Vpc } from "aws-cdk-lib/aws-ec2";
 import {
   DatabaseClusterEngine,
-  AuroraPostgresEngineVersion,
-  ServerlessCluster,
-  ServerlessScalingOptions,
   Credentials,
+  DatabaseCluster,
+  AuroraPostgresEngineVersion,
+  ClusterInstance,
+  IClusterInstance,
 } from "aws-cdk-lib/aws-rds";
 import { Cluster } from "aws-cdk-lib/aws-ecs";
 import { RemovalPolicy } from "aws-cdk-lib/core";
+import type { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 
 export interface DagsterServiceProps {
   /**
@@ -37,14 +39,6 @@ export interface DagsterServiceProps {
 
 export interface DagsterDatabaseProps {
   /**
-   * Scaling configuration of an Aurora Serverless database cluster.
-   *
-   * @default - Serverless cluster is automatically paused after 5 minutes of being idle.
-   *   minimum capacity: 2 ACU
-   *   maximum capacity: 16 ACU
-   */
-  readonly scaling?: ServerlessScalingOptions;
-  /**
    * Credentials for the administrative user
    *
    * @default - A username of 'admin' and SecretsManager-generated password
@@ -56,10 +50,36 @@ export interface DagsterDatabaseProps {
    * @default - A name is automatically generated.
    */
   readonly clusterIdentifier?: string;
+  /**
+   * The writer instance to use for the database.
+   *
+   * @default - A serverless instance is created.
+   */
+  readonly writer?: IClusterInstance;
+  /**
+   * The readers instances to use for the database.
+   *
+   * @default - No readers are created.
+   */
+  readonly readers?: IClusterInstance[];
+  /**
+   * The port to connect to the database on.
+   *
+   * @default - 5432
+   */
+  readonly port?: number;
 }
 
+/**
+ * Represents a Dagster service deployment in AWS, encapsulating the necessary AWS resources.
+ *
+ * This class allows for the easy setup of a Dagster service with a connected Aurora Postgres database
+ * within an ECS cluster. It abstracts away the complexity of directly dealing with AWS CDK constructs
+ * for creating and configuring the ECS service, database, and necessary permissions.
+ */
 export class DagsterService extends Construct {
-  public readonly database: ServerlessCluster;
+  public readonly database: DatabaseCluster;
+  public readonly databaseSecret: ISecret;
 
   constructor(scope: Construct, id: string, props: DagsterServiceProps) {
     super(scope, id);
@@ -86,15 +106,32 @@ export class DagsterService extends Construct {
     //   publicLoadBalancer: true,
     // });
 
-    this.database = new ServerlessCluster(this, "AuroraCluster", {
+    this.database = new DatabaseCluster(this, "Database", {
       vpc,
       engine: DatabaseClusterEngine.auroraPostgres({
-        version: AuroraPostgresEngineVersion.VER_16_0,
+        // version is 14.6 according to HELM charts
+        // @see https://github.com/dagster-io/dagster/blob/4bb81fdb84a7775d3fd03190a2edf1a173def4b6/helm/dagster/values.yaml#L765
+        version: AuroraPostgresEngineVersion.VER_14_6,
       }),
-      scaling: props.database?.scaling,
+      writer: props.database?.writer ?? ClusterInstance.serverlessV2("writer"),
+      readers: props.database?.readers,
       credentials: props.database?.credentials,
       removalPolicy: props.removalPolicy,
       clusterIdentifier: props.database?.clusterIdentifier,
+      port: props.database?.port,
     });
+    this.databaseSecret = this.database.secret!;
+  }
+
+  /**
+   * Allow a connectable to access the database.
+   *
+   * @param connectable The connectable to allow access from.
+   */
+  public allowDBAccessFrom(connectable: IConnectable) {
+    this.database.connections.allowFrom(
+      connectable,
+      Port.tcp(this.database.clusterEndpoint.port),
+    );
   }
 }

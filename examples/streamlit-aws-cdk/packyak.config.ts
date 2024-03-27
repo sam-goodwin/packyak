@@ -4,14 +4,12 @@ import {
   UniformCluster,
   Workspace,
   ComputeUnit,
-  ReleaseLabel,
   DagsterService,
 } from "@packyak/aws-cdk";
 import {
   InstanceClass,
   InstanceSize,
   InstanceType,
-  Port,
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
 import { Bucket } from "aws-cdk-lib/aws-s3";
@@ -53,6 +51,11 @@ const sam = workspace.addHome({
   uid: "2001",
 });
 
+const dagster = new DagsterService(stack, "DagsterService", {
+  vpc,
+  removalPolicy,
+});
+
 const m5_xlarge = InstanceType.of(InstanceClass.M5, InstanceSize.XLARGE);
 const m5_4xlarge = InstanceType.of(InstanceClass.M5, InstanceSize.XLARGE4);
 const g5_4xlarge = InstanceType.of(InstanceClass.G5, InstanceSize.XLARGE4);
@@ -88,14 +91,16 @@ const spark = new UniformCluster(stack, "UniformCluster", {
     instanceType: m5_4xlarge,
     instanceCount: 1,
   },
+  environment: {
+    DAGSTER_DB_SECRET_ARN: dagster.databaseSecret.secretArn,
+    DAGSTER_PG_USERNAME: "admin",
+    DAGSTER_PG_HOST: dagster.database.clusterEndpoint.hostname,
+    DAGSTER_PG_PORT: dagster.database.clusterEndpoint.port.toString(),
+  },
 });
 
-const dagster = new DagsterService(stack, "DagsterService", {
-  vpc,
-  removalPolicy,
-});
-
-dagster.database.connections.allowFrom(spark.primarySg, Port.tcp(5432));
+dagster.databaseSecret.grantRead(spark);
+dagster.allowDBAccessFrom(spark);
 
 // const sparkFleet = new FleetCluster(stack, "SparkFleet", {
 //   clusterName: "spark-fleet",

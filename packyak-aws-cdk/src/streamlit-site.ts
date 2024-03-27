@@ -9,7 +9,6 @@ import {
   ApplicationLoadBalancedFargateService,
   ApplicationLoadBalancedFargateServiceProps,
 } from "aws-cdk-lib/aws-ecs-patterns";
-import { HealthCheck } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Construct } from "constructs";
 import { exportRequirementsSync } from "./export-requirements";
 import * as path from "path";
@@ -40,13 +39,6 @@ export interface StreamlitSiteProps
    * @default {@link Platform.LINUX_AMD64}
    */
   readonly platform?: Platform;
-  /**
-   * Override the {@link HealthCheck} for this Streamlit site.
-   *
-   * @default /_stcore/health
-   * @see https://docs.streamlit.io/knowledge-base/tutorials/deploy/docker
-   */
-  readonly healthCheck?: HealthCheck;
   /**
    * Override how the `requirements.txt` file is generated with Python Poetry
    *

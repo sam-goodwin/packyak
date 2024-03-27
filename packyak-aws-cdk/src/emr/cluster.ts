@@ -160,6 +160,16 @@ export interface BaseClusterProps {
    * @default - trust the `local` registry and all container registries in the account/region pair
    */
   readonly additionalPrivilegedRegistries?: string[];
+  /**
+   * Environment variables to make available to the EMR cluster.
+   *
+   * Environment variables are written to `/mnt/packyak/.bashrc` and need to be sourced from there.
+   *
+   * @default - no environment variables
+   */
+  readonly environment?: {
+    [key: string]: string;
+  };
 }
 
 export interface ClusterProps extends BaseClusterProps {
@@ -395,6 +405,10 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     this.mountYarnCGroups();
     if (this.enableDocker && enableGpuAcceleration) {
       this.installNvidiaContainerToolkit();
+    }
+
+    if (props.environment && Object.keys(props.environment).length > 0) {
+      this.writeEnvironmentVariables(props.environment);
     }
 
     // this constructs a globally unique identifier for the cluster for use in ResourceTag IAM policies
@@ -975,6 +989,21 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     this.jobFlowRole.addManagedPolicy(
       ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"),
     );
+  }
+
+  /**
+   * Write environment variables to the EMR cluster.
+   *
+   * Environment variables are written to `/mnt/packyak/.bashrc` and need to be sourced from there.
+   *
+   * @param variables the environment variables to write
+   */
+  protected writeEnvironmentVariables(variables: Record<string, string>) {
+    this.addBootstrapAction({
+      name: "Write Environment Variables",
+      script: this.getScript("write-env-variables.sh"),
+      args: Object.entries(variables).map(([k, v]) => `--${k}=${v}`),
+    });
   }
 
   private isYarnCGroupsMounted: boolean | undefined;
