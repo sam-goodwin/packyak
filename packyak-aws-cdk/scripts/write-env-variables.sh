@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ENV_FILE=/etc/profile.d/packyak.sh
 
 sudo touch $ENV_FILE
@@ -15,12 +17,12 @@ while [[ "$#" -gt 0 ]]; do
         --*=*) 
             key=$(echo $1 | sed 's/--//;s/=.*//')
             value=$(echo $1 | sed 's/[^=]*=//')
-            sudo echo export $key="$value" >> $ENV_FILE
+            echo export $key="$value" | sudo tee -a $ENV_FILE > /dev/null
             ;;
         --*) 
             key=$(echo $1 | sed 's/--//')
             value=$2
-            sudo echo export $key="$value" >> $ENV_FILE
+            echo export $key="$value" | sudo tee -a $ENV_FILE > /dev/null
             shift ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
