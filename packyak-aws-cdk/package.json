@@ -1,7 +1,7 @@
 {
   "name": "@packyak/aws-cdk",
   "description": "AWS CDK Constructs for the PackYak Lakehouse Platform",
-  "version": "0.4.22",
+  "version": "0.4.25",
   "author": "Sam Goodwin",
   "license": "Apache-2.0",
   "repository": {
@@ -41,7 +41,7 @@
   ],
   "scripts": {
     "build": "jsii && jsii-pacmak",
-    "publish:pypi": ". .env && TWINE_USERNAME=$TWINE_USERNAME TWINE_PASSWORD=$TWINE_PASSWORD pnpm publib-pypi lib.jsii/python",
+    "publish:pypi": "./scripts/release.sh",
     "build:watch": "jsii --watch",
     "clean-src": "find ./src -name '*.d.ts' -exec rm {} \\; && find ./src -name '*.js' -exec rm {} \\;"
   },
@@ -63,7 +63,6 @@
     "jsii": "^5.3.20",
     "jsii-config": "^1.94.0",
     "jsii-pacmak": "^1.94.0",
-    "publib": "^0.2.795",
     "sst": "^2.39.5",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
