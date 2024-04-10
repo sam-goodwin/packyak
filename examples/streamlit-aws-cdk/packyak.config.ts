@@ -74,6 +74,7 @@ const spark = new UniformCluster(stack, "UniformCluster", {
   installGitHubCLI: true,
   enableSSMAgent: true,
   enableDocker: true,
+  installDockerCompose: true,
   additionalTrustedRegistries: ["library", "centos"],
   managedScalingPolicy: {
     computeLimits: {

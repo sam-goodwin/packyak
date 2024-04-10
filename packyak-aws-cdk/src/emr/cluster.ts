@@ -149,6 +149,13 @@ export interface BaseClusterProps {
    */
   readonly enableDocker?: boolean;
   /**
+   * Will install the docker-compose plugin.
+   * 
+   * @default false
+   * @see https://docs.docker.com/compose/
+   */
+  readonly installDockerCompose?: boolean;
+  /**
    * Additional registries to trust for Docker containers.
    *
    * @default - trust the `local` registry and all container registries in the account/region pair
@@ -405,6 +412,14 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     this.mountYarnCGroups();
     if (this.enableDocker && enableGpuAcceleration) {
       this.installNvidiaContainerToolkit();
+    }
+    if (props.installDockerCompose) {
+      if (!this.enableDocker) {
+        throw new Error(
+          "You cannot install Docker Compose without enabling Docker.",
+        );
+      }
+      this.installDockerCompose();
     }
 
     if (props.environment && Object.keys(props.environment).length > 0) {
@@ -1040,6 +1055,16 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
     this.addBootstrapAction({
       name: "Install NVIDIA Container Toolkit",
       script: this.getScript("install-nvidia-container-toolkit.sh"),
+    });
+  }
+
+  /**
+   * Install the Docker Compose Plugin on the EMR cluster.
+   */
+  public installDockerCompose() {
+    this.addBootstrapAction({
+      name: "Install Docker Compose Plugin",
+      script: this.getScript("install-docker-compose.sh"),
     });
   }
 
