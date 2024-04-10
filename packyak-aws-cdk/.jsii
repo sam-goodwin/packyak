@@ -4205,7 +4205,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 162
+            "line": 169
           },
           "name": "additionalPrivilegedRegistries",
           "optional": true,
@@ -4228,7 +4228,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 156
+            "line": 163
           },
           "name": "additionalTrustedRegistries",
           "optional": true,
@@ -4371,7 +4371,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 170
+            "line": 177
           },
           "name": "environment",
           "optional": true,
@@ -4438,6 +4438,25 @@
           "optional": true,
           "type": {
             "fqn": "aws-cdk-lib.Duration"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "false",
+            "see": "https://docs.docker.com/compose/",
+            "stability": "experimental",
+            "summary": "Will install the docker-compose plugin."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 157
+          },
+          "name": "installDockerCompose",
+          "optional": true,
+          "type": {
+            "primitive": "boolean"
           }
         },
         {
@@ -5249,7 +5268,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/cluster.ts",
-          "line": 260
+          "line": 267
         },
         "parameters": [
           {
@@ -5279,7 +5298,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 235
+        "line": 242
       },
       "methods": [
         {
@@ -5291,7 +5310,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 726
+            "line": 741
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -5314,7 +5333,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 714
+            "line": 729
           },
           "name": "addConfig",
           "parameters": [
@@ -5339,7 +5358,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 703
+            "line": 718
           },
           "name": "addStep",
           "parameters": [
@@ -5361,7 +5380,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1269
+            "line": 1294
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -5382,7 +5401,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 987
+            "line": 1002
           },
           "name": "enableSSMAgent"
         },
@@ -5394,7 +5413,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1230
+            "line": 1255
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -5413,11 +5432,22 @@
         {
           "docs": {
             "stability": "experimental",
+            "summary": "Install the Docker Compose Plugin on the EMR cluster."
+          },
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 1064
+          },
+          "name": "installDockerCompose"
+        },
+        {
+          "docs": {
+            "stability": "experimental",
             "summary": "Install the GitHub CLI on the EMR cluster."
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1061
+            "line": 1086
           },
           "name": "installGitHubCLI"
         },
@@ -5428,7 +5458,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1039
+            "line": 1054
           },
           "name": "installNvidiaContainerToolkit"
         },
@@ -5439,7 +5469,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1029
+            "line": 1044
           },
           "name": "installNvidiaDrivers"
         },
@@ -5452,7 +5482,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 692
+            "line": 707
           },
           "name": "jdbc",
           "parameters": [
@@ -5479,7 +5509,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1077
+            "line": 1102
           },
           "name": "mount",
           "parameters": [
@@ -5501,7 +5531,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1100
+            "line": 1125
           },
           "name": "mountAccessPoint",
           "parameters": [
@@ -5532,7 +5562,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1120
+            "line": 1145
           },
           "name": "mountFileSystem",
           "parameters": [
@@ -5563,7 +5593,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1014
+            "line": 1029
           },
           "name": "mountYarnCGroups"
         },
@@ -5574,7 +5604,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1049
+            "line": 1074
           },
           "name": "setupHadoopUsers"
         },
@@ -5586,7 +5616,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1001
+            "line": 1016
           },
           "name": "writeEnvironmentVariables",
           "parameters": [
@@ -5618,7 +5648,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 240
+            "line": 247
           },
           "name": "connections",
           "overrides": "aws-cdk-lib.aws_ec2.IConnectable",
@@ -5633,7 +5663,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 238
+            "line": 245
           },
           "name": "coreSg",
           "type": {
@@ -5647,7 +5677,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 242
+            "line": 249
           },
           "name": "extraJavaOptions",
           "type": {
@@ -5667,7 +5697,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 241
+            "line": 248
           },
           "name": "grantPrincipal",
           "overrides": "aws-cdk-lib.aws_iam.IGrantable",
@@ -5682,7 +5712,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 244
+            "line": 251
           },
           "name": "instanceProfile",
           "type": {
@@ -5696,7 +5726,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 243
+            "line": 250
           },
           "name": "jobFlowRole",
           "type": {
@@ -5710,7 +5740,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 237
+            "line": 244
           },
           "name": "primarySg",
           "type": {
@@ -5724,7 +5754,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 236
+            "line": 243
           },
           "name": "release",
           "type": {
@@ -5738,7 +5768,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 258
+            "line": 265
           },
           "name": "resource",
           "protected": true,
@@ -5753,7 +5783,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 239
+            "line": 246
           },
           "name": "serviceAccessSg",
           "type": {
@@ -5767,7 +5797,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 245
+            "line": 252
           },
           "name": "serviceRole",
           "type": {
@@ -5781,7 +5811,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 256
+            "line": 263
           },
           "name": "taskInstanceFleets",
           "protected": true,
@@ -5801,7 +5831,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 255
+            "line": 262
           },
           "name": "taskInstanceGroups",
           "protected": true,
@@ -5830,7 +5860,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/emr/cluster.ts",
-        "line": 175
+        "line": 182
       },
       "name": "ClusterProps",
       "properties": [
@@ -5844,7 +5874,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 203
+            "line": 210
           },
           "name": "coreInstanceFleet",
           "optional": true,
@@ -5862,7 +5892,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 196
+            "line": 203
           },
           "name": "coreInstanceGroup",
           "optional": true,
@@ -5880,7 +5910,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 189
+            "line": 196
           },
           "name": "primaryInstanceFleet",
           "optional": true,
@@ -5898,7 +5928,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 182
+            "line": 189
           },
           "name": "primaryInstanceGroup",
           "optional": true,
@@ -5917,7 +5947,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 229
+            "line": 236
           },
           "name": "taskInstanceFleets",
           "optional": true,
@@ -5941,7 +5971,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 216
+            "line": 223
           },
           "name": "taskInstanceGroups",
           "optional": true,
@@ -11744,6 +11774,6 @@
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.28",
-  "fingerprint": "tJq3dLUUJcPY59CNlDRxAa/ANiKLWkQDbjhvdRSQ0eA="
+  "version": "0.4.29",
+  "fingerprint": "cZ12qLDsNL6qSCNsDm1Hd9XpLVIvwiNfMATgcJtgYlI="
 }
