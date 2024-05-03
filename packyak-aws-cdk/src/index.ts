@@ -5,6 +5,7 @@ export * from "./emr/block-device";
 export * from "./emr/bootstrap-action";
 export * from "./emr/catalog";
 export * from "./emr/cluster";
+export * from "./emr/spark-config";
 export * from "./emr/configuration";
 export * from "./emr/fleet-cluster";
 export * from "./emr/glue-catalog";

@@ -150,7 +150,7 @@ export interface BaseClusterProps {
   readonly enableDocker?: boolean;
   /**
    * Will install the docker-compose plugin.
-   * 
+   *
    * @default false
    * @see https://docs.docker.com/compose/
    */
@@ -250,6 +250,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
   public readonly jobFlowRole: Role;
   public readonly instanceProfile: InstanceProfile;
   public readonly serviceRole: Role;
+  public readonly vpc: IVpc;
 
   private readonly steps: Step[];
   private readonly bootstrapActions: BootstrapAction[];
@@ -266,6 +267,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
 
   constructor(scope: Construct, id: string, props: ClusterProps) {
     super(scope, id);
+    this.vpc = props.vpc;
     this.extraJavaOptions = { ...(props.extraJavaOptions ?? {}) };
     this.steps = [...(props.steps ?? [])];
     this.configurations = [...(props.configurations ?? [])];

@@ -5268,7 +5268,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/cluster.ts",
-          "line": 267
+          "line": 268
         },
         "parameters": [
           {
@@ -5310,7 +5310,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 741
+            "line": 743
           },
           "name": "addBootstrapAction",
           "parameters": [
@@ -5333,7 +5333,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 729
+            "line": 731
           },
           "name": "addConfig",
           "parameters": [
@@ -5358,7 +5358,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 718
+            "line": 720
           },
           "name": "addStep",
           "parameters": [
@@ -5380,7 +5380,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1294
+            "line": 1296
           },
           "name": "allowLivyFrom",
           "parameters": [
@@ -5401,7 +5401,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1002
+            "line": 1004
           },
           "name": "enableSSMAgent"
         },
@@ -5413,7 +5413,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1255
+            "line": 1257
           },
           "name": "grantStartSSMSession",
           "parameters": [
@@ -5436,7 +5436,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1064
+            "line": 1066
           },
           "name": "installDockerCompose"
         },
@@ -5447,7 +5447,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1086
+            "line": 1088
           },
           "name": "installGitHubCLI"
         },
@@ -5458,7 +5458,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1054
+            "line": 1056
           },
           "name": "installNvidiaContainerToolkit"
         },
@@ -5469,7 +5469,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1044
+            "line": 1046
           },
           "name": "installNvidiaDrivers"
         },
@@ -5482,7 +5482,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 707
+            "line": 709
           },
           "name": "jdbc",
           "parameters": [
@@ -5509,7 +5509,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1102
+            "line": 1104
           },
           "name": "mount",
           "parameters": [
@@ -5531,7 +5531,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1125
+            "line": 1127
           },
           "name": "mountAccessPoint",
           "parameters": [
@@ -5562,7 +5562,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1145
+            "line": 1147
           },
           "name": "mountFileSystem",
           "parameters": [
@@ -5593,7 +5593,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1029
+            "line": 1031
           },
           "name": "mountYarnCGroups"
         },
@@ -5604,7 +5604,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1074
+            "line": 1076
           },
           "name": "setupHadoopUsers"
         },
@@ -5616,7 +5616,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 1016
+            "line": 1018
           },
           "name": "writeEnvironmentVariables",
           "parameters": [
@@ -5768,7 +5768,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 265
+            "line": 266
           },
           "name": "resource",
           "protected": true,
@@ -5811,7 +5811,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 263
+            "line": 264
           },
           "name": "taskInstanceFleets",
           "protected": true,
@@ -5831,7 +5831,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/cluster.ts",
-            "line": 262
+            "line": 263
           },
           "name": "taskInstanceGroups",
           "protected": true,
@@ -5842,6 +5842,20 @@
               },
               "kind": "array"
             }
+          }
+        },
+        {
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/emr/cluster.ts",
+            "line": 253
+          },
+          "name": "vpc",
+          "type": {
+            "fqn": "aws-cdk-lib.aws_ec2.IVpc"
           }
         }
       ],
@@ -11774,6 +11788,6 @@
       "symbolId": "src/workspace/workspace:WorkspaceProps"
     }
   },
-  "version": "0.4.29",
-  "fingerprint": "cZ12qLDsNL6qSCNsDm1Hd9XpLVIvwiNfMATgcJtgYlI="
+  "version": "0.4.32",
+  "fingerprint": "/rV5jwzUHelYrOrTsnPIPYdi2Gqc5Kc7QBIWXLLJmWk="
 }
