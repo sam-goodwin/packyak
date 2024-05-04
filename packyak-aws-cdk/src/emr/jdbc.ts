@@ -1,6 +1,6 @@
 import { IConnectable, Port } from "aws-cdk-lib/aws-ec2";
 import type { Cluster } from "./cluster";
-import { toCLIArgs, mergeSparkExtraJars } from "./spark-config";
+import { mergeSparkExtraJars } from "./spark-config";
 
 /**
  * https://mr3docs.datamonad.com/docs/k8s/advanced/transport/
@@ -16,12 +16,6 @@ export interface JdbcProps {
    * @see https://spark.apache.org/docs/latest/sql-distributed-sql-engine.html
    */
   readonly port: number;
-  /**
-   * Include tje .ivy2/jars directory so that the server will pick up extra extensions
-   *
-   * @default true
-   */
-  readonly includeExtensions?: boolean;
   /**
    * @default
    */
@@ -39,14 +33,7 @@ export class Jdbc {
     private readonly options: JdbcProps,
   ) {
     const hiveConf = options.hiveConf ?? {};
-    if (
-      // If the user has not explicitly disabled the inclusion of the .ivy2/jars directory
-      options.includeExtensions !== false &&
-      hiveConf["hive.aux.jars.path"] === undefined
-    ) {
-      // TODO: ideally not the /root/ user...
-      hiveConf["hive.aux.jars.path"] = "/root/.ivy2/jars/";
-    }
+
     hiveConf["hive.server2.thrift.port"] = options.port.toString(10);
 
     const sparkConf = options.sparkConf ?? {};
@@ -63,21 +50,22 @@ export class Jdbc {
       hadoopJarStep: {
         jar: "command-runner.jar",
         args: [
+          "sudo",
+          "-u",
+          "spark",
           "bash",
           "-c",
-          [
-            // FIXME: this probably shouldn't be root but we need to set up a proper user
-            //        to make that the case since the default hadoop user doesn't have permission
-            //        to write to the log directory.
-            "sudo",
-            "/lib/spark/sbin/start-thriftserver.sh",
-            ...(Object.keys(hiveConf).length > 0
-              ? ["--hiveconf", toCLIArgs(hiveConf)]
-              : []),
-            ...(Object.keys(sparkConf).length > 0
-              ? ["--conf", toCLIArgs(sparkConf)]
-              : []),
-          ].join(" "),
+          // sudo -u spark bash -c "/lib/spark/sbin/start-thriftserver.sh --hiveconf hive.server2.thrift.port=10001 --hiveconf hive.execution.engine=spark --conf spark.sql.hive.thriftServer.singleSession=true --conf spark.driver.extraJavaOptions='-Djdk.httpclient.allowRestrictedHeaders=host'"
+          `"/lib/spark/sbin/start-thriftserver.sh --hiveconf hive.server2.thrift.port=10001 --hiveconf hive.execution.engine=spark --conf spark.driver.extraJavaOptions='-Djdk.httpclient.allowRestrictedHeaders=host' ${[
+            ...Object.entries(sparkConf).map(([k, v]) => [
+              "--hiveconf",
+              `${k}=${v}`,
+            ]),
+            ...Object.entries(sparkConf).map(([k, v]) => [
+              "--conf",
+              `${k}=${v}`,
+            ]),
+          ].join(" ")}"`,
         ],
       },
       actionOnFailure: "CANCEL_AND_WAIT",

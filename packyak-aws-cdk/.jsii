@@ -9102,7 +9102,7 @@
         },
         "locationInModule": {
           "filename": "src/emr/jdbc.ts",
-          "line": 37
+          "line": 31
         },
         "parameters": [
           {
@@ -9122,7 +9122,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/emr/jdbc.ts",
-        "line": 36
+        "line": 30
       },
       "methods": [
         {
@@ -9131,7 +9131,7 @@
           },
           "locationInModule": {
             "filename": "src/emr/jdbc.ts",
-            "line": 87
+            "line": 75
           },
           "name": "allowFrom",
           "parameters": [
@@ -9187,7 +9187,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/jdbc.ts",
-            "line": 30
+            "line": 24
           },
           "name": "extraJavaOptions",
           "optional": true,
@@ -9209,7 +9209,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/jdbc.ts",
-            "line": 28
+            "line": 22
           },
           "name": "hiveConf",
           "optional": true,
@@ -9225,30 +9225,12 @@
         {
           "abstract": true,
           "docs": {
-            "default": "true",
-            "stability": "experimental",
-            "summary": "Include tje .ivy2/jars directory so that the server will pick up extra extensions."
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/emr/jdbc.ts",
-            "line": 24
-          },
-          "name": "includeExtensions",
-          "optional": true,
-          "type": {
-            "primitive": "boolean"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
             "stability": "experimental"
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/emr/jdbc.ts",
-            "line": 29
+            "line": 23
           },
           "name": "sparkConf",
           "optional": true,
@@ -11789,5 +11771,5 @@
     }
   },
   "version": "0.4.32",
-  "fingerprint": "/rV5jwzUHelYrOrTsnPIPYdi2Gqc5Kc7QBIWXLLJmWk="
+  "fingerprint": "6GsRhdBbGNsP0exicYi/1qMZrVsKQ2a+ndrZ5HIkQPY="
 }
