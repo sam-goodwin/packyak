@@ -56,16 +56,16 @@ export class Jdbc {
           "bash",
           "-c",
           // sudo -u spark bash -c "/lib/spark/sbin/start-thriftserver.sh --hiveconf hive.server2.thrift.port=10001 --hiveconf hive.execution.engine=spark --conf spark.sql.hive.thriftServer.singleSession=true --conf spark.driver.extraJavaOptions='-Djdk.httpclient.allowRestrictedHeaders=host'"
-          `"/lib/spark/sbin/start-thriftserver.sh --hiveconf hive.server2.thrift.port=10001 --hiveconf hive.execution.engine=spark --conf spark.driver.extraJavaOptions='-Djdk.httpclient.allowRestrictedHeaders=host' ${[
-            ...Object.entries(sparkConf).map(([k, v]) => [
+          `/lib/spark/sbin/start-thriftserver.sh --hiveconf hive.server2.thrift.port=10001 --hiveconf hive.execution.engine=spark --conf spark.driver.extraJavaOptions='-Djdk.httpclient.allowRestrictedHeaders=host' ${[
+            ...Object.entries(sparkConf).flatMap(([k, v]) => [
               "--hiveconf",
               `${k}=${v}`,
             ]),
-            ...Object.entries(sparkConf).map(([k, v]) => [
+            ...Object.entries(sparkConf).flatMap(([k, v]) => [
               "--conf",
               `${k}=${v}`,
             ]),
-          ].join(" ")}"`,
+          ].join(" ")}`,
         ],
       },
       actionOnFailure: "CANCEL_AND_WAIT",
