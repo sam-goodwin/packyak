@@ -251,6 +251,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
   public readonly instanceProfile: InstanceProfile;
   public readonly serviceRole: Role;
   public readonly vpc: IVpc;
+  public readonly clusterId: string;
 
   private readonly steps: Step[];
   private readonly bootstrapActions: BootstrapAction[];
@@ -680,6 +681,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       // TODO: configure specific Role
       // autoScalingRole: "EMR_AutoScaling_DefaultRole",
     });
+    this.clusterId = cluster.attrId;
     logsBucket.grantReadWrite(this.jobFlowRole);
     for (const [catalogName, catalog] of Object.entries(props.catalogs)) {
       catalog.bind(this, catalogName);
