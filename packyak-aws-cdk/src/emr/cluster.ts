@@ -681,7 +681,7 @@ export class Cluster extends Resource implements IGrantable, IConnectable {
       // TODO: configure specific Role
       // autoScalingRole: "EMR_AutoScaling_DefaultRole",
     });
-    this.clusterId = cluster.attrId;
+    this.clusterId = cluster.ref;
     logsBucket.grantReadWrite(this.jobFlowRole);
     for (const [catalogName, catalog] of Object.entries(props.catalogs)) {
       catalog.bind(this, catalogName);
